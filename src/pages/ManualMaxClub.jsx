@@ -201,6 +201,7 @@ function ManualMaxClub() {
                                     <div className="space-y-4">
                                         {[
                                             { icon: <Droplets size={16} />, name: 'Piscina', time: '08h às 22h', note: 'Fecha segundas para manutenção' },
+                                            { icon: <Building size={16} />, name: 'Quadra Poliesportiva', time: '08h às 22h', note: 'Uso livre (Agenda apenas p/ rede)' },
                                             { icon: <Baby size={16} />, name: 'Brinquedoteca', time: '08h às 22h' },
                                             { icon: <Scissors size={16} />, name: 'Espaço Mulher', time: '08h às 22h' },
                                             { icon: <Coffee size={16} />, name: 'Coworking', time: '08h às 22h' },
@@ -227,12 +228,17 @@ function ManualMaxClub() {
                                         </h4>
                                         <p className="text-xs text-slate-400 mb-6 leading-relaxed">Uso mediante agendamento prévio pelo aplicativo Gruvi.</p>
                                         <div className="space-y-4">
-                                            {['Quadra Poliesportiva', 'Churrasqueira', 'Salão de Festas'].map((area, i) => (
-                                                <div key={i} className="flex justify-between items-center bg-white/5 p-4 rounded-2xl">
-                                                    <span className="text-sm font-bold">{area}</span>
-                                                    <span className="text-[10px] font-black text-slate-500 uppercase">10h às 22h</span>
+                                            <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl">
+                                                <span className="text-sm font-bold">Salão de Festas & Churrasqueira</span>
+                                                <span className="text-[10px] font-black text-slate-500 uppercase">10h às 22h</span>
+                                            </div>
+                                            <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-primary/20">
+                                                <div>
+                                                    <span className="text-sm font-bold block">Rede de Vôlei (Quadra)</span>
+                                                    <span className="text-[9px] text-primary font-bold uppercase">Solicitação de montagem</span>
                                                 </div>
-                                            ))}
+                                                <span className="text-[10px] font-black text-slate-500 uppercase">08h às 20h</span>
+                                            </div>
                                         </div>
                                     </div>
 

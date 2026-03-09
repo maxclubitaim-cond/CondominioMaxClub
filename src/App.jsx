@@ -26,6 +26,7 @@ import AdminLostFound from './pages/AdminLostFound';
 import AdminParking from './pages/AdminParking';
 import AdminOverview from './pages/AdminOverview';
 import AdminMaintenance from './pages/AdminMaintenance';
+import AdminAccessHistory from './pages/AdminAccessHistory';
 
 // Mock/Lazy loading placeholders
 const ProtectedRoute = ({ children, allowedProfiles = [] }) => {
@@ -87,6 +88,7 @@ function AppContent() {
                     <Route path="volei" element={<PageWrapper><AdminVolleyball /></PageWrapper>} />
                     <Route path="achados" element={<PageWrapper><AdminLostFound /></PageWrapper>} />
                     <Route path="manutencao" element={<PageWrapper><AdminMaintenance /></PageWrapper>} />
+                    <Route path="acessos" element={<PageWrapper><AdminAccessHistory /></PageWrapper>} />
                     <Route path="vagas" element={<PageWrapper><AdminParking /></PageWrapper>} />
                     <Route
                         path="usuarios"

@@ -11,7 +11,8 @@ import {
     TrendingUp,
     Inbox,
     Clock,
-    Wrench
+    Wrench,
+    Shield
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,7 +23,8 @@ function AdminOverview() {
         sugestoesNaoLidas: 0,
         achados: 0,
         eficienciaLimpeza: 0,
-        manutencoesMes: 0
+        manutencoesMes: 0,
+        totalAcessos: 0
     });
     const [proximosEventos, setProximosEventos] = useState([]);
     const [voleiPendente, setVoleiPendente] = useState([]);
@@ -115,13 +117,19 @@ function AdminOverview() {
             .select('*', { count: 'exact', head: true })
             .gte('data_manutencao', inicioMes.toISOString());
 
+        // 8. Total de Acessos por Senha
+        const { count: countAcessos } = await supabase
+            .from('registros_acesso')
+            .select('*', { count: 'exact', head: true });
+
         setStats({
             avisos: countAvisos || 0,
             sugestoesTotal: totalSugestoes,
             sugestoesNaoLidas: naoLidas,
             achados: countAchados || 0,
             eficienciaLimpeza: percentualEficiencia,
-            manutencoesMes: countManutencoes || 0
+            manutencoesMes: countManutencoes || 0,
+            totalAcessos: countAcessos || 0
         });
         setProximosEventos(dataAgenda || []);
         setVoleiPendente(dataVolei || []);
@@ -203,6 +211,14 @@ function AdminOverview() {
                     subValue="Neste mês"
                     color="bg-slate-500"
                     onClick={() => navigate('/dashboard/manutencao')}
+                />
+                <KPICard
+                    icon={<Shield className="text-rose-500" />}
+                    label="Acessos Senha"
+                    value={stats.totalAcessos}
+                    subValue="Total Geral"
+                    color="bg-rose-500"
+                    onClick={() => navigate('/dashboard/acessos')}
                 />
             </motion.div>
 

@@ -11,12 +11,13 @@ import {
     Calendar,
     ClipboardList,
     Key as KeyIcon,
-    Search,
-    Trophy,
-    MessageSquare,
-    Bell,
     Package,
-    Wrench
+    Wrench,
+    Shield,
+    Search,
+    Bell,
+    MessageSquare,
+    Trophy
 } from 'lucide-react';
 import { useNavigate, Link, Outlet } from 'react-router-dom';
 
@@ -39,11 +40,12 @@ function Dashboard() {
         { icon: <MessageSquare size={20} />, label: 'Sugestões', path: '/dashboard/sugestoes', access: ['GESTOR', 'ADM'] },
         { icon: <Package size={20} />, label: 'Achados e Perdidos', path: '/dashboard/achados', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <Wrench size={20} />, label: 'Manutenção', path: '/dashboard/manutencao', access: ['OPERADOR', 'GESTOR', 'ADM'] },
+        { icon: <Shield size={20} />, label: 'Histórico de Acessos', path: '/dashboard/acessos', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <Search size={20} />, label: 'Vagas', path: '/dashboard/vagas', access: ['GESTOR', 'ADM'] },
         { icon: <Users size={20} />, label: 'Usuários', path: '/dashboard/usuarios', access: ['GESTOR', 'ADM'] },
     ];
 
-    const allowedItems = menuItems.filter(item => item.access.includes(profile?.perfil));
+    const allowedItems = profile?.perfil ? menuItems.filter(item => item.access.includes(profile.perfil)) : [];
 
     return (
         <div className="min-h-screen bg-slate-50 flex">
