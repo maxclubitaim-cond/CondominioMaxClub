@@ -129,6 +129,21 @@ function AdminOverview() {
         setLoading(false);
     }
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 }
+    };
+
     if (loading) {
         return (
             <div className="flex items-center justify-center p-20">
@@ -138,15 +153,19 @@ function AdminOverview() {
     }
 
     return (
-        <div className="space-y-10 animate-in fade-in duration-700">
-            {/* Boas-vindas */}
-            <header>
+        <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-10"
+        >
+            <motion.header variants={itemVariants}>
                 <h1 className="text-3xl font-black text-slate-800">Olá, Gestor!</h1>
                 <p className="text-slate-500 font-medium">Aqui está o que está acontecendo no MaxClub Itaim hoje.</p>
-            </header>
+            </motion.header>
 
             {/* Grid de KPIs */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <KPICard
                     icon={<Bell className="text-blue-500" />}
                     label="Avisos Ativos"
@@ -185,13 +204,12 @@ function AdminOverview() {
                     color="bg-slate-500"
                     onClick={() => navigate('/dashboard/manutencao')}
                 />
-            </div>
+            </motion.div>
 
             {/* Alerta de Limpeza Crítica */}
             {limpezaCritica.length > 0 && (
                 <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    variants={itemVariants}
                     className="p-6 bg-secondary/5 border border-secondary/20 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6"
                 >
                     <div className="flex items-center gap-4 text-center md:text-left">
@@ -221,7 +239,7 @@ function AdminOverview() {
                 </motion.div>
             )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 {/* Próximos Eventos */}
                 <section className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden flex flex-col">
                     <div className="p-8 border-b border-slate-50 flex items-center justify-between">
@@ -331,8 +349,8 @@ function AdminOverview() {
                         </button>
                     </div>
                 </section>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 }
 

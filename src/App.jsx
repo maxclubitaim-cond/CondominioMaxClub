@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 
 // Pages
 import Home from './pages/Home';
@@ -40,52 +42,73 @@ const ProtectedRoute = ({ children, allowedProfiles = [] }) => {
     return children;
 };
 
+const PageWrapper = ({ children }) => (
+    <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
+    >
+        {children}
+    </motion.div>
+);
+
+function AppContent() {
+    const location = useLocation();
+
+    return (
+        <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+                <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
+                <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
+                <Route path="/acesso" element={<PageWrapper><AccessRegister /></PageWrapper>} />
+                <Route path="/sugestoes" element={<PageWrapper><Suggestions /></PageWrapper>} />
+                <Route path="/volei" element={<PageWrapper><VolleyballBooking /></PageWrapper>} />
+                <Route path="/limpeza" element={<PageWrapper><CleaningHistory /></PageWrapper>} />
+                <Route path="/agenda" element={<PageWrapper><PublicAgenda /></PageWrapper>} />
+                <Route path="/achados" element={<PageWrapper><LostFound /></PageWrapper>} />
+                <Route path="/manual-maxclub" element={<PageWrapper><ManualMaxClub /></PageWrapper>} />
+
+                {/* Admin Routes */}
+                <Route
+                    path="/dashboard"
+                    element={
+                        <ProtectedRoute allowedProfiles={['OPERADOR', 'GESTOR', 'ADM']}>
+                            <Dashboard />
+                        </ProtectedRoute>
+                    }
+                >
+                    <Route index element={<PageWrapper><AdminOverview /></PageWrapper>} />
+                    <Route path="senhas" element={<PageWrapper><DoorPasswords /></PageWrapper>} />
+                    <Route path="limpeza" element={<PageWrapper><AdminCleaning /></PageWrapper>} />
+                    <Route path="avisos" element={<PageWrapper><AdminAvisos /></PageWrapper>} />
+                    <Route path="sugestoes" element={<PageWrapper><AdminSuggestions /></PageWrapper>} />
+                    <Route path="agenda" element={<PageWrapper><AdminAgenda /></PageWrapper>} />
+                    <Route path="volei" element={<PageWrapper><AdminVolleyball /></PageWrapper>} />
+                    <Route path="achados" element={<PageWrapper><AdminLostFound /></PageWrapper>} />
+                    <Route path="manutencao" element={<PageWrapper><AdminMaintenance /></PageWrapper>} />
+                    <Route path="vagas" element={<PageWrapper><AdminParking /></PageWrapper>} />
+                    <Route
+                        path="usuarios"
+                        element={
+                            <ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}>
+                                <PageWrapper><AdminUsers /></PageWrapper>
+                            </ProtectedRoute>
+                        }
+                    />
+                </Route>
+
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </AnimatePresence>
+    );
+}
+
 function App() {
     return (
         <AuthProvider>
             <Router>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/acesso" element={<AccessRegister />} />
-                    <Route path="/sugestoes" element={<Suggestions />} />
-                    <Route path="/volei" element={<VolleyballBooking />} />
-                    <Route path="/limpeza" element={<CleaningHistory />} />
-                    <Route path="/agenda" element={<PublicAgenda />} />
-                    <Route path="/achados" element={<LostFound />} />
-                    <Route path="/manual-maxclub" element={<ManualMaxClub />} />
-
-                    {/* Admin Routes */}
-                    <Route
-                        path="/dashboard"
-                        element={
-                            <ProtectedRoute allowedProfiles={['OPERADOR', 'GESTOR', 'ADM']}>
-                                <Dashboard />
-                            </ProtectedRoute>
-                        }
-                    >
-                        <Route index element={<AdminOverview />} />
-                        <Route path="senhas" element={<DoorPasswords />} />
-                        <Route path="limpeza" element={<AdminCleaning />} />
-                        <Route path="avisos" element={<AdminAvisos />} />
-                        <Route path="sugestoes" element={<AdminSuggestions />} />
-                        <Route path="agenda" element={<AdminAgenda />} />
-                        <Route path="volei" element={<AdminVolleyball />} />
-                        <Route path="achados" element={<AdminLostFound />} />
-                        <Route path="manutencao" element={<AdminMaintenance />} />
-                        <Route path="vagas" element={<AdminParking />} />
-                        <Route
-                            path="usuarios"
-                            element={
-                                <ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}>
-                                    <AdminUsers />
-                                </ProtectedRoute>
-                            }
-                        />
-                    </Route>
-
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
+                <AppContent />
             </Router>
         </AuthProvider>
     );
