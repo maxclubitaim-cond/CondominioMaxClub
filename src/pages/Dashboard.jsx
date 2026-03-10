@@ -17,7 +17,8 @@ import {
     Search,
     Bell,
     MessageSquare,
-    Trophy
+    Trophy,
+    ClipboardCheck
 } from 'lucide-react';
 import { useNavigate, Link, Outlet } from 'react-router-dom';
 
@@ -33,6 +34,7 @@ function Dashboard() {
     const menuItems = [
         { icon: <LayoutDashboard size={20} />, label: 'Visão Geral', path: '/dashboard', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <ClipboardList size={20} />, label: 'Limpeza', path: '/dashboard/limpeza', access: ['OPERADOR', 'GESTOR', 'ADM'] },
+        { icon: <ClipboardCheck size={20} />, label: 'Checklist Salão', path: '/dashboard/checklist-salao', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <Bell size={20} />, label: 'Avisos', path: '/dashboard/avisos', access: ['GESTOR', 'ADM'] },
         { icon: <Calendar size={20} />, label: 'Agenda', path: '/dashboard/agenda', access: ['GESTOR', 'ADM'] },
         { icon: <Trophy size={20} />, label: 'Vôlei', path: '/dashboard/volei', access: ['OPERADOR', 'GESTOR', 'ADM'] },

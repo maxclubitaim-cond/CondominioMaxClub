@@ -255,13 +255,29 @@ CREATE POLICY "Equipe gestora pode gerenciar locais_limpeza"
   USING (EXISTS (SELECT 1 FROM perfis WHERE id = auth.uid() AND (perfil IN ('OPERADOR', 'GESTOR', 'ADM'))))
   WITH CHECK (EXISTS (SELECT 1 FROM perfis WHERE id = auth.uid() AND (perfil IN ('OPERADOR', 'GESTOR', 'ADM'))));
 
--- Sorteios: Gestão explicita
-ALTER TABLE sorteio_historico ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Leitura pública de sorteios" ON sorteio_historico;
-CREATE POLICY "Leitura pública de sorteios" ON sorteio_historico FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Gestores e ADMs podem gerenciar sorteios" ON sorteio_historico;
-CREATE POLICY "Equipe gestora pode gerenciar sorteios" 
-  ON sorteio_historico FOR ALL 
+-- 13. Checklist Salão de Festas [ATUALIZADO]
+CREATE TABLE salao_checklist (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  unidade TEXT NOT NULL,
+  data_evento DATE NOT NULL,
+  respostas JSONB NOT NULL,
+  aderencia FLOAT NOT NULL,
+  ocorrencias JSONB DEFAULT '{}'::jsonb, -- Relatos e Fotos específicas por item
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Habilitar RLS para salao_checklist
+ALTER TABLE salao_checklist ENABLE ROW LEVEL SECURITY;
+
+-- Permissões para salao_checklist
+CREATE POLICY "Leitura pública de salao_checklist" ON salao_checklist FOR SELECT USING (true);
+CREATE POLICY "Inserção pública de salao_checklist" ON salao_checklist FOR INSERT WITH CHECK (true);
+CREATE POLICY "Gestores e ADMs podem gerenciar salao_checklist" 
+  ON salao_checklist FOR ALL 
   TO authenticated
-  USING (EXISTS (SELECT 1 FROM perfis WHERE id = auth.uid() AND (perfil IN ('OPERADOR', 'GESTOR', 'ADM'))))
-  WITH CHECK (EXISTS (SELECT 1 FROM perfis WHERE id = auth.uid() AND (perfil IN ('OPERADOR', 'GESTOR', 'ADM'))));
+  USING (EXISTS (SELECT 1 FROM perfis WHERE id = auth.uid() AND (perfil IN ('OPERADOR', 'GESTOR', 'ADM'))));
+
+-- 14. Buckets de Storage (Instrução Manual: Criar bucket 'salao-checklist' no dashboard)
+-- Configuração de políticas de storage (se suportado via SQL no seu projeto)
+-- CREATE POLICY "Acesso público às fotos do checklist" ON storage.objects FOR SELECT USING (bucket_id = 'salao-checklist');
+-- CREATE POLICY "Upload público de fotos do checklist" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'salao-checklist');

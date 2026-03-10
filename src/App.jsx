@@ -24,6 +24,8 @@ import LostFound from './pages/LostFound';
 import ManualMaxClub from './pages/ManualMaxClub';
 import AdminLostFound from './pages/AdminLostFound';
 import AdminParking from './pages/AdminParking';
+import PublicChecklist from './pages/PublicChecklist';
+import AdminChecklistHistory from './pages/AdminChecklistHistory';
 import AdminOverview from './pages/AdminOverview';
 import AdminMaintenance from './pages/AdminMaintenance';
 import AdminAccessHistory from './pages/AdminAccessHistory';
@@ -69,6 +71,7 @@ function AppContent() {
                 <Route path="/agenda" element={<PageWrapper><PublicAgenda /></PageWrapper>} />
                 <Route path="/achados" element={<PageWrapper><LostFound /></PageWrapper>} />
                 <Route path="/manual-maxclub" element={<PageWrapper><ManualMaxClub /></PageWrapper>} />
+                <Route path="/checklist-salao" element={<PageWrapper><PublicChecklist /></PageWrapper>} />
 
                 {/* Admin Routes */}
                 <Route
@@ -89,6 +92,7 @@ function AppContent() {
                     <Route path="achados" element={<PageWrapper><AdminLostFound /></PageWrapper>} />
                     <Route path="manutencao" element={<PageWrapper><AdminMaintenance /></PageWrapper>} />
                     <Route path="acessos" element={<PageWrapper><AdminAccessHistory /></PageWrapper>} />
+                    <Route path="checklist-salao" element={<PageWrapper><AdminChecklistHistory /></PageWrapper>} />
                     <Route path="vagas" element={<PageWrapper><AdminParking /></PageWrapper>} />
                     <Route
                         path="usuarios"

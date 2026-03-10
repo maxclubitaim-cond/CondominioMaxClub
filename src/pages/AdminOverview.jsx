@@ -12,7 +12,8 @@ import {
     Inbox,
     Clock,
     Wrench,
-    Shield
+    Shield,
+    ClipboardCheck
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -38,103 +39,122 @@ function AdminOverview() {
 
     async function fetchDashboardData() {
         setLoading(true);
+        try {
+            // 1. Avisos Ativos
+            const { count: countAvisos } = await supabase
+                .from('avisos')
+                .select('*', { count: 'exact', head: true });
 
-        // 1. Avisos Ativos
-        const { count: countAvisos } = await supabase
-            .from('avisos')
-            .select('*', { count: 'exact', head: true });
+            // 2. Sugestões
+            const { data: dataSugestoes } = await supabase
+                .from('sugestoes')
+                .select('lido');
 
-        // 2. Sugestões
-        const { data: dataSugestoes } = await supabase
-            .from('sugestoes')
-            .select('lido');
+            const totalSugestoes = dataSugestoes?.length || 0;
+            const naoLidas = dataSugestoes?.filter(s => !s.lido).length || 0;
 
-        const totalSugestoes = dataSugestoes?.length || 0;
-        const naoLidas = dataSugestoes?.filter(s => !s.lido).length || 0;
+            // 3. Achados e Perdidos (Não retirados)
+            const { count: countAchados } = await supabase
+                .from('achados_perdidos')
+                .select('*', { count: 'exact', head: true })
+                .eq('retirado', false);
 
-        // 3. Achados e Perdidos (Não retirados)
-        const { count: countAchados } = await supabase
-            .from('achados_perdidos')
-            .select('*', { count: 'exact', head: true })
-            .eq('retirado', false);
+            // 4. Próximos Eventos (Agenda)
+            const hoy = new Date().toISOString().split('T')[0];
+            const { data: dataAgenda } = await supabase
+                .from('agenda')
+                .select('*')
+                .gte('data', hoy)
+                .order('data')
+                .order('hora')
+                .limit(5);
 
-        // 4. Próximos Eventos (Agenda)
-        const hoy = new Date().toISOString().split('T')[0];
-        const { data: dataAgenda } = await supabase
-            .from('agenda')
-            .select('*')
-            .gte('data', hoy)
-            .order('data')
-            .order('hora')
-            .limit(5);
+            // 5. Reservas de Vôlei Pendentes
+            const { data: dataVolei } = await supabase
+                .from('reservas_volei')
+                .select('*')
+                .eq('entregue', false)
+                .order('data');
 
-        // 5. Reservas de Vôlei Pendentes
-        const { data: dataVolei } = await supabase
-            .from('reservas_volei')
-            .select('*')
-            .eq('entregue', false)
-            .order('data');
+            // 6. Eficiência de Limpeza (Últimos 7 dias)
+            // Meta: 2 limpezas por local (a cada 3 dias)
+            const seteDiasAtras = new Date();
+            seteDiasAtras.setDate(seteDiasAtras.getDate() - 7);
 
-        // 6. Eficiência de Limpeza (Últimos 7 dias)
-        // Meta: 2 limpezas por local (a cada 3 dias)
-        const seteDiasAtras = new Date();
-        seteDiasAtras.setDate(seteDiasAtras.getDate() - 7);
+            const { data: todosLocaisLimpeza } = await supabase.from('locais_limpeza').select('*').eq('ativo', true);
+            const { data: registrosRecentes } = await supabase
+                .from('limpeza_registros')
+                .select('local_id')
+                .gte('data_limpeza', seteDiasAtras.toISOString());
 
-        const { data: todosLocaisLimpeza } = await supabase.from('locais_limpeza').select('*').eq('ativo', true);
-        const { data: registrosRecentes } = await supabase
-            .from('limpeza_registros')
-            .select('local_id')
-            .gte('data_limpeza', seteDiasAtras.toISOString());
+            const contagemPorLocal = (registrosRecentes || []).reduce((acc, reg) => {
+                acc[reg.local_id] = (acc[reg.local_id] || 0) + 1;
+                return acc;
+            }, {});
 
-        const contagemPorLocal = (registrosRecentes || []).reduce((acc, reg) => {
-            acc[reg.local_id] = (acc[reg.local_id] || 0) + 1;
-            return acc;
-        }, {});
+            let locaisOK = 0;
+            const criticos = [];
 
-        let locaisOK = 0;
-        const criticos = [];
+            (todosLocaisLimpeza || []).forEach(local => {
+                const qtd = contagemPorLocal[local.id] || 0;
+                if (qtd >= 2) {
+                    locaisOK++;
+                } else {
+                    criticos.push({ ...local, qtd });
+                }
+            });
 
-        (todosLocaisLimpeza || []).forEach(local => {
-            const qtd = contagemPorLocal[local.id] || 0;
-            if (qtd >= 2) {
-                locaisOK++;
-            } else {
-                criticos.push({ ...local, qtd });
+            const percentualEficiencia = todosLocaisLimpeza?.length > 0
+                ? Math.round((locaisOK / todosLocaisLimpeza.length) * 100)
+                : 100;
+
+            // 7. Manutenções no Mês
+            const inicioMes = new Date();
+            inicioMes.setDate(1);
+            inicioMes.setHours(0, 0, 0, 0);
+
+            const { count: countManutencoes } = await supabase
+                .from('manutencao_registros')
+                .select('*', { count: 'exact', head: true })
+                .gte('data_manutencao', inicioMes.toISOString());
+
+            // 8. Total de Acessos (Opcional, se existir a tabela)
+            let countAcessos = 0;
+            try {
+                const { count } = await supabase.from('registros_acesso').select('*', { count: 'exact', head: true });
+                countAcessos = count || 0;
+            } catch (e) {
+                console.warn('Tabela registros_acesso não encontrada');
             }
-        });
 
-        const percentualEficiencia = todosLocaisLimpeza?.length > 0
-            ? Math.round((locaisOK / todosLocaisLimpeza.length) * 100)
-            : 100;
+            // 9. Checklist Salão
+            const { data: dataChecklist } = await supabase
+                .from('salao_checklist')
+                .select('aderencia');
 
-        // 7. Manutenções no Mês
-        const inicioMes = new Date();
-        inicioMes.setDate(1);
-        inicioMes.setHours(0, 0, 0, 0);
+            const totalChecklists = dataChecklist?.length || 0;
+            const somaAderencia = dataChecklist?.reduce((acc, c) => acc + c.aderencia, 0) || 0;
+            const aderenciaMedia = totalChecklists > 0 ? Math.round(somaAderencia / totalChecklists) : 0;
 
-        const { count: countManutencoes } = await supabase
-            .from('manutencao_registros')
-            .select('*', { count: 'exact', head: true })
-            .gte('data_manutencao', inicioMes.toISOString());
-
-        // 8. Total de Acessos por Senha
-        const { count: countAcessos } = await supabase
-            .from('registros_acesso')
-            .select('*', { count: 'exact', head: true });
-
-        setStats({
-            avisos: countAvisos || 0,
-            sugestoesTotal: totalSugestoes,
-            sugestoesNaoLidas: naoLidas,
-            achados: countAchados || 0,
-            eficienciaLimpeza: percentualEficiencia,
-            manutencoesMes: countManutencoes || 0,
-            totalAcessos: countAcessos || 0
-        });
-        setProximosEventos(dataAgenda || []);
-        setVoleiPendente(dataVolei || []);
-        setLimpezaCritica(criticos);
-        setLoading(false);
+            setStats({
+                avisos: countAvisos || 0,
+                sugestoesTotal: totalSugestoes,
+                sugestoesNaoLidas: naoLidas,
+                achados: countAchados || 0,
+                eficienciaLimpeza: percentualEficiencia,
+                manutencoesMes: countManutencoes || 0,
+                totalAcessos: countAcessos,
+                totalChecklist: totalChecklists,
+                aderenciaChecklist: aderenciaMedia
+            });
+            setProximosEventos(dataAgenda || []);
+            setVoleiPendente(dataVolei || []);
+            setLimpezaCritica(criticos);
+        } catch (error) {
+            console.error('Erro ao buscar dados do dashboard:', error);
+        } finally {
+            setLoading(false);
+        }
     }
 
     const containerVariants = {
@@ -219,6 +239,14 @@ function AdminOverview() {
                     subValue="Total Geral"
                     color="bg-rose-500"
                     onClick={() => navigate('/dashboard/acessos')}
+                />
+                <KPICard
+                    icon={<ClipboardCheck className="text-emerald-600" />}
+                    label="Checklists Salão"
+                    value={stats.totalChecklist}
+                    subValue={`${stats.aderenciaChecklist}% Aderência`}
+                    color="bg-emerald-600"
+                    onClick={() => navigate('/dashboard/checklist-salao')}
                 />
             </motion.div>
 
