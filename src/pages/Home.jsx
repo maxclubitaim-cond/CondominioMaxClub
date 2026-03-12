@@ -382,7 +382,7 @@ function Home() {
                     2026 Todos os direitos reservados MaxClub Itaim.
                 </p>
                 <p className="text-[10px] text-slate-300 font-medium">
-                    Premium Living Experience • Facilitando o dia a dia para você focar no que importa.
+                    Facilitando o dia a dia para você focar no que importa.
                 </p>
             </footer>
         </div>
