@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { usePushNotifications } from '../hooks/usePushNotifications';
 import logo from '../assets/logo.png';
 
 function Home() {
@@ -34,6 +35,7 @@ function Home() {
     const [loading, setLoading] = useState(true);
     const [logoError, setLogoError] = useState(false);
     const navigate = useNavigate();
+    const { isSubscribed, subscribeUser, loading: pushLoading } = usePushNotifications();
 
     useEffect(() => {
         fetchInitialData();
@@ -193,6 +195,33 @@ function Home() {
                                 <MessageSquare size={18} /> Sugestões
                             </button>
                         </div>
+
+                        {/* Banner de Notificações PWA */}
+                        {!isSubscribed && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="mt-8 p-6 bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl border border-white/10 shadow-2xl relative overflow-hidden group"
+                            >
+                                <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/20 rounded-full blur-3xl group-hover:bg-primary/30 transition-all"></div>
+                                <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
+                                    <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center">
+                                        <Bell className="text-primary animate-ring" />
+                                    </div>
+                                    <div className="flex-1 text-center md:text-left">
+                                        <h4 className="text-white font-bold mb-1">Deseja receber avisos?</h4>
+                                        <p className="text-slate-400 text-xs font-medium">Fique por dentro de eventos, manutenções e mais.</p>
+                                    </div>
+                                    <button
+                                        onClick={subscribeUser}
+                                        disabled={pushLoading}
+                                        className="w-full md:w-auto px-6 py-3 bg-primary text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:opacity-90 transition-all disabled:opacity-50"
+                                    >
+                                        {pushLoading ? 'Ativando...' : 'Ativar Notificações'}
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
                     </motion.div>
 
                     {/* Status Sidebar (Desktop) */}
