@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
-// Chave Pública VAPID real gerada
-const VAPID_PUBLIC_KEY = 'BNBb0hVpgOf4Ph6O2VC19GX3VKmTAqB11Pqipzk-QwgYGpPSxt7HR0_4U36CLk7R1GX3VKmTAqB11Pqipzk-QwgYGpPSxt7HR0_4U36CLk7R1GX3VKmTAqB11Pqipzk-Qw'; 
+// Chave Pública VAPID real e limpa
+const VAPID_PUBLIC_KEY = 'BHAWwcf9lHdKAxyzS2JMk7K-xBSdMxW4MkzYvHIGStrio0xj9qmVpd43lw_Gw__DrMAjknawnp39ovLriJ4mdII'; 
 
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -20,7 +20,9 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 export function usePushNotifications() {
-  const [permission, setPermission] = useState(Notification.permission);
+  const [permission, setPermission] = useState(() => {
+    return typeof Notification !== 'undefined' ? Notification.permission : 'default';
+  });
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -29,24 +31,30 @@ export function usePushNotifications() {
   }, []);
 
   const checkSubscription = async () => {
-    if ('serviceWorker' in navigator) {
-      const registration = await navigator.serviceWorker.ready;
-      const subscription = await registration.pushManager.getSubscription();
-      setIsSubscribed(!!subscription);
+    if ('serviceWorker' in navigator && typeof Notification !== 'undefined') {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+        setIsSubscribed(!!subscription);
+      } catch (e) {
+        console.error('Error checking subscription:', e);
+      }
     }
   };
 
   const subscribeUser = async () => {
+    if (typeof Notification === 'undefined' || !('serviceWorker' in navigator)) {
+      alert('As notificações não são suportadas neste navegador/dispositivo.');
+      return false;
+    }
+
     setLoading(true);
     try {
       const registration = await navigator.serviceWorker.ready;
       
-      // Chave Pública VAPID real gerada no passo anterior
-      const publicKey = 'BNBb0hVpgOf4Ph6O2VC19GX3VKmTAqB11Pqipzk-QwgYGpPSxt7HR0_4U36CLk7R1GX3VKmTAqB11Pqipzk-QwgYGpPSxt7HR0_4U36CLk7R1GX3VKmTAqB11Pqipzk-Qw';
-      
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(publicKey)
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
       });
 
       // Salvar no Supabase
@@ -67,9 +75,11 @@ export function usePushNotifications() {
 
       setIsSubscribed(true);
       setPermission('granted');
+      alert('Notificações ativadas com sucesso!');
       return true;
     } catch (error) {
       console.error('Failed to subscribe:', error);
+      alert('Erro ao ativar notificações: ' + error.message);
       return false;
     } finally {
       setLoading(false);
