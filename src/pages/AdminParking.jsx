@@ -243,29 +243,29 @@ function AdminParking() {
 
     return (
         <div className="max-w-7xl mx-auto space-y-10 pb-20">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-4 md:px-0">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-800">Gestão de Vagas</h1>
-                    <p className="text-slate-500 text-sm">Controle de subsolos, proprietários e trocas internas.</p>
+                    <h1 className="text-xl md:text-2xl font-black text-slate-800">Gestão de Vagas</h1>
+                    <p className="text-slate-500 text-xs md:sm">Controle de subsolos, proprietários e trocas internas.</p>
                 </div>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2 md:gap-3">
                     <button
                         onClick={() => setIsSwapOpen(true)}
-                        className="bg-white border border-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2"
+                        className="flex-1 md:flex-none bg-white border border-slate-200 text-slate-700 font-bold px-3 md:px-6 py-2.5 md:py-3 rounded-xl shadow-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-xs md:text-sm"
                     >
-                        <ArrowLeftRight size={18} className="text-primary" /> Trocar Vagas
+                        <ArrowLeftRight size={16} className="text-primary" /> Trocar
                     </button>
                     <button
                         onClick={() => setIsAddEditOpen(true)}
-                        className="bg-white border border-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2"
+                        className="flex-1 md:flex-none bg-white border border-slate-200 text-slate-700 font-bold px-3 md:px-6 py-2.5 md:py-3 rounded-xl shadow-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-xs md:text-sm"
                     >
-                        <Plus size={18} className="text-primary" /> Nova Vaga
+                        <Plus size={16} className="text-primary" /> Nova
                     </button>
                     <button
                         onClick={() => setIsLoterriaOpen(true)}
-                        className="bg-slate-900 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-primary/10 hover:bg-slate-800 transition-all flex items-center gap-2"
+                        className="flex-1 md:flex-none bg-slate-900 text-white font-bold px-3 md:px-6 py-2.5 md:py-3 rounded-xl shadow-lg shadow-primary/10 hover:bg-slate-800 transition-all flex items-center justify-center gap-2 text-xs md:text-sm"
                     >
-                        <Shuffle size={18} className="text-primary" /> Sorteio
+                        <Shuffle size={16} className="text-primary" /> Sorteio
                     </button>
                 </div>
             </header>
@@ -290,41 +290,42 @@ function AdminParking() {
                             <table className="w-full text-left">
                                 <thead>
                                     <tr className="text-[10px] font-black uppercase text-slate-400 border-b border-slate-50">
-                                        <th className="px-6 py-5">Subsolo</th>
-                                        <th className="px-6 py-5">Vaga</th>
-                                        <th className="px-6 py-5">Proprietário (Dona)</th>
-                                        <th className="px-6 py-5">Status / Aluguel</th>
-                                        <th className="px-6 py-5 text-right">Ações</th>
+                                        <th className="px-4 md:px-6 py-4 md:py-5">Sub / Vaga</th>
+                                        <th className="px-4 md:px-6 py-4 md:py-5">Proprietário</th>
+                                        <th className="px-4 md:px-6 py-4 md:py-5 hidden sm:table-cell">Status</th>
+                                        <th className="px-4 md:px-6 py-4 md:py-5 text-right">Ação</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
                                     {vagas.map(v => (
                                         <tr key={v.id} className="text-sm hover:bg-slate-50/50 transition-colors group">
-                                            <td className="px-6 py-4">
-                                                <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase ${v.subsolo === 1 ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}`}>
-                                                    S{v.subsolo}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 font-black text-slate-900 text-lg">#{v.numero}</td>
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 font-bold text-xs">
-                                                        {v.unidade_dona.slice(0, 1)}
-                                                    </div>
-                                                    <span className="font-bold text-slate-700">Unidade {v.unidade_dona}</span>
+                                            <td className="px-4 md:px-6 py-4">
+                                                <div className="flex flex-col md:flex-row md:items-center gap-2">
+                                                    <span className={`w-fit px-2 py-0.5 rounded-md text-[8px] md:text-[10px] font-black uppercase ${v.subsolo === 1 ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}`}>
+                                                        S{v.subsolo}
+                                                    </span>
+                                                    <span className="font-black text-slate-900 text-base md:text-lg">#{v.numero}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4">
+                                            <td className="px-4 md:px-6 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-6 h-6 md:w-8 md:h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 font-bold text-[10px] md:text-xs">
+                                                        {v.unidade_dona.slice(0, 1)}
+                                                    </div>
+                                                    <span className="font-bold text-slate-700 text-xs md:text-sm">Unid. {v.unidade_dona}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-4 md:px-6 py-4 hidden sm:table-cell">
                                                 {v.unidade_alugou ? (
                                                     <div className="flex flex-col">
-                                                        <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Alugada para</span>
-                                                        <span className="font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-lg w-fit">Unid. {v.unidade_alugou}</span>
+                                                        <span className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-0.5">Alugada</span>
+                                                        <span className="font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-lg w-fit text-xs">Unid. {v.unidade_alugou}</span>
                                                     </div>
                                                 ) : (
-                                                    <span className="text-slate-300 font-medium italic">Vaga livre</span>
+                                                    <span className="text-slate-300 font-medium italic text-xs">Vaga livre</span>
                                                 )}
                                             </td>
-                                            <td className="px-6 py-4 text-right">
+                                            <td className="px-4 md:px-6 py-4 text-right">
                                                 <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
                                                     <button onClick={() => openEdit(v)} className="p-2 text-slate-400 hover:text-primary transition-colors">
                                                         <Edit2 size={16} />
@@ -378,11 +379,11 @@ function AdminParking() {
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeAddEdit} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
                         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
-                            <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                            <div className="p-6 md:p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                                 <h2 className="text-xl font-black text-slate-800">{editingVaga ? 'Editar Vaga' : 'Nova Vaga'}</h2>
                                 <button onClick={closeAddEdit} className="text-slate-400 hover:text-slate-600"><X size={24} /></button>
                             </div>
-                            <form onSubmit={handleAddEdit} className="p-8 space-y-6">
+                            <form onSubmit={handleAddEdit} className="p-6 md:p-8 space-y-6">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <label className="text-[10px] font-black uppercase text-slate-400">Número da Vaga</label>

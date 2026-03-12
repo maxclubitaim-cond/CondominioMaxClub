@@ -107,7 +107,7 @@ function AdminAccessHistory() {
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm mb-8 grid grid-cols-1 md:grid-cols-4 gap-4"
+                className="bg-white p-4 md:p-6 rounded-[2rem] border border-slate-100 shadow-sm mb-8 grid grid-cols-1 md:grid-cols-4 gap-4"
             >
                 <div className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -164,10 +164,10 @@ function AdminAccessHistory() {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="text-[10px] font-black uppercase text-slate-400 border-b border-slate-50">
-                                <th className="p-8">Data e Hora</th>
-                                <th className="p-8">Local</th>
-                                <th className="p-8">Unidade</th>
-                                <th className="p-8">Morador</th>
+                                <th className="px-4 md:p-8 py-4 md:py-8">Local</th>
+                                <th className="px-4 md:p-8 py-4 md:py-8">Data/Hora</th>
+                                <th className="px-4 md:p-8 py-4 md:py-8">Unid.</th>
+                                <th className="px-4 md:p-8 py-4 md:py-8 hidden sm:table-cell">Morador</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -184,39 +184,38 @@ function AdminAccessHistory() {
                                         key={reg.id}
                                         className="group hover:bg-slate-50 transition-all font-medium"
                                     >
-                                        <td className="p-8">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-slate-50 rounded-xl flex flex-col items-center justify-center group-hover:bg-white transition-colors">
-                                                    <span className="text-[10px] font-black text-slate-400">
+                                        <td className="px-4 md:p-8 py-4">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0"></div>
+                                                <span className="text-slate-700 font-bold text-xs md:text-sm truncate max-w-[80px] md:max-w-none">{reg.locais?.nome || 'Local'}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:p-8 py-4">
+                                            <div className="flex items-center gap-2 md:gap-3">
+                                                <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-50 rounded-lg flex flex-col items-center justify-center group-hover:bg-white transition-colors shrink-0">
+                                                    <span className="text-[8px] md:text-[10px] font-black text-slate-400">
                                                         {new Date(reg.data_uso).toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase()}
                                                     </span>
-                                                    <span className="text-sm font-black text-slate-700">
+                                                    <span className="text-xs md:text-sm font-black text-slate-700">
                                                         {new Date(reg.data_uso).getDate()}
                                                     </span>
                                                 </div>
                                                 <div>
-                                                    <p className="text-slate-800 text-sm font-bold">
+                                                    <p className="text-slate-800 text-xs md:text-sm font-bold">
                                                         {new Date(reg.data_uso).toLocaleDateString('pt-BR')}
                                                     </p>
-                                                    <p className="text-[10px] text-slate-400 font-black flex items-center gap-1 uppercase">
+                                                    <p className="text-[9px] md:text-[10px] text-slate-400 font-black flex items-center gap-1 uppercase">
                                                         <Clock size={10} /> {new Date(reg.data_uso).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                                                     </p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="p-8">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-2 h-2 rounded-full bg-primary/40"></div>
-                                                <span className="text-slate-700 font-bold">{reg.locais?.nome || 'Local Removido'}</span>
+                                        <td className="px-4 md:p-8 py-4">
+                                            <div className="inline-flex items-center gap-1.5 px-2 md:px-3 py-1 bg-slate-100 rounded-lg">
+                                                <span className="text-slate-700 font-black text-[10px] md:text-sm">{reg.unidade}</span>
                                             </div>
                                         </td>
-                                        <td className="p-8">
-                                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-lg">
-                                                <Hash size={12} className="text-slate-400" />
-                                                <span className="text-slate-700 font-black text-sm">{reg.unidade}</span>
-                                            </div>
-                                        </td>
-                                        <td className="p-8">
+                                        <td className="px-4 md:p-8 py-4 hidden sm:table-cell">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 bg-primary/5 rounded-full flex items-center justify-center text-primary">
                                                     <User size={14} />

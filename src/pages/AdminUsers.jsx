@@ -92,9 +92,9 @@ function AdminUsers() {
     return (
         <div className="max-w-6xl mx-auto space-y-10 pb-20">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                    <h1 className="text-2xl font-black text-slate-800">Controle de Usuários</h1>
-                    <p className="text-slate-500 text-sm font-medium">Gerencie os níveis de acesso e visualize e-mails da equipe.</p>
+                <div className="px-4 md:px-0">
+                    <h1 className="text-xl md:text-2xl font-black text-slate-800">Controle de Usuários</h1>
+                    <p className="text-slate-500 text-xs md:sm font-medium">Gerencie os níveis de acesso e visualize e-mails da equipe.</p>
                 </div>
                 <div className="relative w-full md:w-80">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -113,31 +113,33 @@ function AdminUsers() {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="text-[10px] font-black uppercase text-slate-400 border-b border-slate-50 bg-slate-50/50">
-                                <th className="px-8 py-6">Usuário / Nome</th>
-                                <th className="px-8 py-6">E-mail</th>
-                                <th className="px-8 py-6">Perfil Atual</th>
-                                <th className="px-8 py-6">Alterar Nível</th>
-                                <th className="px-8 py-6 text-right">Ação</th>
+                                <th className="px-4 md:px-8 py-4 md:py-6">Usuário</th>
+                                <th className="px-4 md:px-8 py-4 md:py-6 hidden sm:table-cell">E-mail</th>
+                                <th className="px-4 md:px-8 py-4 md:py-6 hidden md:table-cell">Perfil Atual</th>
+                                <th className="px-4 md:px-8 py-4 md:py-6 text-right">Nível / Ação</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
                             {filteredUsers.map(user => (
                                 <tr key={user.id} className="text-sm hover:bg-slate-50/50 transition-colors group">
-                                    <td className="px-8 py-5">
+                                    <td className="px-4 md:px-8 py-4 md:py-5">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400">
-                                                <UserCircle size={24} />
+                                            <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 shrink-0">
+                                                <UserCircle size={20} className="md:size-24" />
                                             </div>
-                                            <span className="font-bold text-slate-700">{user.nome}</span>
+                                            <div className="flex flex-col">
+                                                <span className="font-bold text-slate-700 text-xs md:text-sm">{user.nome}</span>
+                                                <span className="text-[10px] text-slate-400 font-medium sm:hidden truncate max-w-[100px]">{user.email}</span>
+                                            </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-5 text-slate-500 font-medium">
-                                        <div className="flex items-center gap-2">
+                                    <td className="px-4 md:px-8 py-4 md:py-5 text-slate-500 font-medium hidden sm:table-cell">
+                                        <div className="flex items-center gap-2 text-xs md:text-sm">
                                             <Mail size={14} className="text-slate-300" />
                                             {user.email || 'Não informado'}
                                         </div>
                                     </td>
-                                    <td className="px-8 py-5">
+                                    <td className="px-4 md:px-8 py-4 md:py-5 hidden md:table-cell">
                                         <div className="flex items-center gap-2">
                                             {getIcon(user.perfil)}
                                             <span className={`font-black text-[10px] uppercase tracking-widest ${user.perfil === 'ADM' ? 'text-secondary' :
@@ -147,18 +149,35 @@ function AdminUsers() {
                                             </span>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-5">
-                                        <div className="flex items-center gap-3">
+                                    <td className="px-4 md:px-8 py-4 md:py-5 text-right">
+                                        <div className="flex items-center justify-end gap-2 md:gap-3">
                                             <select
                                                 value={pendingChanges[user.id] || user.perfil}
                                                 onChange={(e) => setPendingChanges({ ...pendingChanges, [user.id]: e.target.value })}
-                                                className={`bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer ${!user.ativo ? 'opacity-50 grayscale' : 'text-slate-600'}`}
+                                                className={`bg-slate-50 border border-slate-200 px-2 md:px-4 py-2 md:py-2.5 rounded-xl text-[10px] md:text-xs font-bold outline-none focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer ${!user.ativo ? 'opacity-50 grayscale' : 'text-slate-600'}`}
                                                 disabled={saving === user.id || !user.ativo}
                                             >
-                                                <option value="OPERADOR">OPERADOR</option>
+                                                <option value="OPERADOR">OP</option>
                                                 <option value="GESTOR">GESTOR</option>
                                                 <option value="ADM">ADM</option>
                                             </select>
+                                            
+                                            <span className="md:hidden">
+                                                {getIcon(user.perfil)}
+                                            </span>
+
+                                            {pendingChanges[user.id] && pendingChanges[user.id] !== user.perfil && (
+                                                <motion.button
+                                                    initial={{ scale: 0.8, opacity: 0 }}
+                                                    animate={{ scale: 1, opacity: 1 }}
+                                                    onClick={() => handleSaveChange(user.id)}
+                                                    disabled={saving === user.id}
+                                                    className="bg-primary text-white font-bold px-3 py-2 rounded-xl shadow-lg shadow-primary/20 hover:opacity-90 transition-all flex items-center gap-2 text-[10px] md:text-xs"
+                                                >
+                                                    {saving === user.id ? <Loader2 className="animate-spin" size={14} /> : <Save size={14} />}
+                                                    <span className="hidden md:inline">Salvar</span>
+                                                </motion.button>
+                                            )}
 
                                             <button
                                                 onClick={() => toggleAtivo(user.id, user.ativo)}
@@ -172,20 +191,6 @@ function AdminUsers() {
                                                 {user.ativo ? <ShieldCheck size={18} /> : <Shield size={18} />}
                                             </button>
                                         </div>
-                                    </td>
-                                    <td className="px-8 py-5 text-right">
-                                        {pendingChanges[user.id] && pendingChanges[user.id] !== user.perfil && (
-                                            <motion.button
-                                                initial={{ scale: 0.8, opacity: 0 }}
-                                                animate={{ scale: 1, opacity: 1 }}
-                                                onClick={() => handleSaveChange(user.id)}
-                                                disabled={saving === user.id}
-                                                className="bg-primary text-white font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:opacity-90 transition-all flex items-center gap-2 text-xs ml-auto"
-                                            >
-                                                {saving === user.id ? <Loader2 className="animate-spin" size={14} /> : <Save size={14} />}
-                                                Salvar
-                                            </motion.button>
-                                        )}
                                     </td>
                                 </tr>
                             ))}

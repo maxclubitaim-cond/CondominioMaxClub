@@ -43,33 +43,33 @@ function AdminVolleyball() {
                 <table className="w-full text-left">
                     <thead>
                         <tr className="bg-slate-50 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                            <th className="px-6 py-4">Morador / Unidade</th>
-                            <th className="px-6 py-4">Data Solicitada</th>
-                            <th className="px-6 py-4">Status de Entrega</th>
-                            <th className="px-6 py-4 text-right">Ações</th>
+                            <th className="px-4 md:px-6 py-4">Morador</th>
+                            <th className="px-4 md:px-6 py-4">Data</th>
+                            <th className="px-4 md:px-6 py-4">Status</th>
+                            <th className="px-4 md:px-6 py-4 text-right">Ação</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50">
                         {reservas.map(res => (
                             <tr key={res.id} className="text-sm">
-                                <td className="px-6 py-4">
-                                    <p className="font-bold text-slate-800">{res.nome}</p>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase">Unid: {res.unidade}</p>
+                                <td className="px-4 md:px-6 py-4">
+                                    <p className="font-bold text-slate-800 text-xs md:text-sm">{res.nome}</p>
+                                    <p className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase">Unid: {res.unidade}</p>
                                 </td>
-                                <td className="px-6 py-4 text-slate-500 font-medium">
+                                <td className="px-4 md:px-6 py-4 text-slate-500 font-medium text-xs md:text-sm">
                                     {new Date(res.data).toLocaleDateString()}
                                 </td>
-                                <td className="px-6 py-4">
+                                <td className="px-4 md:px-6 py-4">
                                     <button
                                         onClick={() => toggleStatus(res.id, res.entregue)}
-                                        className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase flex items-center gap-2 transition-all ${res.entregue ? 'bg-highlight/10 text-highlight' : 'bg-secondary/10 text-secondary'}`}
+                                        className={`px-3 py-1.5 rounded-lg text-[9px] md:text-[10px] font-black uppercase flex items-center gap-2 transition-all ${res.entregue ? 'bg-highlight/10 text-highlight' : 'bg-secondary/10 text-secondary'}`}
                                     >
-                                        {res.entregue ? <><CheckCircle size={14} /> Retirado/Entregue</> : <><Clock size={14} /> Pendente</>}
+                                        {res.entregue ? <><CheckCircle size={12} /> ENTREGUE</> : <><Clock size={12} /> PENDENTE</>}
                                     </button>
                                 </td>
-                                <td className="px-6 py-4 text-right">
-                                    <button onClick={() => deleteReserva(res.id)} className="text-slate-300 hover:text-secondary">
-                                        <Trash2 size={18} />
+                                <td className="px-4 md:px-6 py-4 text-right">
+                                    <button onClick={() => deleteReserva(res.id)} className="text-slate-200 hover:text-secondary p-1">
+                                        <Trash2 className="w-4 h-4 md:w-[18px] md:h-[18px]" />
                                     </button>
                                 </td>
                             </tr>

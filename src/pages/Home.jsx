@@ -90,6 +90,8 @@ function Home() {
         { name: 'Gruvi', android: 'https://play.google.com/store/apps/details?id=app.gruvi', ios: 'https://apps.apple.com/br/app/gruvi/id1561610983' },
         { name: 'Atende', android: 'https://play.google.com/store/apps/details?id=br.com.center.atendePortaria', ios: 'https://apps.apple.com/br/app/atende-portaria-mobile/id1504320653' },
         { name: 'DLock-XP', android: 'https://play.google.com/store/apps/details?id=com.dlock.smart', ios: 'https://apps.apple.com/br/app/dlock-xp/id1610441487' },
+        { name: 'OMO Lavanderia', android: 'https://play.google.com/store/apps/details?id=br.com.taqtile.omolavanderia&hl=pt_BR', ios: 'https://apps.apple.com/br/app/omo-lavanderia/id1462393030' },
+        { name: 'Market4You', android: 'https://play.google.com/store/apps/details?id=br.com.mobile.market4u&hl=pt_BR', ios: 'https://apps.apple.com/br/app/market4u/id1497298079' },
     ];
 
     return (

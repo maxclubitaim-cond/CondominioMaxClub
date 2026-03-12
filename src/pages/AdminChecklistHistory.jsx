@@ -66,12 +66,12 @@ const AdminChecklistHistory = () => {
     return (
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-black text-slate-800 flex items-center gap-2">
-                        <ClipboardCheck className="text-primary" size={28} />
-                        Checklists Salão de Festas
+                <div className="px-4 md:px-0">
+                    <h1 className="text-xl md:text-2xl font-black text-slate-800 flex items-center gap-2">
+                        <ClipboardCheck className="text-primary w-6 h-6 md:w-7 md:h-7" />
+                        Checklists Salão
                     </h1>
-                    <p className="text-slate-500 text-sm font-medium">Histórico de conservação e vistorias</p>
+                    <p className="text-slate-500 text-xs md:sm font-medium">Histórico de vistorias</p>
                 </div>
             </div>
 
@@ -80,10 +80,10 @@ const AdminChecklistHistory = () => {
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
                         type="text"
-                        placeholder="Buscar por unidade..."
+                        placeholder="Buscar unidade..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-12 pr-4 py-4 bg-white border-none rounded-2xl shadow-sm focus:ring-2 focus:ring-primary outline-none font-medium transition-all"
+                        className="w-full pl-12 pr-4 py-3 md:py-4 bg-white border-none rounded-2xl shadow-sm focus:ring-2 focus:ring-primary outline-none font-medium transition-all text-sm"
                     />
                 </div>
                 <div className="relative">
@@ -92,7 +92,7 @@ const AdminChecklistHistory = () => {
                         type="date"
                         value={selectedDate}
                         onChange={(e) => setSelectedDate(e.target.value)}
-                        className="w-full pl-12 pr-4 py-4 bg-white border-none rounded-2xl shadow-sm focus:ring-2 focus:ring-primary outline-none font-medium transition-all"
+                        className="w-full pl-12 pr-4 py-3 md:py-4 bg-white border-none rounded-2xl shadow-sm focus:ring-2 focus:ring-primary outline-none font-medium transition-all text-sm"
                     />
                 </div>
                 <div className="bg-primary/10 p-4 rounded-2xl flex items-center justify-between">
@@ -108,11 +108,11 @@ const AdminChecklistHistory = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-slate-50">
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Data Evento</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Unidade</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Aderência</th>
-                                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Ações</th>
+                            <tr className="bg-slate-50 border-b border-slate-100">
+                                <th className="px-4 md:p-6 py-5 md:py-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">Data</th>
+                                <th className="px-4 md:p-6 py-5 md:py-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">Unidade / Ref.</th>
+                                <th className="px-4 md:p-6 py-5 md:py-8 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden sm:table-cell">Aderência</th>
+                                <th className="px-4 md:p-6 py-5 md:py-8 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Ação</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -123,25 +123,30 @@ const AdminChecklistHistory = () => {
                             ) : (
                                 filteredChecklists.map((item) => (
                                     <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
-                                        <td className="p-6">
-                                            <p className="text-sm font-bold text-slate-700">{formatDate(item.data_evento)}</p>
+                                        <td className="px-4 md:p-6 py-4">
+                                            <p className="text-xs md:text-sm font-bold text-slate-700">{formatDate(item.data_evento)}</p>
                                         </td>
-                                        <td className="p-6">
-                                            <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-black">
-                                                Unid. {item.unidade}
-                                            </span>
+                                        <td className="px-4 md:p-6 py-5 md:py-6">
+                                            <div className="flex items-center gap-2">
+                                                <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded-md text-[9px] md:text-xs font-black">
+                                                    U {item.unidade}
+                                                </span>
+                                                <div className={`inline-flex items-center text-[10px] md:text-xs font-black ${getStatusColor(item.aderencia).split(' ')[0]}`}>
+                                                    {Math.round(item.aderencia)}%
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td className="p-6">
+                                        <td className="px-4 md:p-6 py-4 hidden sm:table-cell">
                                             <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black ${getStatusColor(item.aderencia)}`}>
                                                 {Math.round(item.aderencia)}% Aderente
                                             </div>
                                         </td>
-                                        <td className="p-6 text-right">
+                                        <td className="px-4 md:p-6 py-4 text-right">
                                             <button
                                                 onClick={() => setSelectedChecklist(item)}
-                                                className="p-3 bg-slate-100 text-slate-400 rounded-xl hover:bg-primary hover:text-white transition-all shadow-sm"
+                                                className="p-2.5 md:p-3 bg-slate-100 text-slate-400 rounded-xl hover:bg-primary hover:text-white transition-all shadow-sm"
                                             >
-                                                <Eye size={18} />
+                                                <Eye className="w-4 h-4 md:w-4.5 md:h-4.5" />
                                             </button>
                                         </td>
                                     </tr>

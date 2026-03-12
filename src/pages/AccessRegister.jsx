@@ -12,6 +12,7 @@ function AccessRegister() {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [password, setPassword] = useState(null);
+    const [wifiPassword, setWifiPassword] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -46,6 +47,7 @@ function AccessRegister() {
         if (!error) {
             const local = locais.find(l => l.id === selectedLocal);
             setPassword(local.senha_atual);
+            setWifiPassword(local.wifi_senha);
         }
         setSubmitting(false);
     }
@@ -130,27 +132,42 @@ function AccessRegister() {
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="text-center py-8"
+                            className="text-center py-4"
                         >
-                            <div className="w-20 h-20 bg-highlight/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <CheckCircle className="text-highlight w-10 h-10" />
+                            <div className="w-16 h-16 bg-highlight/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <CheckCircle className="text-highlight w-8 h-8" />
                             </div>
-                            <h2 className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-2">Acesso Liberado</h2>
-                            <p className="text-slate-800 font-bold mb-8">A senha para o local é:</p>
+                            <h2 className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">Acesso Liberado</h2>
+                            <p className="text-slate-800 font-bold mb-6">Confira os dados de acesso:</p>
 
-                            <div className="bg-slate-900 py-6 rounded-3xl mb-8 relative group overflow-hidden">
-                                <div className="relative z-10 text-primary text-5xl font-black tracking-widest">
-                                    {password}
+                            <div className="space-y-4 mb-8">
+                                <div className="bg-slate-900 py-4 rounded-2xl relative group overflow-hidden">
+                                    <div className="text-[10px] font-black uppercase text-primary/50 mb-1">Senha da Porta</div>
+                                    <div className="relative z-10 text-primary text-4xl font-black tracking-widest leading-none">
+                                        {password}
+                                    </div>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 animate-pulse" />
                                 </div>
-                                <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10 animate-pulse" />
+
+                                {wifiPassword && (
+                                    <div className="bg-slate-800 py-4 rounded-2xl relative group overflow-hidden border border-slate-700">
+                                        <div className="text-[10px] font-black uppercase text-primary/50 mb-1">Senha do Wi-Fi</div>
+                                        <div className="relative z-10 text-white text-2xl font-black tracking-widest leading-none">
+                                            {wifiPassword}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
-                            <p className="text-xs text-slate-500 font-medium mb-8">
-                                Por favor, não compartilhe esta senha com pessoas fora do condomínio.
+                            <p className="text-[10px] text-slate-500 font-medium mb-6 px-4">
+                                Por favor, não compartilhe estas senhas com pessoas fora do condomínio.
                             </p>
 
                             <button
-                                onClick={() => setPassword(null)}
+                                onClick={() => {
+                                    setPassword(null);
+                                    setWifiPassword(null);
+                                }}
                                 className="text-primary font-bold text-sm hover:underline"
                             >
                                 Registrar outro acesso

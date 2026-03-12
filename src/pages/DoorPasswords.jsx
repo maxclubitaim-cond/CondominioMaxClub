@@ -11,6 +11,7 @@ function DoorPasswords() {
     const [showAddModal, setShowAddModal] = useState(false);
     const [newLocalName, setNewLocalName] = useState('');
     const [newLocalPassword, setNewLocalPassword] = useState('');
+    const [newLocalWifi, setNewLocalWifi] = useState('');
 
     useEffect(() => {
         fetchLocais();
@@ -46,6 +47,10 @@ function DoorPasswords() {
         setLocais(prev => prev.map(l => l.id === id ? { ...l, senha_atual: novaSenha } : l));
     }
 
+    async function handleUpdateWifi(id, novoWifi) {
+        setLocais(prev => prev.map(l => l.id === id ? { ...l, wifi_senha: novoWifi } : l));
+    }
+
     async function toggleAtivo(id, statusAtual) {
         setLocais(prev => prev.map(l => l.id === id ? { ...l, ativo: !statusAtual } : l));
     }
@@ -59,6 +64,7 @@ function DoorPasswords() {
                 .from('locais')
                 .update({
                     senha_atual: local.senha_atual,
+                    wifi_senha: local.wifi_senha,
                     ativo: local.ativo
                 })
                 .eq('id', local.id)
@@ -84,7 +90,12 @@ function DoorPasswords() {
         const { data, error } = await supabase
             .from('locais')
             .insert([
-                { nome: newLocalName, senha_atual: newLocalPassword, tipo: 'ACESSO' }
+                { 
+                    nome: newLocalName, 
+                    senha_atual: newLocalPassword, 
+                    wifi_senha: newLocalWifi,
+                    tipo: 'ACESSO' 
+                }
             ])
             .select();
 
@@ -93,6 +104,7 @@ function DoorPasswords() {
             setShowAddModal(false);
             setNewLocalName('');
             setNewLocalPassword('');
+            setNewLocalWifi('');
             setMessage('Novo local adicionado!');
             setTimeout(() => setMessage(''), 3000);
         } else {
@@ -204,15 +216,27 @@ function DoorPasswords() {
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Senha de Acesso</label>
-                                <input
-                                    type="text"
-                                    value={local.senha_atual || ''}
-                                    onChange={(e) => handleUpdateSenha(local.id, e.target.value)}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none font-mono font-bold text-slate-700 transition-all text-lg tracking-widest"
-                                    placeholder="----"
-                                />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Senha Porta</label>
+                                    <input
+                                        type="text"
+                                        value={local.senha_atual || ''}
+                                        onChange={(e) => handleUpdateSenha(local.id, e.target.value)}
+                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none font-mono font-bold text-slate-700 transition-all text-sm tracking-widest"
+                                        placeholder="----"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Senha Wi-Fi</label>
+                                    <input
+                                        type="text"
+                                        value={local.wifi_senha || ''}
+                                        onChange={(e) => handleUpdateWifi(local.id, e.target.value)}
+                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none font-medium text-slate-700 transition-all text-sm"
+                                        placeholder="Opcional"
+                                    />
+                                </div>
                             </div>
 
                             {local.hasRecords && (
@@ -269,7 +293,7 @@ function DoorPasswords() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold text-slate-700 mb-2">Senha Inicial</label>
+                                    <label className="block text-sm font-bold text-slate-700 mb-2">Senha Inicial Porta</label>
                                     <input
                                         type="text"
                                         required
@@ -277,6 +301,16 @@ function DoorPasswords() {
                                         onChange={(e) => setNewLocalPassword(e.target.value)}
                                         placeholder="Ex: 5566#"
                                         className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none font-mono font-bold"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 mb-2">Senha Wi-Fi (Opcional)</label>
+                                    <input
+                                        type="text"
+                                        value={newLocalWifi}
+                                        onChange={(e) => setNewLocalWifi(e.target.value)}
+                                        placeholder="Senha da rede local"
+                                        className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none font-medium"
                                     />
                                 </div>
                                 <div className="flex gap-3 pt-2">

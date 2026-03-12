@@ -122,21 +122,21 @@ function AdminCleaning() {
 
     return (
         <div className="max-w-5xl mx-auto space-y-10">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-4 md:px-0">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-800">Controle de Limpeza</h1>
-                    <p className="text-slate-500 text-sm">Registre as atividades de limpeza do condomínio.</p>
+                    <h1 className="text-xl md:text-2xl font-black text-slate-800">Controle de Limpeza</h1>
+                    <p className="text-slate-500 text-xs md:sm">Registre as atividades de limpeza do condomínio.</p>
                 </div>
                 <button
                     onClick={() => setShowLocaisModal(true)}
-                    className="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 font-bold px-6 py-3 rounded-xl hover:bg-slate-50 transition-all shadow-sm"
+                    className="flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-600 font-bold px-6 py-3 rounded-xl hover:bg-slate-50 transition-all shadow-sm text-sm"
                 >
                     <Settings size={18} className="text-primary" />
-                    Gerenciar Locais
+                    Locais
                 </button>
             </header>
 
-            <section className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm transition-all hover:shadow-md">
+            <section className="bg-white p-6 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm transition-all hover:shadow-md mx-4 md:mx-0">
                 <h2 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
                     <Plus className="text-primary" /> Novo Lançamento
                 </h2>
@@ -147,7 +147,7 @@ function AdminCleaning() {
                             required
                             value={selectedLocal}
                             onChange={(e) => setSelectedLocal(e.target.value)}
-                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/20"
+                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 text-sm"
                         >
                             <option value="">Selecione...</option>
                             {locaisLimpeza.filter(l => l.ativo).map(l => (
@@ -156,29 +156,29 @@ function AdminCleaning() {
                         </select>
                     </div>
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Nome do Operador</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Operador</label>
                         <div className="relative">
                             <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 w-4 h-4" />
                             <input
                                 type="text" required
                                 value={operadorNome}
                                 onChange={(e) => setOperadorNome(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/20"
+                                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 text-sm"
                             />
                         </div>
                     </div>
                     <button
                         type="submit"
                         disabled={saving}
-                        className="bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                        className="bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 text-sm"
                     >
                         {saving ? <Loader2 className="animate-spin" /> : <Save size={20} />}
-                        Registrar Limpeza
+                        Registrar
                     </button>
                 </form>
                 {message && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 text-highlight font-bold text-sm flex items-center gap-2">
-                        <CheckCircle size={16} /> {message}
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 text-highlight font-bold text-xs flex items-center gap-2">
+                        <CheckCircle size={14} /> {message}
                     </motion.div>
                 )}
             </section>
@@ -191,22 +191,22 @@ function AdminCleaning() {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="bg-slate-50 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                <th className="px-6 py-4">Local</th>
-                                <th className="px-6 py-4">Data/Hora</th>
-                                <th className="px-6 py-4">Operador</th>
-                                <th className="px-6 py-4 text-right">Ações</th>
+                                <th className="px-4 md:px-6 py-4">Local</th>
+                                <th className="px-4 md:px-6 py-4">Data</th>
+                                <th className="px-4 md:px-6 py-4 hidden sm:table-cell">Operador</th>
+                                <th className="px-4 md:px-6 py-4 text-right">Ação</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
                             {registros.map(reg => (
-                                <tr key={reg.id} className="text-sm">
-                                    <td className="px-6 py-4 font-bold text-slate-700">{reg.locais_limpeza?.nome}</td>
-                                    <td className="px-6 py-4 text-slate-500">
-                                        {new Date(reg.data_limpeza).toLocaleString('pt-BR')}
+                                <tr key={reg.id} className="text-xs md:text-sm">
+                                    <td className="px-4 md:px-6 py-4 font-bold text-slate-700">{reg.locais_limpeza?.nome}</td>
+                                    <td className="px-4 md:px-6 py-4 text-slate-500">
+                                        {new Date(reg.data_limpeza).toLocaleDateString('pt-BR')} <span className="hidden md:inline">{new Date(reg.data_limpeza).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
                                     </td>
-                                    <td className="px-6 py-4 text-slate-500 font-medium">{reg.nome_operador}</td>
-                                    <td className="px-6 py-4 text-right">
-                                        <button onClick={() => deleteRegistro(reg.id)} className="text-slate-300 hover:text-secondary">
+                                    <td className="px-4 md:px-6 py-4 text-slate-500 font-medium hidden sm:table-cell">{reg.nome_operador}</td>
+                                    <td className="px-4 md:px-6 py-4 text-right">
+                                        <button onClick={() => deleteRegistro(reg.id)} className="text-slate-300 hover:text-secondary p-1">
                                             <Trash2 size={16} />
                                         </button>
                                     </td>
