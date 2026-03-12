@@ -226,11 +226,17 @@ function Home() {
                         {/* Estado: Já Inscrito */}
                         {isSubscribed && (
                             <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="mt-4 flex items-center gap-2 text-highlight text-[10px] font-black uppercase tracking-widest"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="mt-8 p-6 bg-highlight/5 border border-highlight/20 rounded-3xl flex items-center gap-4 group"
                             >
-                                <CheckCircle size={14} /> Notificações Ativas
+                                <div className="w-12 h-12 bg-highlight/10 rounded-2xl flex items-center justify-center shadow-sm">
+                                    <CheckCircle className="text-highlight" size={24} />
+                                </div>
+                                <div>
+                                    <h4 className="text-slate-800 font-bold text-sm">Notificações Ativas</h4>
+                                    <p className="text-slate-500 text-[10px] font-medium uppercase tracking-wider">Você receberá todos os avisos em tempo real.</p>
+                                </div>
                             </motion.div>
                         )}
                     </motion.div>

@@ -18,32 +18,57 @@
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
   <script>
-    // Recuperação de Página Branca (Cache Corrompido)
-    setTimeout(() => {
-      if (!document.getElementById('root').hasChildNodes()) {
-        console.warn('App falhou ao carregar. Tentando limpar cache...');
-        const btn = document.createElement('button');
-        btn.innerText = 'App não carregou? Clique para Restaurar';
-        btn.style = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:15px;background:#F2A94A;color:white;border:none;border-radius:8px;font-weight:bold;z-index:9999;cursor:pointer;';
-        btn.onclick = () => {
-          localStorage.clear();
-          navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
-          window.location.reload(true);
-        };
-        document.body.appendChild(btn);
-      }
-    }, 5000);
+    // Recuperação de Página Branca (Auto-Reset)
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const root = document.getElementById('root');
+        if (!root || !root.hasChildNodes() || root.innerHTML.trim() === "") {
+          console.warn('Detecada falha no carregamento. Tentando reset do PWA...');
+          
+          // Se for a primeira falha, tentamos recarregar uma vez limpando tudo
+          if (!sessionStorage.getItem('pwa_reset_attempted')) {
+            sessionStorage.setItem('pwa_reset_attempted', 'true');
+            if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.getRegistrations().then(regs => {
+                for(let reg of regs) reg.unregister();
+                window.location.reload(true);
+              });
+            } else {
+              window.location.reload(true);
+            }
+          } else {
+            // Se falhar de novo, mostramos o botão manual
+            const btn = document.createElement('button');
+            btn.innerHTML = '⚠️ O App não carregou? <br><b>Clique aqui para Restaurar</b>';
+            btn.style = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:20px;background:#EB6049;color:white;border:none;border-radius:16px;font-weight:bold;z-index:9999;cursor:pointer;box-shadow:0 10px 25px rgba(0,0,0,0.2);text-align:center;font-family:sans-serif;';
+            btn.onclick = () => {
+              sessionStorage.removeItem('pwa_reset_attempted');
+              localStorage.clear();
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                  for(let reg of regs) reg.unregister();
+                  setTimeout(() => window.location.reload(true), 500);
+                });
+              } else {
+                window.location.reload(true);
+              }
+            };
+            document.body.appendChild(btn);
+          }
+        }
+      }, 6000);
+    });
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
           .then(reg => {
             console.log('SW Registered!', reg);
-            // Avisar ao SW para atualizar se houver nova versão
             reg.onupdatefound = () => {
               const installingWorker = reg.installing;
               installingWorker.onstatechange = () => {
                 if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // Notifica o usuário de uma nova versão ou recarrega
                   window.location.reload();
                 }
               };
