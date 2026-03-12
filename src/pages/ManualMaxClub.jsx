@@ -245,7 +245,7 @@ function ManualMaxClub() {
                                     <div className="bg-primary/10 border border-primary/20 p-8 rounded-[2.5rem] text-primary">
                                         <div className="flex items-center gap-2 mb-2">
                                             <Info size={18} />
-                                            <h4 className="font-black text-xs uppercase tracking-widest">Taxa de Reserva</h4>
+                                            <h4 className="font-black text-xs uppercase tracking-widest">Taxa de Reserva Salão de Festas</h4>
                                         </div>
                                         <p className="text-sm font-bold leading-relaxed">
                                             R$ 75,00 (5% do salário mínimo) cobrados no boleto. Necessário estar adimplente para reservar.
