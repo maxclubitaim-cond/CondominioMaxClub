@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, Plus, Loader2, Save, Trash2, Calendar, Image as ImageIcon, X, Camera, Upload } from 'lucide-react';
+import { sendPushNotification } from '../services/pushService';
 
 function AdminAvisos() {
     const [avisos, setAvisos] = useState([]);
@@ -83,6 +84,13 @@ function AdminAvisos() {
                 }]);
 
             if (!error) {
+                // Disparar Notificação Push
+                await sendPushNotification({
+                    title: 'Novo Aviso no MaxClub! 📢',
+                    body: titulo,
+                    url: '/'
+                });
+
                 fetchAvisos();
                 setTitulo('');
                 setDescricao('');

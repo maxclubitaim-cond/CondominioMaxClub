@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { Package, Plus, Loader2, Save, Trash2, CheckCircle, Camera, Search, X } from 'lucide-react';
+import { sendPushNotification } from '../services/pushService';
 
 function AdminLostFound() {
     const [items, setItems] = useState([]);
@@ -72,6 +73,13 @@ function AdminLostFound() {
                 imagem_url: publicUrl,
                 registrado_por: user?.id
             }]);
+
+            // Disparar Notificação Push
+            await sendPushNotification({
+                title: 'Novo item nos Achados e Perdidos! 📦',
+                body: `Foi encontrado: ${itemNome}. Confira no app se é seu!`,
+                url: '/achados'
+            });
 
             setItemNome('');
             setImageFile(null);

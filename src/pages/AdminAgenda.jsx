@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import { Calendar, Plus, Save, Trash2, Clock, MapPin, Info, Loader2 } from 'lucide-react';
+import { sendPushNotification } from '../services/pushService';
 
 function AdminAgenda() {
     const [eventos, setEventos] = useState([]);
@@ -45,6 +46,13 @@ function AdminAgenda() {
             }]);
 
         if (!error) {
+            // Disparar Notificação Push
+            await sendPushNotification({
+                title: 'Novo Evento na Agenda! 📅',
+                body: `${titulo} - ${new Date(data).toLocaleDateString('pt-BR')} às ${hora.slice(0, 5)}`,
+                url: '/agenda'
+            });
+
             fetchEventos();
             setTitulo('');
             setData('');
