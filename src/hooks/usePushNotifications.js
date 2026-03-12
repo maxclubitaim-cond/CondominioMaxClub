@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
 // Chave Pública VAPID real e limpa
-const VAPID_PUBLIC_KEY = 'BHAWwcf9lHdKAxyzS2JMk7K-xBSdMxW4MkzYvHIGStrio0xj9qmVpd43lw_Gw__DrMAjknawnp39ovLriJ4mdII'; 
+const VAPID_PUBLIC_KEY = 'BAA1cYTGg1u0VJmVEK4YQ_WExYlH6P__CaD8bvTzkXLeU34q1XNQBRqYW627FdaLgVNKEhSs92tEjUHW6WJuuM8'; 
 
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);

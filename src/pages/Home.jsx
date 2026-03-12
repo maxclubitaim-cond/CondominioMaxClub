@@ -222,6 +222,17 @@ function Home() {
                                 </div>
                             </motion.div>
                         )}
+
+                        {/* Estado: Já Inscrito */}
+                        {isSubscribed && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="mt-4 flex items-center gap-2 text-highlight text-[10px] font-black uppercase tracking-widest"
+                            >
+                                <CheckCircle size={14} /> Notificações Ativas
+                            </motion.div>
+                        )}
                     </motion.div>
 
                     {/* Status Sidebar (Desktop) */}

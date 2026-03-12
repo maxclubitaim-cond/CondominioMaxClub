@@ -18,10 +18,37 @@
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
   <script>
+    // Recuperação de Página Branca (Cache Corrompido)
+    setTimeout(() => {
+      if (!document.getElementById('root').hasChildNodes()) {
+        console.warn('App falhou ao carregar. Tentando limpar cache...');
+        const btn = document.createElement('button');
+        btn.innerText = 'App não carregou? Clique para Restaurar';
+        btn.style = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:15px;background:#F2A94A;color:white;border:none;border-radius:8px;font-weight:bold;z-index:9999;cursor:pointer;';
+        btn.onclick = () => {
+          localStorage.clear();
+          navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+          window.location.reload(true);
+        };
+        document.body.appendChild(btn);
+      }
+    }, 5000);
+
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('SW Registered!', reg))
+          .then(reg => {
+            console.log('SW Registered!', reg);
+            // Avisar ao SW para atualizar se houver nova versão
+            reg.onupdatefound = () => {
+              const installingWorker = reg.installing;
+              installingWorker.onstatechange = () => {
+                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  window.location.reload();
+                }
+              };
+            };
+          })
           .catch(err => console.log('SW Reg error:', err));
       });
     }
