@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Calendar, ChevronLeft, MapPin, Clock, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { parseDate } from '../utils/dateUtils';
 
 function PublicAgenda() {
     const [events, setEvents] = useState([]);
@@ -31,7 +32,7 @@ function PublicAgenda() {
 
     // Agrupar por mês
     const grouped = filteredEvents.reduce((acc, event) => {
-        const date = new Date(event.data);
+        const date = parseDate(event.data);
         const monthYear = date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
         if (!acc[monthYear]) acc[monthYear] = [];
         acc[monthYear].push(event);
@@ -96,7 +97,7 @@ function PublicAgenda() {
                                                     {event.data.split('-')[2]}
                                                 </span>
                                                 <span className="text-[10px] font-black uppercase text-slate-400">
-                                                    {new Date(event.data).toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '')}
+                                                    {parseDate(event.data).toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '')}
                                                 </span>
                                             </div>
 

@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, Plus, Loader2, Save, Trash2, Calendar, Image as ImageIcon, X, Camera, Upload } from 'lucide-react';
 import { sendPushNotification } from '../services/pushService';
+import { formatDate } from '../utils/dateUtils';
 
 function AdminAvisos() {
     const [avisos, setAvisos] = useState([]);
@@ -231,8 +232,8 @@ function AdminAvisos() {
                                     <h3 className="font-bold text-slate-800 mb-2">{aviso.titulo}</h3>
                                     <p className="text-xs text-slate-500 mb-6 line-clamp-2 leading-relaxed">{aviso.descricao}</p>
                                     <div className="flex items-center justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest pt-4 border-t border-slate-50">
-                                        <span>{new Date(aviso.created_at).toLocaleDateString()}</span>
-                                        {aviso.data_fim && <span className="text-secondary bg-secondary/10 px-2 py-0.5 rounded-md">Expira: {new Date(aviso.data_fim).toLocaleDateString()}</span>}
+                                        <span>{new Date(aviso.created_at).toLocaleDateString('pt-BR')}</span>
+                                        {aviso.data_fim && <span className="text-secondary bg-secondary/10 px-2 py-0.5 rounded-md">Expira: {formatDate(aviso.data_fim)}</span>}
                                     </div>
                                 </div>
                             </div>

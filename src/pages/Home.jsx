@@ -25,6 +25,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { usePushNotifications } from '../hooks/usePushNotifications';
 import logo from '../assets/logo.png';
+import { formatDate } from '../utils/dateUtils';
 
 function Home() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -283,7 +284,7 @@ function Home() {
                                 {agenda.length > 0 ? agenda.map((evento) => (
                                     <div key={evento.id} className="flex gap-3">
                                         <div className="text-primary font-black text-xs pt-1">
-                                            {new Date(evento.data).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
+                                            {formatDate(evento.data).slice(0, 5)}
                                         </div>
                                         <div>
                                             <p className="text-xs font-bold leading-tight">{evento.titulo}</p>

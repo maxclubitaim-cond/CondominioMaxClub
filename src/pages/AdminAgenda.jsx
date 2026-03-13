@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import { Calendar, Plus, Save, Trash2, Clock, MapPin, Info, Loader2 } from 'lucide-react';
 import { sendPushNotification } from '../services/pushService';
+import { formatDate, getMonthName, getDayOfMonth } from '../utils/dateUtils';
 
 function AdminAgenda() {
     const [eventos, setEventos] = useState([]);
@@ -50,7 +51,7 @@ function AdminAgenda() {
             // Disparar Notificação Push
             const pushResult = await sendPushNotification({
                 title: 'Novo Evento na Agenda! 📅',
-                body: `${titulo} - ${new Date(data).toLocaleDateString('pt-BR')} às ${hora.slice(0, 5)}`,
+                body: `${titulo} - ${formatDate(data)} às ${hora.slice(0, 5)}`,
                 url: '/agenda'
             });
 
@@ -131,8 +132,8 @@ function AdminAgenda() {
                             <div key={ev.id} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group">
                                 <div className="flex items-center gap-6">
                                     <div className="text-center bg-primary/10 p-3 rounded-xl min-w-[70px]">
-                                        <p className="text-[10px] font-black text-primary uppercase">{new Date(ev.data).toLocaleDateString('pt-BR', { month: 'short' })}</p>
-                                        <p className="text-xl font-black text-primary leading-none">{new Date(ev.data).getDate() + 1}</p>
+                                        <p className="text-[10px] font-black text-primary uppercase">{getMonthName(ev.data)}</p>
+                                        <p className="text-xl font-black text-primary leading-none">{getDayOfMonth(ev.data)}</p>
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-slate-800">{ev.titulo}</h3>

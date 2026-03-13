@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ClipboardList, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from '../utils/dateUtils';
 
 function CleaningHistory() {
     const [registros, setRegistros] = useState([]);
@@ -72,7 +73,7 @@ function CleaningHistory() {
                                             {new Date(reg.data_limpeza).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                                         </td>
                                         <td className="px-8 py-6 text-primary font-bold">
-                                            {new Date(reg.proxima_limpeza).toLocaleDateString('pt-BR')}
+                                            {formatDate(reg.proxima_limpeza)}
                                         </td>
                                         <td className="px-8 py-6">
                                             <span className="px-3 py-1 bg-highlight/10 text-highlight text-[10px] font-black rounded-lg uppercase">Realizada</span>
