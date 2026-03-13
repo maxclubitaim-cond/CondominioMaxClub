@@ -59,6 +59,7 @@ function AdminLostFound() {
     async function handleAdd(e) {
         e.preventDefault();
         setSaving(true);
+        let notifyMessage = '';
 
         try {
             let publicUrl = null;
@@ -75,12 +76,19 @@ function AdminLostFound() {
             }]);
 
             // Disparar Notificação Push
-            await sendPushNotification({
+            const pushResult = await sendPushNotification({
                 title: 'Novo item nos Achados e Perdidos! 📦',
                 body: `Foi encontrado: ${itemNome}. Confira no app se é seu!`,
                 url: '/achados'
             });
 
+            if (pushResult.success) {
+                notifyMessage = `Item registrado e enviado para ${pushResult.count} dispositivos!`;
+            } else {
+                notifyMessage = 'Item registrado, mas houve erro no envio push.';
+            }
+
+            alert(notifyMessage);
             setItemNome('');
             setImageFile(null);
             setImagePreview(null);

@@ -31,6 +31,7 @@ function AdminAgenda() {
     async function handleSubmit(e) {
         e.preventDefault();
         setSaving(true);
+        let notifyMessage = '';
 
         const { data: { user } } = await supabase.auth.getUser();
 
@@ -47,12 +48,19 @@ function AdminAgenda() {
 
         if (!error) {
             // Disparar Notificação Push
-            await sendPushNotification({
+            const pushResult = await sendPushNotification({
                 title: 'Novo Evento na Agenda! 📅',
                 body: `${titulo} - ${new Date(data).toLocaleDateString('pt-BR')} às ${hora.slice(0, 5)}`,
                 url: '/agenda'
             });
 
+            if (pushResult.success) {
+                notifyMessage = `Evento criado e enviado para ${pushResult.count} dispositivos!`;
+            } else {
+                notifyMessage = 'Evento criado, mas houve erro no envio push.';
+            }
+
+            alert(notifyMessage);
             fetchEventos();
             setTitulo('');
             setData('');
