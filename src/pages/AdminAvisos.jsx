@@ -64,6 +64,7 @@ function AdminAvisos() {
     async function handleSubmit(e) {
         e.preventDefault();
         setSaving(true);
+        let notifyMessage = '';
 
         try {
             let publicUrl = null;
@@ -85,12 +86,19 @@ function AdminAvisos() {
 
             if (!error) {
                 // Disparar Notificação Push
-                await sendPushNotification({
+                const pushResult = await sendPushNotification({
                     title: 'Novo Aviso no MaxClub! 📢',
                     body: titulo,
                     url: '/'
                 });
 
+                if (pushResult.success) {
+                    notifyMessage = `Aviso criado e enviado para ${pushResult.count} dispositivos!`;
+                } else {
+                    notifyMessage = 'Aviso criado, mas houve erro no envio push.';
+                }
+
+                alert(notifyMessage);
                 fetchAvisos();
                 setTitulo('');
                 setDescricao('');

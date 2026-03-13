@@ -26,9 +26,15 @@ export default async function handler(req, res) {
     const payload = JSON.stringify(notification);
 
     const results = await Promise.allSettled(
-        subscriptions.map(sub => 
-            webpush.sendNotification(sub.subscription, payload)
-        )
+        subscriptions.map(async (sub) => {
+            try {
+                await webpush.sendNotification(sub.subscription, payload);
+                return { success: true };
+            } catch (error) {
+                console.error(`Erro ao enviar para dispositivo:`, sub.device_info, error.message);
+                throw error;
+            }
+        })
     );
 
     const successCount = results.filter(r => r.status === 'fulfilled').length;
