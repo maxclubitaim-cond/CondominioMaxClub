@@ -1,4 +1,4 @@
-const CACHE_NAME = 'maxclub-v3-network-first';
+const CACHE_NAME = 'maxclub-v4-realtime-data';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -33,6 +33,13 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
+  // EXCEÇÃO: Não cachear chamadas de API (Supabase ou Vercel Functions)
+  // Isso garante que dados do dashboard (como senhas) sejam sempre reais.
+  if (url.hostname.includes('supabase.co') || url.pathname.startsWith('/api/')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   // Para o HTML principal ou a raiz, tentamos sempre a rede primeiro
   if (event.request.mode === 'navigate' || url.pathname === '/') {
     event.respondWith(
@@ -42,7 +49,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Para o restante, usamos Stale-While-Revalidate
+  // Para o restante (assets estáticos), usamos Stale-While-Revalidate
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       const fetchPromise = fetch(event.request).then((networkResponse) => {
