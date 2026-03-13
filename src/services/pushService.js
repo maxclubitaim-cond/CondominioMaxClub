@@ -29,18 +29,27 @@ export async function sendPushNotification(notification) {
 
         console.log(`PushService: Disparando para ${subscriptions.length} dispositivos.`);
 
-        // 2. Chamar a Edge Function (ou o script configurado)
-        // Nota: Por enquanto, como estamos em fase de desenvolvimento, 
-        // vamos usar a mesma lógica que validamos no script Node,
-        // mas integrada ao fluxo de criação.
-        
-        // No mundo ideal/produção, usaríamos:
-        // await supabase.functions.invoke('send-push', { body: { notification, subscriptions } });
+        // 2. Chamar a Vercel Function (ou Edge Function)
+        const response = await fetch('/api/send-push', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                notification,
+                subscriptions
+            })
+        });
 
-        // Backup visual/log para homologação
-        console.log('PushService: Simulação de disparo concluída com sucesso.');
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || 'Falha ao processar disparos no servidor');
+        }
+
+        console.log('PushService: Disparo real concluído:', result);
         
-        return { success: true, count: subscriptions.length };
+        return { success: true, count: result.count };
     } catch (err) {
         console.error('PushService: Erro inesperado:', err);
         return { success: false, error: err };
