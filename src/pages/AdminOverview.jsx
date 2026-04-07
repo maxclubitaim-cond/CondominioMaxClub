@@ -13,9 +13,14 @@ import {
     Clock,
     Wrench,
     Shield,
-    ClipboardCheck
+    ClipboardCheck,
+    Ticket,
+    FileDown,
+    Printer
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import DateSelectorModal from '../components/DateSelectorModal';
+import { PdfService } from '../services/PdfService';
 
 function AdminOverview() {
     const [stats, setStats] = useState({
@@ -25,12 +30,17 @@ function AdminOverview() {
         achados: 0,
         eficienciaLimpeza: 0,
         manutencoesMes: 0,
-        totalAcessos: 0
+        totalAcessos: 0,
+        pulseirasPendentes: 0,
+        totalChecklist: 0,
+        aderenciaChecklist: 0
     });
     const [proximosEventos, setProximosEventos] = useState([]);
     const [voleiPendente, setVoleiPendente] = useState([]);
     const [limpezaCritica, setLimpezaCritica] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [exportLoading, setExportLoading] = useState(false);
+    const [modalConfig, setModalConfig] = useState({ open: false, type: '', title: '' });
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -117,6 +127,12 @@ function AdminOverview() {
                 .from('manutencao_registros')
                 .select('*', { count: 'exact', head: true })
                 .gte('data_manutencao', inicioMes.toISOString());
+            
+            // 8. Pulseiras Pendentes
+            const { count: countPulseiras } = await supabase
+                .from('solicitacoes_pulseiras')
+                .select('*', { count: 'exact', head: true })
+                .eq('status', 'PENDENTE');
 
             // 8. Total de Acessos (Opcional, se existir a tabela)
             let countAcessos = 0;
@@ -145,7 +161,8 @@ function AdminOverview() {
                 manutencoesMes: countManutencoes || 0,
                 totalAcessos: countAcessos,
                 totalChecklist: totalChecklists,
-                aderenciaChecklist: aderenciaMedia
+                aderenciaChecklist: aderenciaMedia,
+                pulseirasPendentes: countPulseiras || 0
             });
             setProximosEventos(dataAgenda || []);
             setVoleiPendente(dataVolei || []);
@@ -154,6 +171,56 @@ function AdminOverview() {
             console.error('Erro ao buscar dados do dashboard:', error);
         } finally {
             setLoading(false);
+        }
+    }
+
+    async function handleExportConfirm(start, end) {
+        setExportLoading(true);
+        try {
+            let data = [];
+            let tableName = '';
+            let dateField = 'created_at';
+
+            switch (modalConfig.type) {
+                case 'limpeza':
+                    tableName = 'limpeza_registros';
+                    dateField = 'data_limpeza';
+                    break;
+                case 'pulseiras':
+                    tableName = 'solicitacoes_pulseiras';
+                    dateField = 'created_at';
+                    break;
+                case 'sugestoes':
+                    tableName = 'sugestoes';
+                    dateField = 'created_at';
+                    break;
+                case 'checklist':
+                    tableName = 'salao_checklist';
+                    dateField = 'created_at';
+                    break;
+                case 'manutencao':
+                    tableName = 'manutencao_registros';
+                    dateField = 'data_manutencao';
+                    break;
+                default:
+                    return;
+            }
+
+            const { data: reportData, error } = await supabase
+                .from(tableName)
+                .select('*')
+                .gte(dateField, `${start}T00:00:00`)
+                .lte(dateField, `${end}T23:59:59`);
+
+            if (error) throw error;
+
+            await PdfService.generateModuleReport(modalConfig.title, reportData || [], { start, end });
+            setModalConfig({ ...modalConfig, open: false });
+        } catch (error) {
+            console.error('Erro ao exportar PDF:', error);
+            alert('Falha ao gerar relatório. Verifique os dados no período selecionado.');
+        } finally {
+            setExportLoading(false);
         }
     }
 
@@ -188,8 +255,10 @@ function AdminOverview() {
             className="space-y-10"
         >
             <motion.header variants={itemVariants}>
-                <h1 className="text-3xl font-black text-slate-800">Olá, Gestor!</h1>
-                <p className="text-slate-500 font-medium">Aqui está o que está acontecendo no MaxClub Itaim hoje.</p>
+                <div className="flex flex-col">
+                    <h1 className="text-3xl md:text-5xl font-bold text-slate-900 tracking-tight mb-2">Painel de Métricas</h1>
+                    <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Gestão Inteligente MaxClub Itaim</p>
+                </div>
             </motion.header>
 
             {/* Grid de KPIs */}
@@ -208,6 +277,7 @@ function AdminOverview() {
                     subValue={`${stats.sugestoesNaoLidas} não lidas`}
                     color="bg-amber-500"
                     onClick={() => navigate('/dashboard/sugestoes')}
+                    onExport={() => setModalConfig({ open: true, type: 'sugestoes', title: 'Relatório de Sugestões' })}
                 />
                 <KPICard
                     icon={<Package className="text-emerald-500" />}
@@ -223,6 +293,7 @@ function AdminOverview() {
                     subValue="Últimos 7 dias"
                     color="bg-indigo-500"
                     onClick={() => navigate('/dashboard/limpeza')}
+                    onExport={() => setModalConfig({ open: true, type: 'limpeza', title: 'Relatório de Limpeza' })}
                 />
                 <KPICard
                     icon={<Wrench className="text-slate-500" />}
@@ -231,6 +302,7 @@ function AdminOverview() {
                     subValue="Neste mês"
                     color="bg-slate-500"
                     onClick={() => navigate('/dashboard/manutencao')}
+                    onExport={() => setModalConfig({ open: true, type: 'manutencao', title: 'Registros de Manutenção' })}
                 />
                 <KPICard
                     icon={<Shield className="text-rose-500" />}
@@ -247,8 +319,26 @@ function AdminOverview() {
                     subValue={`${stats.aderenciaChecklist}% Aderência`}
                     color="bg-emerald-600"
                     onClick={() => navigate('/dashboard/checklist-salao')}
+                    onExport={() => setModalConfig({ open: true, type: 'checklist', title: 'Checklists Salão de Festas' })}
+                />
+                <KPICard
+                    icon={<Ticket className="text-orange-500" />}
+                    label="Pulseiras Piscina"
+                    value={stats.pulseirasPendentes}
+                    subValue="Pendentes"
+                    color="bg-orange-500"
+                    onClick={() => navigate('/dashboard/pulseiras')}
+                    onExport={() => setModalConfig({ open: true, type: 'pulseiras', title: 'Solicitações de Pulseiras' })}
                 />
             </motion.div>
+
+            <DateSelectorModal 
+                isOpen={modalConfig.open}
+                onClose={() => setModalConfig({ ...modalConfig, open: false })}
+                onConfirm={handleExportConfirm}
+                title={modalConfig.title}
+                loading={exportLoading}
+            />
 
             {/* Alerta de Limpeza Crítica */}
             {limpezaCritica.length > 0 && (
@@ -261,7 +351,7 @@ function AdminOverview() {
                             <Clock size={24} />
                         </div>
                         <div>
-                            <h4 className="text-secondary font-black text-lg">Atenção na Limpeza!</h4>
+                            <h4 className="text-secondary font-bold text-lg">Atenção na Limpeza!</h4>
                             <p className="text-slate-500 text-sm font-medium">
                                 Os locais abaixo tiveram menos de 2 limpezas nos últimos 7 dias:
                             </p>
@@ -291,11 +381,11 @@ function AdminOverview() {
                             <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
                                 <Calendar size={20} />
                             </div>
-                            <h2 className="text-xl font-black text-slate-800">Spoiler da Agenda</h2>
+                            <h2 className="text-xl font-bold text-slate-800">Spoiler da Agenda</h2>
                         </div>
                         <button
                             onClick={() => navigate('/dashboard/agenda')}
-                            className="text-xs font-black uppercase tracking-widest text-primary hover:underline"
+                            className="text-xs font-bold uppercase tracking-widest text-primary hover:underline"
                         >
                             Ver Tudo
                         </button>
@@ -307,10 +397,10 @@ function AdminOverview() {
                                     <div key={evento.id} className="group p-4 rounded-2xl hover:bg-slate-50 transition-all flex items-center justify-between border border-transparent hover:border-slate-100">
                                         <div className="flex items-center gap-4">
                                             <div className="text-center min-w-[50px]">
-                                                <p className="text-[10px] font-black uppercase text-slate-400">
+                                                <p className="text-[10px] font-bold uppercase text-slate-400">
                                                     {new Date(evento.data).toLocaleDateString('pt-BR', { month: 'short' })}
                                                 </p>
-                                                <p className="text-lg font-black text-slate-700">
+                                                <p className="text-lg font-bold text-slate-700">
                                                     {new Date(evento.data).getDate()}
                                                 </p>
                                             </div>
@@ -342,9 +432,9 @@ function AdminOverview() {
                             <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-500">
                                 <Trophy size={20} />
                             </div>
-                            <h2 className="text-xl font-black text-slate-800">Rede de Vôlei</h2>
+                            <h2 className="text-xl font-bold text-slate-800">Rede de Vôlei</h2>
                         </div>
-                        <span className="px-3 py-1 bg-amber-100 text-amber-700 text-[10px] font-black rounded-full uppercase">
+                        <span className="px-3 py-1 bg-amber-100 text-amber-700 text-[10px] font-bold rounded-full uppercase">
                             Pendentes: {voleiPendente.length}
                         </span>
                     </div>
@@ -353,7 +443,7 @@ function AdminOverview() {
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left">
                                     <thead>
-                                        <tr className="text-[10px] font-black uppercase text-slate-400 border-b border-slate-50">
+                                        <tr className="text-[10px] font-bold uppercase text-slate-400 border-b border-slate-50">
                                             <th className="pb-4">Unidade</th>
                                             <th className="pb-4">Morador</th>
                                             <th className="pb-4">Data</th>
@@ -363,7 +453,7 @@ function AdminOverview() {
                                     <tbody className="divide-y divide-slate-50">
                                         {voleiPendente.map(reserva => (
                                             <tr key={reserva.id} className="group hover:bg-slate-50 transition-all">
-                                                <td className="py-4 font-black text-slate-800">{reserva.unidade}</td>
+                                                <td className="py-4 font-bold text-slate-800">{reserva.unidade}</td>
                                                 <td className="py-4 text-sm text-slate-600 font-medium">{reserva.nome}</td>
                                                 <td className="py-4 text-sm text-slate-500">
                                                     {new Date(reserva.data).toLocaleDateString('pt-BR')}
@@ -398,30 +488,52 @@ function AdminOverview() {
     );
 }
 
-function KPICard({ icon, label, value, subValue, color, onClick }) {
+function KPICard({ icon, label, value, subValue, color, onClick, onExport }) {
     return (
-        <motion.button
+        <motion.div
             whileHover={{ y: -5 }}
-            onClick={onClick}
-            className={`bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm text-left group transition-all hover:shadow-xl w-full flex flex-col justify-between ${onClick ? 'cursor-pointer' : 'cursor-default'}`}
+            className={`bg-white p-8 rounded-3xl border border-slate-100 shadow-sm text-left group transition-all hover:shadow-md hover:border-primary/20 w-full flex flex-col justify-between relative overflow-hidden`}
         >
-            <div className="flex justify-between items-start mb-6">
-                <div className="p-3 bg-slate-50 rounded-2xl group-hover:scale-110 transition-transform">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-full -mr-16 -mt-16 group-hover:bg-primary/5 transition-colors" />
+            
+            <div className="flex justify-between items-start mb-8 relative z-10">
+                <div onClick={onClick} className={`p-4 rounded-2xl ${color.replace('bg-', 'bg-opacity-10 ')} transition-all cursor-pointer`}>
                     {icon}
                 </div>
-                {onClick && <ChevronRight size={16} className="text-slate-200 group-hover:text-primary transition-all" />}
-            </div>
-            <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{label}</p>
-                <div className="flex items-baseline gap-2">
-                    <h3 className="text-3xl font-black text-slate-800">{value}</h3>
-                    {subValue && <span className="text-[10px] font-bold text-slate-400 uppercase">{subValue}</span>}
+                <div className="flex items-center gap-2">
+                    {onExport && (
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); onExport(); }}
+                            className="p-2 text-slate-300 hover:text-primary hover:bg-primary/5 rounded-lg transition-all"
+                            title="Exportar Auditoria PDF"
+                        >
+                            <FileDown size={18} />
+                        </button>
+                    )}
+                    {onClick && (
+                        <button onClick={onClick} className="p-2 text-slate-300 hover:text-primary transition-all">
+                            <ChevronRight size={18} />
+                        </button>
+                    )}
                 </div>
             </div>
-            <div className={`mt-6 h-1.5 w-full rounded-full bg-slate-100 overflow-hidden`}>
-                <div className={`h-full ${color} w-2/3 opacity-20`} />
+            
+            <div className="relative z-10 cursor-pointer" onClick={onClick}>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2 group-hover:text-slate-500 transition-colors">{label}</p>
+                <div className="flex items-baseline gap-2">
+                    <h3 className="text-4xl font-bold text-slate-900 tracking-tight">{value}</h3>
+                    {subValue && <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{subValue}</span>}
+                </div>
             </div>
-        </motion.button>
+
+            <div className={`mt-8 h-1 w-full rounded-full bg-slate-50 overflow-hidden relative z-10`}>
+                <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: '100%' }}
+                    className={`h-full ${color} opacity-20`} 
+                />
+            </div>
+        </motion.div>
     );
 }
 

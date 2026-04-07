@@ -98,7 +98,7 @@ function AdminAccessHistory() {
                 >
                     <ArrowLeft size={16} /> Voltar ao Painel
                 </button>
-                <h1 className="text-3xl font-black text-slate-800">Histórico de Acessos</h1>
+                <h1 className="text-3xl font-bold text-slate-800">Histórico de Acessos</h1>
                 <p className="text-slate-500 font-medium">Monitore quem utilizou as senhas de acesso do condomínio.</p>
             </motion.div>
 

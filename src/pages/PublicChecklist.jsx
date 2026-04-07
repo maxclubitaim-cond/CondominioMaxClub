@@ -142,7 +142,7 @@ const PublicChecklist = () => {
                     <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
                         <CheckCircle2 size={40} />
                     </div>
-                    <h2 className="text-2xl font-black text-slate-800 mb-2">Checklist Enviado!</h2>
+                    <h2 className="text-2xl font-bold text-slate-800 mb-2">Checklist Enviado!</h2>
                     <p className="text-slate-500 mb-8 leading-relaxed">
                         Obrigado por ajudar na gestão do nosso Salão de Festas. Sua contribuição é fundamental para manter o espaço impecável.
                     </p>
@@ -164,7 +164,7 @@ const PublicChecklist = () => {
                     <div className="inline-flex items-center justify-center p-3 bg-primary/10 text-primary rounded-2xl mb-4">
                         <ClipboardCheck size={32} />
                     </div>
-                    <h1 className="text-3xl font-black text-slate-900">Checklist Salão de Festas</h1>
+                    <h1 className="text-3xl font-bold text-slate-900">Checklist Salão de Festas</h1>
                     <p className="text-slate-500 mt-2 font-medium">Gestão e Melhoria Contínua - MaxClub Itaim</p>
                 </div>
 
@@ -172,12 +172,12 @@ const PublicChecklist = () => {
                     {/* Dados do Evento */}
                     <div className="bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden relative">
                         <div className="absolute top-0 left-0 w-2 h-full bg-primary" />
-                        <h3 className="text-lg font-black text-slate-800 mb-6 flex items-center gap-2">
+                        <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
                             <AlertCircle size={20} className="text-primary" /> Dados do Evento
                         </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Sua Unidade</label>
+                                <label className="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">Sua Unidade</label>
                                 <input
                                     type="text"
                                     required
@@ -188,7 +188,7 @@ const PublicChecklist = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Data do Evento</label>
+                                <label className="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">Data do Evento</label>
                                 <input
                                     type="date"
                                     required
@@ -218,7 +218,7 @@ const PublicChecklist = () => {
                                                 key={opcao}
                                                 type="button"
                                                 onClick={() => handleResposta(pergunta, index, opcao)}
-                                                className={`flex-1 py-3 rounded-xl font-black text-xs uppercase transition-all ${respostas[pergunta] === opcao
+                                                className={`flex-1 py-3 rounded-xl font-bold text-xs uppercase transition-all ${respostas[pergunta] === opcao
                                                     ? opcao === 'Ruim' ? 'bg-rose-500 text-white shadow-lg shadow-rose-200' :
                                                         opcao === 'Regular' ? 'bg-amber-500 text-white shadow-lg shadow-amber-200' :
                                                             'bg-emerald-500 text-white shadow-lg shadow-emerald-200'
@@ -241,7 +241,7 @@ const PublicChecklist = () => {
                                             className="bg-rose-50 border-t border-rose-100 p-6 space-y-4"
                                         >
                                             <div>
-                                                <label className="block text-[10px] font-black text-rose-500 uppercase flex items-center gap-2 mb-2">
+                                                <label className="block text-[10px] font-bold text-rose-500 uppercase flex items-center gap-2 mb-2">
                                                     <MessageSquare size={14} /> Relato da Ocorrência
                                                 </label>
                                                 <textarea
@@ -254,7 +254,7 @@ const PublicChecklist = () => {
                                             </div>
 
                                             <div>
-                                                <label className="block text-[10px] font-black text-rose-500 uppercase flex items-center gap-2 mb-2">
+                                                <label className="block text-[10px] font-bold text-rose-500 uppercase flex items-center gap-2 mb-2">
                                                     <Camera size={14} /> Foto da Irregularidade
                                                 </label>
                                                 <div className="flex gap-4 items-center">

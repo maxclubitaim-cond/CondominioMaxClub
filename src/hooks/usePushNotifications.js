@@ -1,95 +1,78 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
-// Chave Pública VAPID real e limpa
-const VAPID_PUBLIC_KEY = 'BAA1cYTGg1u0VJmVEK4YQ_WExYlH6P__CaD8bvTzkXLeU34q1XNQBRqYW627FdaLgVNKEhSs92tEjUHW6WJuuM8'; 
-
-function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding)
-    .replace(/\-/g, '+')
-    .replace(/_/g, '/');
-
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-}
+const VAPID_PUBLIC_KEY = 'BAU5mek47xtesYPESKQefbCsRrVfvjYbj2fgvFziMXZD3BQyY7NAU-N0wipMXw3YIW0RDPGCZftCh-xIPiZYdxI';
 
 export function usePushNotifications() {
-  const [permission, setPermission] = useState(() => {
-    return typeof Notification !== 'undefined' ? Notification.permission : 'default';
-  });
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [loading, setLoading] = useState(false);
+    const [permission, setPermission] = useState(Notification.permission);
+    const [subscribing, setSubscribing] = useState(false);
 
-  useEffect(() => {
-    checkSubscription();
-  }, []);
+    /**
+     * Converte a chave VAPID para Uint8Array para o pushManager
+     */
+    function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+            .replace(/\-/g, '+')
+            .replace(/_/g, '/');
 
-  const checkSubscription = async () => {
-    if ('serviceWorker' in navigator && typeof Notification !== 'undefined') {
-      try {
-        const registration = await navigator.serviceWorker.ready;
-        const subscription = await registration.pushManager.getSubscription();
-        setIsSubscribed(!!subscription);
-      } catch (e) {
-        console.error('Error checking subscription:', e);
-      }
-    }
-  };
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
 
-  const subscribeUser = async () => {
-    if (typeof Notification === 'undefined' || !('serviceWorker' in navigator)) {
-      alert('As notificações não são suportadas neste navegador/dispositivo.');
-      return false;
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
     }
 
-    setLoading(true);
-    try {
-      const registration = await navigator.serviceWorker.ready;
-      
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-      });
+    /**
+     * Solicita permissão e registra o dispositivo
+     */
+    async function subscribeUser() {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            console.warn('Push não suportado neste navegador.');
+            return;
+        }
 
-      // Salvar no Supabase
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      const { error } = await supabase
-        .from('pwa_subscriptions')
-        .insert({
-          user_id: user?.id || null,
-          subscription: subscription.toJSON(),
-          device_info: {
-            userAgent: navigator.userAgent,
-            platform: navigator.platform
-          }
-        });
+        setSubscribing(true);
+        try {
+            const result = await Notification.requestPermission();
+            setPermission(result);
 
-      if (error) throw error;
+            if (result === 'granted') {
+                const registration = await navigator.serviceWorker.ready;
+                
+                // Pegar ou criar a subscrição
+                let subscription = await registration.pushManager.getSubscription();
+                
+                if (!subscription) {
+                    subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+                    });
+                }
 
-      setIsSubscribed(true);
-      setPermission('granted');
-      alert('Notificações ativadas com sucesso!');
-      return true;
-    } catch (error) {
-      console.error('Failed to subscribe:', error);
-      alert('Erro ao ativar notificações: ' + error.message);
-      return false;
-    } finally {
-      setLoading(false);
+                // Salvar no Supabase
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    const { error } = await supabase
+                        .from('push_subscriptions')
+                        .upsert({
+                            user_id: user.id,
+                            subscription: subscription.toJSON(),
+                            user_agent: navigator.userAgent
+                        }, { onConflict: 'user_id, subscription' });
+
+                    if (error) throw error;
+                    console.log('Subscrição WebPush registrada com sucesso.');
+                }
+            }
+        } catch (error) {
+            console.error('Erro ao subscrever WebPush:', error);
+        } finally {
+            setSubscribing(false);
+        }
     }
-  };
 
-  return {
-    permission,
-    isSubscribed,
-    loading,
-    subscribeUser
-  };
+    return { permission, subscribeUser, subscribing };
 }

@@ -39,13 +39,13 @@ function Suggestions() {
                     <ArrowLeft size={16} /> Voltar para Início
                 </button>
 
-                <div className="bg-white p-10 rounded-[3rem] shadow-premium border border-slate-100">
+                <div className="bg-white p-10 rounded-3xl shadow-sm border border-slate-100">
                     <div className="flex items-center gap-4 mb-10">
-                        <div className="w-14 h-14 bg-secondary/10 rounded-2xl flex items-center justify-center">
-                            <MessageSquare className="text-secondary w-7 h-7" />
+                        <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center">
+                            <MessageSquare className="text-primary w-7 h-7" />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-black text-slate-800">Sugestões</h1>
+                            <h1 className="text-3xl font-bold text-slate-900">Sugestões</h1>
                             <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Melhorias no MaxClub</p>
                         </div>
                     </div>
@@ -80,8 +80,7 @@ function Suggestions() {
                             <button
                                 type="submit"
                                 disabled={submitting}
-                                className="w-full bg-slate-900 text-white font-bold py-5 rounded-3xl shadow-xl hover:bg-slate-800 disabled:bg-slate-300 transition-all flex justify-center items-center gap-2 text-lg"
-                                WallIcon
+                                className="w-full bg-primary text-white font-bold py-5 rounded-3xl shadow-lg shadow-primary/20 hover:bg-blue-600 disabled:bg-slate-300 transition-all flex justify-center items-center gap-2 text-lg"
                             >
                                 {submitting ? <Loader2 className="animate-spin" /> : <><Send size={20} /> Enviar Sugestão</>}
                             </button>
@@ -95,7 +94,7 @@ function Suggestions() {
                             <div className="w-24 h-24 bg-highlight/10 rounded-full flex items-center justify-center mx-auto mb-8">
                                 <CheckCircle className="text-highlight w-12 h-12" />
                             </div>
-                            <h2 className="text-2xl font-black text-slate-800 mb-4">Obrigado pela sua sugestão!</h2>
+                            <h2 className="text-2xl font-bold text-slate-900 mb-4">Obrigado pela sua sugestão!</h2>
                             <p className="text-slate-500 font-medium mb-10 leading-relaxed">
                                 Nossa equipe de gestão irá analisar sua mensagem com carinho para melhorar nosso dia a dia.
                             </p>

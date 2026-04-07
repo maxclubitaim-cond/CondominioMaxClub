@@ -36,8 +36,8 @@ function AdminSuggestions() {
     return (
         <div className="max-w-5xl mx-auto space-y-8">
             <header>
-                <h1 className="text-2xl font-black text-slate-800">Sugestões e Melhorias</h1>
-                <p className="text-slate-500 text-sm">Feedback enviado pelos moradores através do portal.</p>
+                <h1 className="text-2xl font-bold text-slate-800">Sugestões e Melhorias</h1>
+                <p className="text-slate-500 text-sm">Sugestões enviadas pelos moradores através do portal.</p>
             </header>
 
             <div className="grid grid-cols-1 gap-4">
@@ -46,7 +46,7 @@ function AdminSuggestions() {
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div className="space-y-2 flex-1">
                                 <div className="flex items-center gap-3">
-                                    <div className="px-3 py-1 bg-slate-100 rounded-lg text-[10px] font-black text-slate-500 uppercase flex items-center gap-1">
+                                    <div className="px-3 py-1 bg-slate-100 rounded-lg text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1">
                                         <Building size={12} /> Unidade {sug.unidade}
                                     </div>
                                     <div className="text-[10px] font-bold text-slate-400 flex items-center gap-1">

@@ -45,7 +45,7 @@ function LostFound() {
                     <span className="text-xl font-bold tracking-tight text-slate-800 hidden sm:block">
                         MaxClub<span className="text-primary">Itaim</span>
                     </span>
-                    <h1 className="text-lg font-black text-slate-900 absolute left-1/2 -translate-x-1/2">Achados & Perdidos</h1>
+                    <h1 className="text-lg font-bold text-slate-900 absolute left-1/2 -translate-x-1/2">Achados & Perdidos</h1>
                 </div>
             </header>
 
@@ -96,7 +96,7 @@ function LostFound() {
                                             </div>
                                         )}
                                         <div className="absolute top-4 left-4">
-                                            <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-[10px] font-black uppercase text-primary rounded-full shadow-sm">
+                                            <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-[10px] font-bold uppercase text-primary rounded-full shadow-sm">
                                                 Disponível
                                             </span>
                                         </div>
@@ -142,7 +142,7 @@ function LostFound() {
             </main>
 
             <footer className="py-12 border-t border-slate-200 mt-20 text-center">
-                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">MaxClubItaim Premium Services</p>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">MaxClubItaim Premium Services</p>
             </footer>
         </div>
     );

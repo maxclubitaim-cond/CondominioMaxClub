@@ -20,15 +20,20 @@ import {
     Trophy,
     ClipboardCheck,
     Menu,
-    X as CloseIcon
+    X as CloseIcon,
+    Ticket
 } from 'lucide-react';
 import { useNavigate, Link, Outlet, useLocation } from 'react-router-dom';
+import { usePushNotifications } from '../hooks/usePushNotifications';
+import { Info, BellRing } from 'lucide-react';
 
 function Dashboard() {
     const { profile, signOut } = useAuth();
+    const { permission, subscribeUser, subscribing } = usePushNotifications();
     const navigate = useNavigate();
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+    const [showPushBanner, setShowPushBanner] = React.useState(true);
 
     const handleLogout = async () => {
         await signOut();
@@ -51,8 +56,9 @@ function Dashboard() {
         { icon: <MessageSquare size={20} />, label: 'Sugestões', path: '/dashboard/sugestoes', access: ['GESTOR', 'ADM'] },
         { icon: <Package size={20} />, label: 'Achados e Perdidos', path: '/dashboard/achados', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <Wrench size={20} />, label: 'Manutenção', path: '/dashboard/manutencao', access: ['OPERADOR', 'GESTOR', 'ADM'] },
-        { icon: <Shield size={20} />, label: 'Histórico de Acessos', path: '/dashboard/acessos', access: ['OPERADOR', 'GESTOR', 'ADM'] },
-        { icon: <Search size={20} />, label: 'Vagas', path: '/dashboard/vagas', access: ['GESTOR', 'ADM'] },
+        { icon: <Shield size={20} />, label: 'Histórico de Acessos', path: '/dashboard/acessos', access: ['GESTOR', 'ADM'] },
+        { icon: <Search size={20} />, label: 'Vagas', path: '/dashboard/vagas', access: ['OPERADOR', 'GESTOR', 'ADM'] },
+        { icon: <Ticket size={20} />, label: 'Pulseiras', path: '/dashboard/pulseiras', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <Users size={20} />, label: 'Usuários', path: '/dashboard/usuarios', access: ['GESTOR', 'ADM'] },
     ];
 
@@ -75,82 +81,129 @@ function Dashboard() {
 
             {/* Sidebar (Desktop & Mobile Drawer) */}
             <aside className={`
-                fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0
+                fixed inset-y-0 left-0 z-50 w-72 bg-slate-900 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0
                 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
-                flex flex-col
+                flex flex-col border-r border-white/5
             `}>
-                <div className="p-8 border-b border-slate-100">
-                    <div className="flex items-center gap-2 mb-2">
-                        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                            <Settings className="text-white w-5 h-5" />
+                <div className="p-8 border-b border-white/5">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center border border-primary/30">
+                            <Settings className="text-primary w-5 h-5" />
                         </div>
-                        <span className="font-bold text-slate-800">Admin MaxClub</span>
+                        <div className="flex flex-col">
+                            <span className="font-bold text-white text-lg tracking-tight leading-none mb-1">MaxClub</span>
+                            <span className="text-[10px] text-primary font-bold uppercase tracking-widest">Painel Gestão</span>
+                        </div>
                     </div>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Workspace</p>
                 </div>
 
-                <nav className="flex-1 p-4 space-y-1">
+                <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto custom-scrollbar">
                     {allowedItems.map((item, idx) => (
                         <Link
                             key={idx}
                             to={item.path}
-                            className={`w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm rounded-xl transition-all group ${
+                            className={`w-full flex items-center gap-3 px-4 py-3.5 font-bold text-xs uppercase tracking-widest rounded-2xl transition-all group ${
                                 location.pathname === item.path || (item.path !== '/dashboard' && location.pathname.startsWith(item.path))
                                 ? 'bg-primary text-white shadow-lg shadow-primary/20' 
-                                : 'text-slate-600 hover:bg-slate-50 hover:text-primary'
+                                : 'text-slate-400 hover:bg-white/5 hover:text-white'
                             }`}
                         >
-                            <span className="group-hover:scale-110 transition-transform">{item.icon}</span>
+                            <span className={`transition-transform duration-300 ${location.pathname === item.path ? 'scale-110' : 'group-hover:scale-110 opacity-70 group-hover:opacity-100'}`}>
+                                {item.icon}
+                            </span>
                             {item.label}
                         </Link>
                     ))}
                 </nav>
 
-                <div className="p-4 border-t border-slate-100">
-                    <div className="flex items-center gap-3 px-4 py-3 mb-2">
-                        <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 font-bold uppercase">
+                <div className="p-4 border-t border-white/5 bg-black/20">
+                    <div className="flex items-center gap-3 px-4 py-3 mb-4 bg-white/5 rounded-2xl border border-white/5">
+                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold uppercase text-sm border border-primary/20">
                             {profile?.nome?.charAt(0) || 'U'}
                         </div>
                         <div className="overflow-hidden">
-                            <p className="text-sm font-bold text-slate-800 truncate">{profile?.nome || 'Usuário'}</p>
-                            <p className="text-xs text-slate-500 font-medium">{profile?.perfil}</p>
+                            <p className="text-xs font-bold text-white truncate uppercase tracking-wider">{profile?.nome || 'Usuário'}</p>
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{profile?.perfil}</p>
                         </div>
                     </div>
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-secondary font-bold text-sm rounded-xl hover:bg-secondary/10 transition-all"
+                        className="w-full flex items-center gap-3 px-4 py-3.5 text-rose-400 font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-rose-500/10 transition-all group"
                     >
-                        <LogOut size={20} /> Sair
+                        <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" /> Sair do Painel
                     </button>
                 </div>
             </aside>
 
             {/* Main Content Area */}
-            <main className="flex-1 flex flex-col h-screen overflow-hidden w-full">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 shrink-0">
-                    <div className="flex items-center gap-4">
+            <main className="flex-1 flex flex-col h-screen overflow-hidden w-full relative">
+                <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-10 shrink-0 sticky top-0 z-30">
+                    <div className="flex items-center gap-5">
                         <button 
                             onClick={() => setIsMobileMenuOpen(true)}
-                            className="p-2 text-slate-600 hover:bg-slate-50 rounded-lg md:hidden"
+                            className="p-3 text-slate-600 bg-slate-100/50 hover:bg-slate-200/50 rounded-2xl md:hidden transition-all"
                         >
-                            <Menu size={24} />
+                            <Menu size={22} />
                         </button>
-                        <h2 className="text-sm md:text-lg font-bold text-slate-800 truncate max-w-[150px] md:max-w-none">
-                            {menuItems.find(i => i.path === location.pathname)?.label || 'Painel de Controle'}
-                        </h2>
+                        <div className="flex flex-col">
+                            <h2 className="text-lg md:text-2xl font-bold text-slate-900 truncate max-w-[150px] md:max-w-none tracking-tight">
+                                {menuItems.find(i => i.path === location.pathname)?.label || 'Painel de Controle'}
+                            </h2>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hidden md:block">MaxClub Itaim Paulista</span>
+                        </div>
                     </div>
                     
-                    <div className="relative max-w-[140px] md:max-w-xs w-full">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-3 h-3 md:w-4 md:h-4" />
+                    <div className="relative max-w-[160px] md:max-w-xs w-full group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 group-focus-within:text-primary transition-colors" />
                         <input
                             type="text"
-                            placeholder="Buscar..."
-                            className="w-full pl-8 md:pl-10 pr-4 py-1.5 md:py-2 bg-slate-50 border border-slate-200 rounded-xl text-[10px] md:text-xs focus:ring-2 focus:ring-primary/20 outline-none"
+                            placeholder="Buscar funcionalidades..."
+                            className="w-full pl-12 pr-6 py-3 bg-slate-100/50 border border-transparent focus:border-primary/20 focus:bg-white rounded-2xl text-xs font-medium focus:ring-4 focus:ring-primary/5 outline-none transition-all shadow-inner"
                         />
                     </div>
                 </header>
 
                 <div className="flex-1 overflow-y-auto p-4 md:p-8">
+                    {/* Push Notification Banner */}
+                    <AnimatePresence>
+                        {permission !== 'granted' && showPushBanner && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                className="mb-8 p-4 bg-slate-900 rounded-[1.5rem] shadow-xl border border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 relative overflow-hidden group"
+                            >
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 group-hover:bg-primary/10 transition-all" />
+                                <div className="flex items-center gap-4 relative z-10">
+                                    <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary shrink-0">
+                                        <BellRing size={24} />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <h4 className="text-white font-bold text-sm uppercase tracking-tight">Notificações em Tempo Real</h4>
+                                        <p className="text-slate-400 text-[10px] font-bold leading-relaxed uppercase tracking-widest max-w-sm">
+                                            Habilite os alertas push para ser notificado instantaneamente sobre novas solicitações e agendamentos.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3 relative z-10 w-full md:w-auto">
+                                    <button
+                                        onClick={() => setShowPushBanner(false)}
+                                        className="flex-1 md:flex-none px-6 py-3 text-slate-500 font-bold text-[10px] uppercase tracking-widest hover:text-white transition-all"
+                                    >
+                                        Agora não
+                                    </button>
+                                    <button
+                                        onClick={subscribeUser}
+                                        disabled={subscribing}
+                                        className="flex-[2] md:flex-none bg-primary text-white font-bold px-8 py-3 rounded-xl shadow-lg hover:bg-blue-600 transition-all uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 group-hover:scale-105"
+                                    >
+                                        {subscribing ? 'Ativando...' : 'Ativar Notificações'}
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
                     <Outlet />
                 </div>
             </main>

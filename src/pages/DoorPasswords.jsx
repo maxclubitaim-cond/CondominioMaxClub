@@ -136,7 +136,7 @@ function DoorPasswords() {
         <div className="max-w-4xl mx-auto pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-800">Senhas das Portas</h1>
+                    <h1 className="text-2xl font-bold text-slate-800">Senhas das Portas</h1>
                     <p className="text-slate-500 text-sm font-medium">Gerencie as senhas de acesso para os moradores.</p>
                 </div>
                 <div className="flex gap-2">
@@ -191,7 +191,7 @@ function DoorPasswords() {
                                     </div>
                                     <div>
                                         <h3 className={`font-bold ${local.ativo ? 'text-slate-800' : 'text-slate-400'}`}>{local.nome}</h3>
-                                        <span className={`text-[9px] font-black uppercase tracking-widest ${local.ativo ? 'text-primary' : 'text-slate-400'}`}>
+                                        <span className={`text-[9px] font-bold uppercase tracking-widest ${local.ativo ? 'text-primary' : 'text-slate-400'}`}>
                                             {local.ativo ? 'Ativo' : 'Inativo'}
                                         </span>
                                     </div>
@@ -218,7 +218,7 @@ function DoorPasswords() {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Senha Porta</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1">Senha Porta</label>
                                     <input
                                         type="text"
                                         value={local.senha_atual || ''}
@@ -228,7 +228,7 @@ function DoorPasswords() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Senha Wi-Fi</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1">Senha Wi-Fi</label>
                                     <input
                                         type="text"
                                         value={local.wifi_senha || ''}
@@ -274,7 +274,7 @@ function DoorPasswords() {
                             className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl relative z-10 overflow-hidden"
                         >
                             <div className="p-8 border-b border-slate-100 flex items-center justify-between">
-                                <h3 className="text-xl font-black text-slate-800">Novo Local de Acesso</h3>
+                                <h3 className="text-xl font-bold text-slate-800">Novo Local de Acesso</h3>
                                 <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
                                     <X size={24} />
                                 </button>

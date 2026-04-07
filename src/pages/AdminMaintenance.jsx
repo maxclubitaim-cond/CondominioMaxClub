@@ -200,7 +200,7 @@ function AdminMaintenance() {
         <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-3xl font-black text-slate-800">Módulo de Manutenção</h1>
+                    <h1 className="text-3xl font-bold text-slate-800">Módulo de Manutenção</h1>
                     <p className="text-slate-500 font-medium">Controle de conservação e vistorias técnica.</p>
                 </div>
 
@@ -241,7 +241,7 @@ function AdminMaintenance() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Área / Local</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1">Área / Local</label>
                                         <input
                                             required
                                             list="areas-sugeridas"
@@ -258,7 +258,7 @@ function AdminMaintenance() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Responsável Técnico / Acompanhante</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1">Responsável Técnico / Acompanhante</label>
                                         <input
                                             required
                                             type="text"
@@ -270,7 +270,7 @@ function AdminMaintenance() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">O que foi feito?</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1">O que foi feito?</label>
                                         <input
                                             required
                                             type="text"
@@ -282,7 +282,7 @@ function AdminMaintenance() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Observações Adicionais (Opcional)</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1">Observações Adicionais (Opcional)</label>
                                         <textarea
                                             rows={4}
                                             value={observacoes}
@@ -296,7 +296,7 @@ function AdminMaintenance() {
                                 <div className="space-y-6">
                                     {/* Upload Antes */}
                                     <div className="space-y-3">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Fotos: Antes do Serviço</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1">Fotos: Antes do Serviço</label>
                                         <div className="flex flex-wrap gap-3">
                                             {antesPreviews.map((pre, idx) => (
                                                 <div key={idx} className="w-24 h-24 rounded-2xl bg-slate-100 relative group overflow-hidden border border-slate-200">
@@ -316,7 +316,7 @@ function AdminMaintenance() {
                                                 className="w-24 h-24 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-400 hover:border-primary hover:text-primary transition-all bg-slate-50"
                                             >
                                                 <Camera size={24} />
-                                                <span className="text-[9px] font-black uppercase mt-1">Anexar</span>
+                                                <span className="text-[9px] font-bold uppercase mt-1">Anexar</span>
                                             </button>
                                         </div>
                                         <input type="file" hidden multiple accept="image/*" ref={fileInputAntes} onChange={(e) => handleFileChange(e, 'antes')} />
@@ -324,7 +324,7 @@ function AdminMaintenance() {
 
                                     {/* Upload Depois */}
                                     <div className="space-y-3">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Fotos: Depois do Serviço</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1">Fotos: Depois do Serviço</label>
                                         <div className="flex flex-wrap gap-3">
                                             {depoisPreviews.map((pre, idx) => (
                                                 <div key={idx} className="w-24 h-24 rounded-2xl bg-slate-100 relative group overflow-hidden border border-slate-200">
@@ -344,7 +344,7 @@ function AdminMaintenance() {
                                                 className="w-24 h-24 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-400 hover:border-primary hover:text-primary transition-all bg-slate-50"
                                             >
                                                 <Camera size={24} />
-                                                <span className="text-[9px] font-black uppercase mt-1">Anexar</span>
+                                                <span className="text-[9px] font-bold uppercase mt-1">Anexar</span>
                                             </button>
                                         </div>
                                         <input type="file" hidden multiple accept="image/*" ref={fileInputDepois} onChange={(e) => handleFileChange(e, 'depois')} />
@@ -356,7 +356,7 @@ function AdminMaintenance() {
                                 <button
                                     type="submit"
                                     disabled={saving}
-                                    className="bg-slate-900 text-white font-black px-12 py-5 rounded-3xl shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 disabled:opacity-50"
+                                    className="bg-slate-900 text-white font-bold px-12 py-5 rounded-3xl shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 disabled:opacity-50"
                                 >
                                     {saving ? <Loader2 className="animate-spin" /> : <Save size={20} className="text-primary" />}
                                     Finalizar Registro
@@ -406,7 +406,7 @@ function MaintenanceRecordCard({ record, onImageClick }) {
             <div className="p-8 flex flex-col md:flex-row gap-6">
                 <div className="flex-1 space-y-4">
                     <div className="flex items-center gap-3">
-                        <div className="px-4 py-1.5 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full">
+                        <div className="px-4 py-1.5 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-full">
                             {record.area_nome}
                         </div>
                         <span className="text-slate-300">•</span>
@@ -415,7 +415,7 @@ function MaintenanceRecordCard({ record, onImageClick }) {
                         </div>
                     </div>
 
-                    <h3 className="text-xl font-black text-slate-800">{record.descricao}</h3>
+                    <h3 className="text-xl font-bold text-slate-800">{record.descricao}</h3>
 
                     {record.observacoes && (
                         <p className="text-slate-500 text-sm font-medium leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100 italic">
@@ -441,7 +441,7 @@ function MaintenanceRecordCard({ record, onImageClick }) {
                             <div key={i} className="w-16 h-16 rounded-2xl border-2 border-white shadow-lg overflow-hidden relative">
                                 <img src={url} className="w-full h-full object-cover" />
                                 {i === 2 && [...(record.fotos_antes || []), ...(record.fotos_depois || [])].length > 3 && (
-                                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-xs font-black">
+                                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-xs font-bold">
                                         +{[...(record.fotos_antes || []), ...(record.fotos_depois || [])].length - 2}
                                     </div>
                                 )}
@@ -469,7 +469,7 @@ function MaintenanceRecordCard({ record, onImageClick }) {
                         <div className="pt-8 grid grid-cols-1 md:grid-cols-2 gap-10">
                             {/* Bloco Antes */}
                             <div className="space-y-4">
-                                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                                <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full bg-amber-500" /> Situação Anterior (Antes)
                                 </h4>
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -491,7 +491,7 @@ function MaintenanceRecordCard({ record, onImageClick }) {
 
                             {/* Bloco Depois */}
                             <div className="space-y-4">
-                                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                                <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full bg-emerald-500" /> Situação Final (Depois)
                                 </h4>
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">

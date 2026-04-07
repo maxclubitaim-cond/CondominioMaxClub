@@ -63,7 +63,7 @@ function ManualMaxClub() {
                         <ChevronLeft size={20} />
                         Voltar
                     </button>
-                    <h1 className="text-lg font-black text-slate-900 absolute left-1/2 -translate-x-1/2">Manual MaxClub</h1>
+                    <h1 className="text-lg font-bold text-slate-900 absolute left-1/2 -translate-x-1/2">Manual MaxClub</h1>
                     <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary hidden sm:flex">
                         <ShieldCheck size={20} />
                     </div>
@@ -72,7 +72,7 @@ function ManualMaxClub() {
 
             <main className="max-w-4xl mx-auto px-4 py-12">
                 <div className="mb-12">
-                    <h2 className="text-3xl font-black text-slate-900 mb-2">Guia do Morador</h2>
+                    <h2 className="text-3xl font-bold text-slate-900 mb-2">Guia do Morador</h2>
                     <p className="text-slate-500 font-medium">Informações essenciais para o seu bem-estar no MaxClub Itaim.</p>
                 </div>
 
@@ -147,7 +147,7 @@ function ManualMaxClub() {
                             <>
                                 <div className="bg-slate-900 p-10 rounded-[2.5rem] text-white overflow-hidden relative shadow-2xl">
                                     <CreditCard className="absolute -right-8 -bottom-8 w-48 h-48 opacity-10" />
-                                    <h3 className="text-2xl font-black mb-8">Taxa Condominial</h3>
+                                    <h3 className="text-2xl font-bold mb-8">Taxa Condominial</h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 relative z-10">
                                         {[
                                             { dorms: '1 dormitório', val: 'R$ 186,13' },
@@ -155,7 +155,7 @@ function ManualMaxClub() {
                                             { dorms: '3 dormitórios', val: 'R$ 418,34' },
                                         ].map((item, i) => (
                                             <div key={i} className="p-6 bg-white/5 border border-white/10 rounded-3xl">
-                                                <span className="text-[10px] font-black uppercase text-slate-400 block mb-2">{item.dorms}</span>
+                                                <span className="text-[10px] font-bold uppercase text-slate-400 block mb-2">{item.dorms}</span>
                                                 <span className="text-xl font-bold text-primary">{item.val}</span>
                                             </div>
                                         ))}
@@ -171,11 +171,11 @@ function ManualMaxClub() {
                                     </h4>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <div className="space-y-3">
-                                            <span className="text-[10px] font-black uppercase text-slate-400">Rateio no Boleto</span>
+                                            <span className="text-[10px] font-bold uppercase text-slate-400">Rateio no Boleto</span>
                                             <p className="text-sm font-bold text-slate-700">Água e Luz (Áreas Comuns)</p>
                                         </div>
                                         <div className="space-y-3">
-                                            <span className="text-[10px] font-black uppercase text-slate-400">Consumo Individual (unidade)</span>
+                                            <span className="text-[10px] font-bold uppercase text-slate-400">Consumo Individual (unidade)</span>
                                             <div className="flex flex-col gap-2">
                                                 <div className="flex justify-between items-center text-sm">
                                                     <span className="text-slate-600 font-medium">Gás (Comgás)</span>
@@ -230,14 +230,14 @@ function ManualMaxClub() {
                                         <div className="space-y-4">
                                             <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl">
                                                 <span className="text-sm font-bold">Salão de Festas & Churrasqueira</span>
-                                                <span className="text-[10px] font-black text-slate-500 uppercase">10h às 22h</span>
+                                                <span className="text-[10px] font-bold text-slate-500 uppercase">10h às 22h</span>
                                             </div>
                                             <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-primary/20">
                                                 <div>
                                                     <span className="text-sm font-bold block">Rede de Vôlei (Quadra)</span>
                                                     <span className="text-[9px] text-primary font-bold uppercase">Solicitação de montagem</span>
                                                 </div>
-                                                <span className="text-[10px] font-black text-slate-500 uppercase">08h às 20h</span>
+                                                <span className="text-[10px] font-bold text-slate-500 uppercase">08h às 20h</span>
                                             </div>
                                         </div>
                                     </div>
@@ -245,7 +245,7 @@ function ManualMaxClub() {
                                     <div className="bg-primary/10 border border-primary/20 p-8 rounded-[2.5rem] text-primary">
                                         <div className="flex items-center gap-2 mb-2">
                                             <Info size={18} />
-                                            <h4 className="font-black text-xs uppercase tracking-widest">Taxa de Reserva Salão de Festas</h4>
+                                            <h4 className="font-bold text-xs uppercase tracking-widest">Taxa de Reserva Salão de Festas</h4>
                                         </div>
                                         <p className="text-sm font-bold leading-relaxed">
                                             R$ 75,00 (5% do salário mínimo) cobrados no boleto. Necessário estar adimplente para reservar.

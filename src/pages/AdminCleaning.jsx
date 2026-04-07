@@ -12,9 +12,12 @@ import {
     Settings,
     X,
     Eye,
-    EyeOff
+    EyeOff,
+    FileText
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { PdfService } from '../services/PdfService';
+import DateSelectorModal from '../components/DateSelectorModal';
 
 function AdminCleaning() {
     const { profile } = useAuth();
@@ -25,6 +28,8 @@ function AdminCleaning() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
+    const [isExportLoading, setIsExportLoading] = useState(false);
+    const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
 
     // Modal de Gestão de Locais
     const [showLocaisModal, setShowLocaisModal] = useState(false);
@@ -84,6 +89,40 @@ function AdminCleaning() {
         if (!error) setRegistros(prev => prev.filter(r => r.id !== id));
     }
 
+    async function handleExportConfirm(startDate, endDate) {
+        setIsExportLoading(true);
+        try {
+            const { data, error } = await supabase
+                .from('limpeza_registros')
+                .select('*, locais_limpeza(nome)')
+                .gte('data_limpeza', startDate + 'T00:00:00Z')
+                .lte('data_limpeza', endDate + 'T23:59:59Z')
+                .order('data_limpeza', { ascending: true });
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                alert('Nenhum registro encontrado para este período.');
+                return;
+            }
+
+            const reportData = data.map(r => ({
+                local: r.locais_limpeza?.nome || 'N/A',
+                nome_operador: r.nome_operador,
+                data_limpeza: r.data_limpeza,
+                status: 'CONCLUÍDO'
+            }));
+
+            await PdfService.generateModuleReport('Controle de Limpeza', reportData, { start: startDate, end: endDate });
+            setIsPdfModalOpen(false);
+        } catch (error) {
+            console.error('Erro ao exportar PDF:', error);
+            alert('Falha ao gerar relatório.');
+        } finally {
+            setIsExportLoading(false);
+        }
+    }
+
     // Funções de Gestão de Locais de Limpeza
     async function handleAddLocal(e) {
         e.preventDefault();
@@ -127,13 +166,22 @@ function AdminCleaning() {
                     <h1 className="text-xl md:text-2xl font-black text-slate-800">Controle de Limpeza</h1>
                     <p className="text-slate-500 text-xs md:sm">Registre as atividades de limpeza do condomínio.</p>
                 </div>
-                <button
-                    onClick={() => setShowLocaisModal(true)}
-                    className="flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-600 font-bold px-6 py-3 rounded-xl hover:bg-slate-50 transition-all shadow-sm text-sm"
-                >
-                    <Settings size={18} className="text-primary" />
-                    Locais
-                </button>
+                <div className="flex items-center gap-3 w-full md:w-auto">
+                    <button
+                        onClick={() => setIsPdfModalOpen(true)}
+                        className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-600 font-bold px-6 py-3 rounded-xl hover:bg-slate-50 transition-all shadow-sm text-sm"
+                    >
+                        <FileText size={18} className="text-primary" />
+                        Exportar PDF
+                    </button>
+                    <button
+                        onClick={() => setShowLocaisModal(true)}
+                        className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-600 font-bold px-6 py-3 rounded-xl hover:bg-slate-50 transition-all shadow-sm text-sm"
+                    >
+                        <Settings size={18} className="text-primary" />
+                        Locais
+                    </button>
+                </div>
             </header>
 
             <section className="bg-white p-6 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm transition-all hover:shadow-md mx-4 md:mx-0">
@@ -278,6 +326,14 @@ function AdminCleaning() {
                     </div>
                 )}
             </AnimatePresence>
+
+            <DateSelectorModal 
+                isOpen={isPdfModalOpen}
+                onClose={() => setIsPdfModalOpen(false)}
+                onConfirm={handleExportConfirm}
+                loading={isExportLoading}
+                title="Lista de Registros"
+            />
         </div>
     );
 }

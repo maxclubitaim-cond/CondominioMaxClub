@@ -245,8 +245,8 @@ function AdminParking() {
         <div className="max-w-7xl mx-auto space-y-10 pb-20">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-4 md:px-0">
                 <div>
-                    <h1 className="text-xl md:text-2xl font-black text-slate-800">Gestão de Vagas</h1>
-                    <p className="text-slate-500 text-xs md:sm">Controle de subsolos, proprietários e trocas internas.</p>
+                    <h1 className="text-xl md:text-2xl font-bold text-slate-900">Gestão de Vagas</h1>
+                    <p className="text-slate-500 text-xs md:sm font-medium">Controle de subsolos, proprietários e trocas internas.</p>
                 </div>
                 <div className="flex flex-wrap gap-2 md:gap-3">
                     <button
@@ -263,25 +263,25 @@ function AdminParking() {
                     </button>
                     <button
                         onClick={() => setIsLoterriaOpen(true)}
-                        className="flex-1 md:flex-none bg-slate-900 text-white font-bold px-3 md:px-6 py-2.5 md:py-3 rounded-xl shadow-lg shadow-primary/10 hover:bg-slate-800 transition-all flex items-center justify-center gap-2 text-xs md:text-sm"
+                        className="flex-1 md:flex-none bg-primary text-white font-bold px-3 md:px-6 py-2.5 md:py-3 rounded-xl shadow-lg shadow-primary/20 hover:bg-blue-600 transition-all flex items-center justify-center gap-2 text-xs md:text-sm"
                     >
-                        <Shuffle size={16} className="text-primary" /> Sorteio
+                        <Shuffle size={16} /> Sorteio
                     </button>
                 </div>
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
                 <section className="lg:col-span-3 space-y-6">
-                    <div className="bg-white rounded-[2rem] border border-slate-100 shadow-premium overflow-hidden">
+                    <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
                         <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
                             <h2 className="font-bold text-slate-800 flex items-center gap-2 text-sm uppercase tracking-widest">
                                 <Search size={18} className="text-slate-400" /> Mapa de Garagem
                             </h2>
                             <div className="flex gap-4">
-                                <div className="flex items-center gap-2 text-[10px] font-black text-slate-400">
+                                <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
                                     <span className="w-2 h-2 bg-primary rounded-full" /> SUBSOLO 1
                                 </div>
-                                <div className="flex items-center gap-2 text-[10px] font-black text-slate-400">
+                                <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
                                     <span className="w-2 h-2 bg-secondary rounded-full" /> SUBSOLO 2
                                 </div>
                             </div>
@@ -289,7 +289,7 @@ function AdminParking() {
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead>
-                                    <tr className="text-[10px] font-black uppercase text-slate-400 border-b border-slate-50">
+                                    <tr className="text-[10px] font-bold uppercase text-slate-400 border-b border-slate-50">
                                         <th className="px-4 md:px-6 py-4 md:py-5">Sub / Vaga</th>
                                         <th className="px-4 md:px-6 py-4 md:py-5">Proprietário</th>
                                         <th className="px-4 md:px-6 py-4 md:py-5 hidden sm:table-cell">Status</th>
@@ -301,10 +301,10 @@ function AdminParking() {
                                         <tr key={v.id} className="text-sm hover:bg-slate-50/50 transition-colors group">
                                             <td className="px-4 md:px-6 py-4">
                                                 <div className="flex flex-col md:flex-row md:items-center gap-2">
-                                                    <span className={`w-fit px-2 py-0.5 rounded-md text-[8px] md:text-[10px] font-black uppercase ${v.subsolo === 1 ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}`}>
+                                                    <span className={`w-fit px-2 py-0.5 rounded-md text-[8px] md:text-[10px] font-bold uppercase ${v.subsolo === 1 ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}`}>
                                                         S{v.subsolo}
                                                     </span>
-                                                    <span className="font-black text-slate-900 text-base md:text-lg">#{v.numero}</span>
+                                                    <span className="font-bold text-slate-900 text-base md:text-lg">#{v.numero}</span>
                                                 </div>
                                             </td>
                                             <td className="px-4 md:px-6 py-4">
@@ -318,8 +318,8 @@ function AdminParking() {
                                             <td className="px-4 md:px-6 py-4 hidden sm:table-cell">
                                                 {v.unidade_alugou ? (
                                                     <div className="flex flex-col">
-                                                        <span className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-0.5">Alugada</span>
-                                                        <span className="font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-lg w-fit text-xs">Unid. {v.unidade_alugou}</span>
+                                                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Alugada</span>
+                                                        <span className="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg w-fit text-xs">Unid. {v.unidade_alugou}</span>
                                                     </div>
                                                 ) : (
                                                     <span className="text-slate-300 font-medium italic text-xs">Vaga livre</span>
@@ -344,7 +344,7 @@ function AdminParking() {
                 </section>
 
                 <section className="lg:col-span-1 space-y-6">
-                    <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden">
+                    <div className="bg-slate-900 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-10 opacity-10 pointer-events-none">
                             <Shuffle size={120} />
                         </div>
@@ -363,8 +363,8 @@ function AdminParking() {
                                         <FileText size={16} className="text-slate-600 group-hover:text-primary" />
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-[10px] font-black text-slate-500 uppercase">{new Date(s.created_at).toLocaleDateString()}</span>
-                                        <span className="text-[10px] font-black text-primary uppercase">{s.resultado?.length || 0} Vagas</span>
+                                        <span className="text-[10px] font-bold text-slate-500 uppercase">{new Date(s.created_at).toLocaleDateString()}</span>
+                                        <span className="text-[10px] font-bold text-primary uppercase">{s.resultado?.length || 0} Vagas</span>
                                     </div>
                                 </div>
                             ))}
@@ -377,20 +377,20 @@ function AdminParking() {
             <AnimatePresence>
                 {isAddEditOpen && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeAddEdit} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
-                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeAddEdit} className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" />
+                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-white w-full max-w-md rounded-3xl shadow-xl relative z-10 overflow-hidden">
                             <div className="p-6 md:p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                                <h2 className="text-xl font-black text-slate-800">{editingVaga ? 'Editar Vaga' : 'Nova Vaga'}</h2>
+                                <h2 className="text-xl font-bold text-slate-800">{editingVaga ? 'Editar Vaga' : 'Nova Vaga'}</h2>
                                 <button onClick={closeAddEdit} className="text-slate-400 hover:text-slate-600"><X size={24} /></button>
                             </div>
                             <form onSubmit={handleAddEdit} className="p-6 md:p-8 space-y-6">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-[10px] font-black uppercase text-slate-400">Número da Vaga</label>
-                                        <input type="text" required value={numero} onChange={(e) => setNumero(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl mt-2 outline-none font-black text-lg" />
+                                        <label className="text-[10px] font-bold uppercase text-slate-400">Número da Vaga</label>
+                                        <input type="text" required value={numero} onChange={(e) => setNumero(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl mt-2 outline-none font-bold text-lg" />
                                     </div>
                                     <div>
-                                        <label className="text-[10px] font-black uppercase text-slate-400">Subsolo</label>
+                                        <label className="text-[10px] font-bold uppercase text-slate-400">Subsolo</label>
                                         <select value={subsolo} onChange={(e) => setSubsolo(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl mt-2 outline-none font-bold">
                                             <option value={1}>Subsolo 1</option>
                                             <option value={2}>Subsolo 2</option>
@@ -398,17 +398,17 @@ function AdminParking() {
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="text-[10px) font-black uppercase text-slate-400">Unidade Proprietária (Dona)</label>
+                                    <label className="text-[10px) font-bold uppercase text-slate-400">Unidade Proprietária (Dona)</label>
                                     <div className="relative mt-2">
                                         <Building className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 w-4 h-4" />
                                         <input type="text" required value={unidadeDona} onChange={(e) => setUnidadeDona(e.target.value)} className="w-full pl-10 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none font-bold" placeholder="Ex: 307 Bloco A" />
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="text-[10px] font-black uppercase text-slate-400">Unidade Alugou (Opcional)</label>
+                                    <label className="text-[10px] font-bold uppercase text-slate-400">Unidade Alugou (Opcional)</label>
                                     <input type="text" value={unidadeAlugou} onChange={(e) => setUnidadeAlugou(e.target.value)} className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl mt-2 outline-none font-bold" placeholder="Deixe em branco se livre" />
                                 </div>
-                                <button type="submit" disabled={formSaving} className="w-full bg-slate-900 text-white font-bold py-5 rounded-2xl shadow-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-2 text-lg">
+                                <button type="submit" disabled={formSaving} className="w-full bg-primary text-white font-bold py-5 rounded-2xl shadow-xl shadow-primary/20 hover:bg-blue-600 transition-all flex items-center justify-center gap-2 text-lg">
                                     {formSaving ? <Loader2 className="animate-spin" /> : <Save size={20} />} {editingVaga ? 'Atualizar' : 'Cadastrar'}
                                 </button>
                             </form>
@@ -421,15 +421,15 @@ function AdminParking() {
             <AnimatePresence>
                 {isSwapOpen && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsSwapOpen(false)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
-                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden p-10">
-                            <h2 className="text-2xl font-black text-slate-800 mb-2">Remanejamento</h2>
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsSwapOpen(false)} className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" />
+                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-white w-full max-w-lg rounded-3xl shadow-xl relative z-10 overflow-hidden p-10">
+                            <h2 className="text-2xl font-bold text-slate-900 mb-2">Remanejamento</h2>
                             <p className="text-slate-500 text-sm mb-10 leading-relaxed">Troque as unidades entre duas vagas de forma segura e rápida.</p>
 
                             <form onSubmit={handleSwap} className="space-y-8">
                                 <div className="flex items-center gap-4">
                                     <div className="flex-1">
-                                        <label className="text-[10px] font-black uppercase text-slate-400">Vaga Origem</label>
+                                        <label className="text-[10px] font-bold uppercase text-slate-400">Vaga Origem</label>
                                         <select required value={swapVaga1} onChange={(e) => setSwapVaga1(e.target.value)} className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl mt-2 outline-none font-bold">
                                             <option value="">Selecione...</option>
                                             {vagas.map(v => <option key={v.id} value={v.id}>Vaga #{v.numero} (Unid. {v.unidade_dona})</option>)}
@@ -437,7 +437,7 @@ function AdminParking() {
                                     </div>
                                     <div className="pt-6 text-primary"><ArrowLeftRight size={24} /></div>
                                     <div className="flex-1">
-                                        <label className="text-[10px] font-black uppercase text-slate-400">Vaga Destino</label>
+                                        <label className="text-[10px] font-bold uppercase text-slate-400">Vaga Destino</label>
                                         <select required value={swapVaga2} onChange={(e) => setSwapVaga2(e.target.value)} className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl mt-2 outline-none font-bold">
                                             <option value="">Selecione...</option>
                                             {vagas.map(v => <option key={v.id} value={v.id}>Vaga #{v.numero} (Unid. {v.unidade_dona})</option>)}
@@ -446,7 +446,7 @@ function AdminParking() {
                                 </div>
                                 <div className="flex gap-4">
                                     <button type="button" onClick={() => setIsSwapOpen(false)} className="flex-1 py-4 bg-slate-100 text-slate-500 font-bold rounded-2xl">Cancelar</button>
-                                    <button type="submit" disabled={formSaving || !swapVaga1 || !swapVaga2} className="flex-2 bg-slate-900 text-white font-bold py-4 px-8 rounded-2xl shadow-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
+                                    <button type="submit" disabled={formSaving || !swapVaga1 || !swapVaga2} className="flex-2 bg-primary text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-primary/20 hover:bg-blue-600 transition-all flex items-center justify-center gap-2">
                                         {formSaving ? <Loader2 className="animate-spin" /> : <TrendingDown size={18} />} Confirmar Troca
                                     </button>
                                 </div>
@@ -460,17 +460,17 @@ function AdminParking() {
             <AnimatePresence>
                 {isLoterriaOpen && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsLoterriaOpen(false)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" />
-                        <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden p-10">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsLoterriaOpen(false)} className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" />
+                        <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="bg-white w-full max-w-md rounded-3xl shadow-xl relative z-10 overflow-hidden p-10">
                             <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
                                 <Shuffle size={32} className="text-primary" />
                             </div>
-                            <h2 className="text-2xl font-black text-slate-800 mb-2">Motor de Sorteio</h2>
+                            <h2 className="text-2xl font-bold text-slate-800 mb-2">Motor de Sorteio</h2>
                             <p className="text-slate-500 text-sm mb-10 leading-relaxed">As unidades serão embaralhadas entre as vagas cadastradas nos subsolos 1 e 2.</p>
 
                             <div className="space-y-6">
                                 <div>
-                                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Título do Sorteio</label>
+                                    <label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Título do Sorteio</label>
                                     <input
                                         type="text" value={lotteryTitle} onChange={(e) => setLotteryTitle(e.target.value)}
                                         placeholder="Ex: Sorteio Bienal 2026/2027"
@@ -490,7 +490,7 @@ function AdminParking() {
                                     <button
                                         onClick={runLottery}
                                         disabled={lotteryLoading || !lotteryTitle}
-                                        className="flex-2 bg-slate-900 text-white font-bold py-4 px-8 rounded-2xl shadow-xl hover:opacity-90 transition-all flex items-center justify-center gap-3 text-lg"
+                                        className="flex-2 bg-primary text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-primary/20 hover:bg-blue-600 transition-all flex items-center justify-center gap-3 text-lg"
                                     >
                                         {lotteryLoading ? <Loader2 className="animate-spin" /> : <Shuffle size={20} />} Sortear Agora
                                     </button>
@@ -505,11 +505,11 @@ function AdminParking() {
             <AnimatePresence>
                 {selectedSorteio && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedSorteio(null)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" />
-                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedSorteio(null)} className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" />
+                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-white w-full max-w-2xl rounded-3xl shadow-xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
                             <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
                                 <div>
-                                    <h2 className="text-2xl font-black text-slate-800">{selectedSorteio.titulo}</h2>
+                                    <h2 className="text-2xl font-bold text-slate-900">{selectedSorteio.titulo}</h2>
                                     <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">
                                         Sorteado em: {new Date(selectedSorteio.created_at).toLocaleDateString('pt-BR')}
                                     </p>
@@ -530,12 +530,12 @@ function AdminParking() {
                                     {selectedSorteio.resultado.map((res, i) => (
                                         <div key={i} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl">
                                             <div className="flex flex-col">
-                                                <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Unidade</span>
-                                                <span className="font-black text-slate-700">{res.unidade}</span>
+                                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Unidade</span>
+                                                <span className="font-bold text-slate-700">{res.unidade}</span>
                                             </div>
                                             <div className="flex flex-col items-end">
-                                                <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Vaga</span>
-                                                <span className={`font-black ${res.subsolo === 1 ? 'text-primary' : 'text-secondary'}`}>#{res.vaga} (S{res.subsolo})</span>
+                                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Vaga</span>
+                                                <span className={`font-bold ${res.subsolo === 1 ? 'text-primary' : 'text-secondary'}`}>#{res.vaga} (S{res.subsolo})</span>
                                             </div>
                                         </div>
                                     ))}

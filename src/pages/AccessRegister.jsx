@@ -66,13 +66,13 @@ function AccessRegister() {
                     <ArrowLeft size={16} /> Voltar para Início
                 </button>
 
-                <div className="bg-white p-8 rounded-[2.5rem] shadow-premium border border-slate-100">
+                <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
                     <div className="flex items-center gap-3 mb-8">
-                        <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center">
                             <Key className="text-primary w-6 h-6" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-black text-slate-800">Senhas Portas</h1>
+                            <h1 className="text-2xl font-bold text-slate-900">Senhas Portas</h1>
                             <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Acesso Seguro</p>
                         </div>
                     </div>
@@ -123,7 +123,7 @@ function AccessRegister() {
                             <button
                                 type="submit"
                                 disabled={submitting || loading}
-                                className="w-full bg-slate-900 text-white font-bold py-5 rounded-3xl shadow-xl hover:bg-slate-800 disabled:bg-slate-300 transition-all flex justify-center items-center gap-2"
+                                className="w-full bg-primary text-white font-bold py-5 rounded-3xl shadow-xl shadow-primary/20 hover:bg-blue-600 disabled:bg-slate-300 transition-all flex justify-center items-center gap-2"
                             >
                                 {submitting ? <Loader2 className="animate-spin" /> : 'Ver Senha de Acesso'}
                             </button>
@@ -137,22 +137,22 @@ function AccessRegister() {
                             <div className="w-16 h-16 bg-highlight/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <CheckCircle className="text-highlight w-8 h-8" />
                             </div>
-                            <h2 className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">Acesso Liberado</h2>
+                            <h2 className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">Acesso Liberado</h2>
                             <p className="text-slate-800 font-bold mb-6">Confira os dados de acesso:</p>
 
                             <div className="space-y-4 mb-8">
-                                <div className="bg-slate-900 py-4 rounded-2xl relative group overflow-hidden">
-                                    <div className="text-[10px] font-black uppercase text-primary/50 mb-1">Senha da Porta</div>
-                                    <div className="relative z-10 text-primary text-4xl font-black tracking-widest leading-none">
+                                <div className="bg-primary py-4 rounded-2xl relative group overflow-hidden shadow-lg shadow-primary/20">
+                                    <div className="text-[10px] font-bold uppercase text-white/50 mb-1">Senha da Porta</div>
+                                    <div className="relative z-10 text-white text-4xl font-bold tracking-widest leading-none">
                                         {password}
                                     </div>
-                                    <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 animate-pulse" />
+                                    <div className="absolute inset-0 bg-white/5 animate-pulse" />
                                 </div>
 
                                 {wifiPassword && (
-                                    <div className="bg-slate-800 py-4 rounded-2xl relative group overflow-hidden border border-slate-700">
-                                        <div className="text-[10px] font-black uppercase text-primary/50 mb-1">Senha do Wi-Fi</div>
-                                        <div className="relative z-10 text-white text-2xl font-black tracking-widest leading-none">
+                                    <div className="bg-slate-900 py-4 rounded-2xl relative group overflow-hidden border border-slate-800">
+                                        <div className="text-[10px] font-bold uppercase text-white/30 mb-1">Senha do Wi-Fi</div>
+                                        <div className="relative z-10 text-white text-2xl font-bold tracking-widest leading-none">
                                             {wifiPassword}
                                         </div>
                                     </div>

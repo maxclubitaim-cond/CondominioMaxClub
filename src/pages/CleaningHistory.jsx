@@ -36,7 +36,7 @@ function CleaningHistory() {
 
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
                     <div>
-                        <h1 className="text-3xl font-black text-slate-800 flex items-center gap-3">
+                        <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
                             <ClipboardList className="text-primary" /> Controle de Limpeza
                         </h1>
                         <p className="text-slate-500 font-medium">Acompanhe a manutenção das áreas comuns em tempo real.</p>
@@ -50,14 +50,14 @@ function CleaningHistory() {
                 {loading ? (
                     <div className="py-20 text-center text-slate-400 font-medium">Carregando histórico...</div>
                 ) : (
-                    <div className="bg-white rounded-[2.5rem] shadow-premium border border-slate-100 overflow-hidden overflow-x-auto">
+                    <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-slate-50/50 border-b border-slate-100">
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Local</th>
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Data Limpeza</th>
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Próxima Prevista</th>
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Status</th>
+                                <tr className="bg-slate-50 border-b border-slate-100">
+                                    <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Local</th>
+                                    <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Data Limpeza</th>
+                                    <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Próxima Prevista</th>
+                                    <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Status</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
@@ -76,7 +76,7 @@ function CleaningHistory() {
                                             {formatDate(reg.proxima_limpeza)}
                                         </td>
                                         <td className="px-8 py-6">
-                                            <span className="px-3 py-1 bg-highlight/10 text-highlight text-[10px] font-black rounded-lg uppercase">Realizada</span>
+                                            <span className="px-3 py-1 bg-highlight/10 text-highlight text-[10px] font-bold rounded-lg uppercase">Realizada</span>
                                         </td>
                                     </motion.tr>
                                 ))}

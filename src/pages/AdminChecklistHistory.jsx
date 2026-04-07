@@ -67,7 +67,7 @@ const AdminChecklistHistory = () => {
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="px-4 md:px-0">
-                    <h1 className="text-xl md:text-2xl font-black text-slate-800 flex items-center gap-2">
+                    <h1 className="text-xl md:text-2xl font-bold text-slate-800 flex items-center gap-2">
                         <ClipboardCheck className="text-primary w-6 h-6 md:w-7 md:h-7" />
                         Checklists Salão
                     </h1>
@@ -97,8 +97,8 @@ const AdminChecklistHistory = () => {
                 </div>
                 <div className="bg-primary/10 p-4 rounded-2xl flex items-center justify-between">
                     <div>
-                        <p className="text-[10px] font-black text-primary uppercase">Total Registros</p>
-                        <p className="text-xl font-black text-primary">{filteredChecklists.length}</p>
+                        <p className="text-[10px] font-bold text-primary uppercase">Total Registros</p>
+                        <p className="text-xl font-bold text-primary">{filteredChecklists.length}</p>
                     </div>
                     <TrendingUp className="text-primary" size={24} />
                 </div>
@@ -109,10 +109,10 @@ const AdminChecklistHistory = () => {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-slate-50 border-b border-slate-100">
-                                <th className="px-4 md:p-6 py-5 md:py-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">Data</th>
-                                <th className="px-4 md:p-6 py-5 md:py-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">Unidade / Ref.</th>
-                                <th className="px-4 md:p-6 py-5 md:py-8 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden sm:table-cell">Aderência</th>
-                                <th className="px-4 md:p-6 py-5 md:py-8 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Ação</th>
+                                <th className="px-4 md:p-6 py-5 md:py-8 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Data</th>
+                                <th className="px-4 md:p-6 py-5 md:py-8 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Unidade / Ref.</th>
+                                <th className="px-4 md:p-6 py-5 md:py-8 text-[10px] font-bold text-slate-400 uppercase tracking-widest hidden sm:table-cell">Aderência</th>
+                                <th className="px-4 md:p-6 py-5 md:py-8 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Ação</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -128,16 +128,16 @@ const AdminChecklistHistory = () => {
                                         </td>
                                         <td className="px-4 md:p-6 py-5 md:py-6">
                                             <div className="flex items-center gap-2">
-                                                <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded-md text-[9px] md:text-xs font-black">
+                                                <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded-md text-[9px] md:text-xs font-bold">
                                                     U {item.unidade}
                                                 </span>
-                                                <div className={`inline-flex items-center text-[10px] md:text-xs font-black ${getStatusColor(item.aderencia).split(' ')[0]}`}>
+                                                <div className={`inline-flex items-center text-[10px] md:text-xs font-bold ${getStatusColor(item.aderencia).split(' ')[0]}`}>
                                                     {Math.round(item.aderencia)}%
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-4 md:p-6 py-4 hidden sm:table-cell">
-                                            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black ${getStatusColor(item.aderencia)}`}>
+                                            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(item.aderencia)}`}>
                                                 {Math.round(item.aderencia)}% Aderente
                                             </div>
                                         </td>

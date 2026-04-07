@@ -29,6 +29,8 @@ import AdminChecklistHistory from './pages/AdminChecklistHistory';
 import AdminOverview from './pages/AdminOverview';
 import AdminMaintenance from './pages/AdminMaintenance';
 import AdminAccessHistory from './pages/AdminAccessHistory';
+import PoolPasses from './pages/PoolPasses';
+import AdminPoolPasses from './pages/AdminPoolPasses';
 
 // Mock/Lazy loading placeholders
 const ProtectedRoute = ({ children, allowedProfiles = [] }) => {
@@ -72,6 +74,7 @@ function AppContent() {
                 <Route path="/achados" element={<PageWrapper><LostFound /></PageWrapper>} />
                 <Route path="/manual-maxclub" element={<PageWrapper><ManualMaxClub /></PageWrapper>} />
                 <Route path="/checklist-salao" element={<PageWrapper><PublicChecklist /></PageWrapper>} />
+                <Route path="/pulseiras" element={<PageWrapper><PoolPasses /></PageWrapper>} />
 
                 {/* Admin Routes */}
                 <Route
@@ -83,17 +86,18 @@ function AppContent() {
                     }
                 >
                     <Route index element={<PageWrapper><AdminOverview /></PageWrapper>} />
-                    <Route path="senhas" element={<PageWrapper><DoorPasswords /></PageWrapper>} />
+                    <Route path="senhas" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><DoorPasswords /></PageWrapper></ProtectedRoute>} />
                     <Route path="limpeza" element={<PageWrapper><AdminCleaning /></PageWrapper>} />
-                    <Route path="avisos" element={<PageWrapper><AdminAvisos /></PageWrapper>} />
-                    <Route path="sugestoes" element={<PageWrapper><AdminSuggestions /></PageWrapper>} />
-                    <Route path="agenda" element={<PageWrapper><AdminAgenda /></PageWrapper>} />
+                    <Route path="avisos" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><AdminAvisos /></PageWrapper></ProtectedRoute>} />
+                    <Route path="sugestoes" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><AdminSuggestions /></PageWrapper></ProtectedRoute>} />
+                    <Route path="agenda" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><AdminAgenda /></PageWrapper></ProtectedRoute>} />
                     <Route path="volei" element={<PageWrapper><AdminVolleyball /></PageWrapper>} />
                     <Route path="achados" element={<PageWrapper><AdminLostFound /></PageWrapper>} />
                     <Route path="manutencao" element={<PageWrapper><AdminMaintenance /></PageWrapper>} />
-                    <Route path="acessos" element={<PageWrapper><AdminAccessHistory /></PageWrapper>} />
+                    <Route path="acessos" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><AdminAccessHistory /></PageWrapper></ProtectedRoute>} />
                     <Route path="checklist-salao" element={<PageWrapper><AdminChecklistHistory /></PageWrapper>} />
-                    <Route path="vagas" element={<PageWrapper><AdminParking /></PageWrapper>} />
+                    <Route path="vagas" element={<ProtectedRoute allowedProfiles={['OPERADOR', 'GESTOR', 'ADM']}><PageWrapper><AdminParking /></PageWrapper></ProtectedRoute>} />
+                    <Route path="pulseiras" element={<PageWrapper><AdminPoolPasses /></PageWrapper>} />
                     <Route
                         path="usuarios"
                         element={

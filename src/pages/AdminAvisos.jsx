@@ -134,7 +134,7 @@ function AdminAvisos() {
     return (
         <div className="max-w-6xl mx-auto space-y-10">
             <header>
-                <h1 className="text-2xl font-black text-slate-800">Painel de Avisos</h1>
+                <h1 className="text-2xl font-bold text-slate-800">Painel de Avisos</h1>
                 <p className="text-slate-500 text-sm font-medium">Gerencie o que os moradores visualizam na tela inicial.</p>
             </header>
 
@@ -146,14 +146,14 @@ function AdminAvisos() {
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <label className="text-[10px] font-black uppercase text-slate-400">Título</label>
+                            <label className="text-[10px] font-bold uppercase text-slate-400">Título</label>
                             <input
                                 type="text" required value={titulo} onChange={(e) => setTitulo(e.target.value)}
                                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
                             />
                         </div>
                         <div>
-                            <label className="text-[10px] font-black uppercase text-slate-400">Descrição (max 300)</label>
+                            <label className="text-[10px] font-bold uppercase text-slate-400">Descrição (max 300)</label>
                             <textarea
                                 required maxLength={300} value={descricao} onChange={(e) => setDescricao(e.target.value)}
                                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none resize-none focus:ring-2 focus:ring-primary/20 transition-all font-medium" rows={3}
@@ -162,7 +162,7 @@ function AdminAvisos() {
 
                         {/* Image Upload Area */}
                         <div>
-                            <label className="text-[10px] font-black uppercase text-slate-400 block mb-2">Imagem do Aviso</label>
+                            <label className="text-[10px] font-bold uppercase text-slate-400 block mb-2">Imagem do Aviso</label>
                             <div
                                 onClick={() => fileInputRef.current?.click()}
                                 className="relative h-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-slate-100 transition-all overflow-hidden"

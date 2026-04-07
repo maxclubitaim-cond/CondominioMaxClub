@@ -93,7 +93,7 @@ function AdminUsers() {
         <div className="max-w-6xl mx-auto space-y-10 pb-20">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="px-4 md:px-0">
-                    <h1 className="text-xl md:text-2xl font-black text-slate-800">Controle de Usuários</h1>
+                    <h1 className="text-xl md:text-2xl font-bold text-slate-900">Controle de Usuários</h1>
                     <p className="text-slate-500 text-xs md:sm font-medium">Gerencie os níveis de acesso e visualize e-mails da equipe.</p>
                 </div>
                 <div className="relative w-full md:w-80">
@@ -108,11 +108,11 @@ function AdminUsers() {
                 </div>
             </header>
 
-            <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-premium overflow-hidden">
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
-                            <tr className="text-[10px] font-black uppercase text-slate-400 border-b border-slate-50 bg-slate-50/50">
+                            <tr className="text-[10px] font-bold uppercase text-slate-400 border-b border-slate-50 bg-slate-50">
                                 <th className="px-4 md:px-8 py-4 md:py-6">Usuário</th>
                                 <th className="px-4 md:px-8 py-4 md:py-6 hidden sm:table-cell">E-mail</th>
                                 <th className="px-4 md:px-8 py-4 md:py-6 hidden md:table-cell">Perfil Atual</th>
@@ -142,7 +142,7 @@ function AdminUsers() {
                                     <td className="px-4 md:px-8 py-4 md:py-5 hidden md:table-cell">
                                         <div className="flex items-center gap-2">
                                             {getIcon(user.perfil)}
-                                            <span className={`font-black text-[10px] uppercase tracking-widest ${user.perfil === 'ADM' ? 'text-secondary' :
+                                            <span className={`font-bold text-[10px] uppercase tracking-widest ${user.perfil === 'ADM' ? 'text-secondary' :
                                                 user.perfil === 'GESTOR' ? 'text-primary' : 'text-slate-400'
                                                 }`}>
                                                 {user.perfil}
@@ -206,11 +206,11 @@ function AdminUsers() {
                 )}
             </div>
 
-            <div className="bg-amber-50 border border-amber-100 rounded-2xl p-6 flex gap-4">
-                <Shield className="text-amber-500 shrink-0" />
+            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 flex gap-4">
+                <Shield className="text-primary shrink-0" />
                 <div className="space-y-1">
-                    <h4 className="text-sm font-bold text-amber-900">Sobre as Permissões</h4>
-                    <p className="text-xs text-amber-700 leading-relaxed">
+                    <h4 className="text-sm font-bold text-slate-900">Sobre as Permissões</h4>
+                    <p className="text-xs text-slate-600 leading-relaxed">
                         **OPERADOR**: Vizualização básica e registros operacionais.<br />
                         **GESTOR**: Gerenciamento de avisos, itens, vagas e acesso total às senhas.<br />
                         **ADM**: Controle total do sistema, incluindo esta gestão de usuários e perfis.
