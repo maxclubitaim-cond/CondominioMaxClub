@@ -18,14 +18,30 @@
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
   <script>
+    // Polyfills básicos para evitar quebras em scripts que esperam global ou process
+    window.global = window;
+    window.process = { env: {} };
+    
+    // Captura de Erros Global para diagnóstico rápido em produção
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+      console.error('Erro detectado:', msg, url, lineNo);
+      const root = document.getElementById('root');
+      if (!root || !root.hasChildNodes() || root.innerHTML.trim() === "") {
+        const errorDiv = document.createElement('div');
+        errorDiv.style = 'position:fixed;bottom:20px;left:20px;right:20px;padding:15px;background:rgba(0,0,0,0.8);color:#ff4444;border-radius:10px;font-family:monospace;font-size:12px;z-index:10000;word-break:break-all;';
+        errorDiv.innerHTML = '<b>Erro Crítico:</b> ' + msg + '<br><small>Linha: ' + lineNo + '</small>';
+        document.body.appendChild(errorDiv);
+      }
+      return false;
+    };
+
     // Recuperação de Página Branca (Auto-Reset)
     window.addEventListener('load', () => {
       setTimeout(() => {
         const root = document.getElementById('root');
         if (!root || !root.hasChildNodes() || root.innerHTML.trim() === "") {
-          console.warn('Detecada falha no carregamento. Tentando reset do PWA...');
+          console.warn('Detectada falha no carregamento. Tentando reset do PWA...');
           
-          // Se for a primeira falha, tentamos recarregar uma vez limpando tudo
           if (!sessionStorage.getItem('pwa_reset_attempted')) {
             sessionStorage.setItem('pwa_reset_attempted', 'true');
             if ('serviceWorker' in navigator) {
@@ -37,7 +53,6 @@
               window.location.reload(true);
             }
           } else {
-            // Se falhar de novo, mostramos o botão manual
             const btn = document.createElement('button');
             btn.innerHTML = '⚠️ O App não carregou? <br><b>Clique aqui para Restaurar</b>';
             btn.style = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:20px;background:#EB6049;color:white;border:none;border-radius:16px;font-weight:bold;z-index:9999;cursor:pointer;box-shadow:0 10px 25px rgba(0,0,0,0.2);text-align:center;font-family:sans-serif;';
