@@ -4,7 +4,9 @@ import { supabase } from '../lib/supabase';
 const VAPID_PUBLIC_KEY = 'BAU5mek47xtesYPESKQefbCsRrVfvjYbj2fgvFziMXZD3BQyY7NAU-N0wipMXw3YIW0RDPGCZftCh-xIPiZYdxI';
 
 export function usePushNotifications() {
-    const [permission, setPermission] = useState(Notification.permission);
+    const [permission, setPermission] = useState(
+        typeof Notification !== 'undefined' ? Notification.permission : 'default'
+    );
     const [subscribing, setSubscribing] = useState(false);
 
     /**
@@ -36,6 +38,9 @@ export function usePushNotifications() {
 
         setSubscribing(true);
         try {
+            if (typeof Notification === 'undefined') {
+                throw new Error('API de Notificações não suportada neste dispositivo/navegador.');
+            }
             const result = await Notification.requestPermission();
             setPermission(result);
 
