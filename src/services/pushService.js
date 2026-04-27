@@ -9,10 +9,10 @@ import { supabase } from '../lib/supabase';
  * @param {string} notification.url - URL para abrir ao clicar (opcional)
  */
 export async function sendPushNotification(notification) {
-    console.log('PushService: Iniciando processo de disparo...', notification);
+    console.log('PushService: Iniciando processo de disparo global...', notification);
 
     try {
-        // 1. Buscar todas as assinaturas válidas do banco
+        // Buscar todas as assinaturas na tabela pwa_subscriptions
         const { data: subscriptions, error } = await supabase
             .from('pwa_subscriptions')
             .select('subscription');
@@ -29,15 +29,17 @@ export async function sendPushNotification(notification) {
 
         console.log(`PushService: Disparando para ${subscriptions.length} dispositivos.`);
 
-        // 2. Chamar a Vercel Function (ou Edge Function)
-        const response = await fetch('/api/send-push', {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-push`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY}`
             },
             body: JSON.stringify({
                 notification,
-                subscriptions
+                subscriptions: subscriptions.map(s => s.subscription)
             })
         });
 
@@ -47,11 +49,9 @@ export async function sendPushNotification(notification) {
             throw new Error(result.error || 'Falha ao processar disparos no servidor');
         }
 
-        console.log('PushService: Disparo real concluído:', result);
-        
-        return { success: true, count: result.count };
+        return { success: true, count: result.count || subscriptions.length };
     } catch (err) {
         console.error('PushService: Erro inesperado:', err);
-        return { success: false, error: err };
+        return { success: false, error: err.message };
     }
 }

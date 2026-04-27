@@ -1,55 +1,63 @@
-import { serve } from "https://deno.land/std@0.131.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import webpush from 'https://esm.sh/web-push'
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import webpush from "npm:web-push"
 
-const _VAPID_PUBLIC_KEY = Deno.env.get('VAPID_PUBLIC_KEY')
-const _VAPID_PRIVATE_KEY = Deno.env.get('VAPID_PRIVATE_KEY')
+const VAPID_PUBLIC_KEY = "BJTvnnJigZoR42RhR5hCibuDjLmKDQ18WMYXVnO2en_MF_bXGRUrXgQ-fMGuVXE8l6RAsm41EuUKa470g3hinp0"
+const VAPID_PRIVATE_KEY = "14Hh6mY8VQwDxLfI-BOTxt4-Y65c7x7TvfOHCvAq4nE" 
+const GCM_API_KEY = "" // Opcional
 
 webpush.setVapidDetails(
   'mailto:contato@maxclubitaim.com.br',
-  _VAPID_PUBLIC_KEY,
-  _VAPID_PRIVATE_KEY
+  VAPID_PUBLIC_KEY,
+  VAPID_PRIVATE_KEY
 )
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
 serve(async (req) => {
+  // Handle CORS
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
   try {
-    const { title, body, url } = await req.json()
-    
-    // 1. Inicializar Supabase Client (usando variáveis internas da Edge Function)
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    const { notification, subscriptions } = await req.json()
+
+    if (!subscriptions || subscriptions.length === 0) {
+       return new Response(
+         JSON.stringify({ message: "Nenhuma assinatura fornecida." }),
+         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+       )
+    }
+
+    const results = await Promise.all(
+      subscriptions.map(async (sub: any) => {
+        try {
+          await webpush.sendNotification(sub, JSON.stringify({
+            title: notification.title,
+            body: notification.body,
+            url: notification.url || '/'
+          }))
+          return { success: true }
+        } catch (err: any) {
+          console.error('Erro ao enviar para dispositivo:', err)
+          return { success: false, error: err.message }
+        }
+      })
     )
 
-    // 2. Buscar todas as subscrições ativas
-    const { data: subscriptions, error } = await supabase
-      .from('push_subscriptions')
-      .select('subscription')
+    const successCount = results.filter(r => r.success).length
 
-    if (error) throw error
-
-    // 3. Enviar para cada subscrição
-    const notifications = subscriptions.map((sub: any) => {
-      return webpush.sendNotification(
-        sub.subscription,
-        JSON.stringify({ title, body, url })
-      ).catch(err => {
-        console.error('Falha ao enviar para uma subscrição:', err)
-        // Opcional: remover subscrição se expirar (status 410)
-      })
-    })
-
-    await Promise.all(notifications)
-
-    return new Response(JSON.stringify({ success: true }), { 
-      headers: { "Content-Type": "application/json" },
-      status: 200 
-    })
-
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), { 
-      headers: { "Content-Type": "application/json" },
-      status: 400 
-    })
+    return new Response(
+      JSON.stringify({ count: successCount, total: subscriptions.length }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+  } catch (error: any) {
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
   }
 })

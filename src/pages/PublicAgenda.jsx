@@ -49,7 +49,7 @@ function PublicAgenda() {
                         className="flex items-center gap-2 text-slate-600 hover:text-primary transition-all font-bold text-sm"
                     >
                         <ChevronLeft size={20} />
-                        Voltar para Início
+                        Voltar
                     </button>
                     <span className="text-xl font-bold tracking-tight text-slate-800 hidden sm:block">
                         MaxClub<span className="text-primary">Itaim</span>

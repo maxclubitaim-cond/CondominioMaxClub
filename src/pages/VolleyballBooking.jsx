@@ -64,7 +64,7 @@ function VolleyballBooking() {
                     onClick={() => navigate('/')}
                     className="mb-8 flex items-center gap-2 text-slate-400 font-bold text-xs uppercase tracking-widest hover:text-primary transition-all"
                 >
-                    <ArrowLeft size={16} /> Voltar para Início
+                    <ArrowLeft size={16} /> Voltar
                 </button>
 
                 <div className="bg-white rounded-[3rem] shadow-sm border border-slate-100 overflow-hidden relative group">
@@ -168,7 +168,7 @@ function VolleyballBooking() {
                                     onClick={() => navigate('/')}
                                     className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-primary transition-colors"
                                 >
-                                    Voltar para o Início
+                                    Voltar
                                 </button>
                             </div>
                         </motion.div>

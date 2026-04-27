@@ -15,6 +15,7 @@ function AdminAgenda() {
     const [hora, setHora] = useState('');
     const [local, setLocal] = useState('');
     const [observacao, setObservacao] = useState('');
+    const [notifying, setNotifying] = useState(null);
 
     useEffect(() => {
         fetchEventos();
@@ -47,21 +48,9 @@ function AdminAgenda() {
                 criado_por: user?.id
             }]);
 
+
         if (!error) {
-            // Disparar Notificação Push
-            const pushResult = await sendPushNotification({
-                title: 'Novo Evento na Agenda! 📅',
-                body: `${titulo} - ${formatDate(data)} às ${hora.slice(0, 5)}`,
-                url: '/agenda'
-            });
-
-            if (pushResult.success) {
-                notifyMessage = `Evento criado e enviado para ${pushResult.count} dispositivos!`;
-            } else {
-                notifyMessage = 'Evento criado, mas houve erro no envio push.';
-            }
-
-            alert(notifyMessage);
+            alert('Evento salvo com sucesso!');
             fetchEventos();
             setTitulo('');
             setData('');
@@ -78,6 +67,27 @@ function AdminAgenda() {
         if (!confirm('Excluir este evento?')) return;
         await supabase.from('agenda').delete().eq('id', id);
         fetchEventos();
+    }
+
+    async function handleManualPush(evento) {
+        setNotifying(evento.id);
+        try {
+            const pushResult = await sendPushNotification({
+                title: 'Novo Evento na Agenda! 📅',
+                body: `${evento.titulo} - ${formatDate(evento.data)} às ${evento.hora.slice(0, 5)}`,
+                url: '/agenda'
+            });
+
+            if (pushResult.success) {
+                alert(`Notificação enviada com sucesso para ${pushResult.count} dispositivos!`);
+            } else {
+                alert('Erro ao enviar notificação: ' + pushResult.error);
+            }
+        } catch (err) {
+            alert('Erro inesperado: ' + err.message);
+        } finally {
+            setNotifying(null);
+        }
     }
 
     if (loading) return <div>Carregando...</div>;
@@ -143,9 +153,19 @@ function AdminAgenda() {
                                         </div>
                                     </div>
                                 </div>
-                                <button onClick={() => deleteEvento(ev.id)} className="text-slate-300 hover:text-secondary opacity-0 group-hover:opacity-100 transition-all">
-                                    <Trash2 size={18} />
-                                </button>
+                                <div className="flex items-center gap-4">
+                                    <button
+                                        onClick={() => handleManualPush(ev)}
+                                        disabled={notifying === ev.id}
+                                        className="px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg transition-all text-[9px] font-bold uppercase tracking-widest flex items-center gap-2"
+                                    >
+                                        {notifying === ev.id ? <Loader2 size={10} className="animate-spin" /> : <Calendar size={10} />}
+                                        Notificar
+                                    </button>
+                                    <button onClick={() => deleteEvento(ev.id)} className="text-slate-300 hover:text-secondary opacity-0 group-hover:opacity-100 transition-all">
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>

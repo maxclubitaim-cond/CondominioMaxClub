@@ -40,6 +40,35 @@ function Home() {
     const navigate = useNavigate();
     const { isSubscribed, subscribeUser, loading: pushLoading } = usePushNotifications();
 
+    const scrollToSection = (id) => {
+        setIsMenuOpen(false);
+        setTimeout(() => {
+            const element = document.getElementById(id);
+            if (element) {
+                const offset = 80;
+                const bodyRect = document.body.getBoundingClientRect().top;
+                const elementRect = element.getBoundingClientRect().top;
+                const elementPosition = elementRect - bodyRect;
+                const offsetPosition = elementPosition - offset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }, 100);
+    };
+
+    const scrollToTop = () => {
+        setIsMenuOpen(false);
+        setTimeout(() => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }, 100);
+    };
+
     useEffect(() => {
         fetchInitialData();
     }, []);
@@ -132,8 +161,13 @@ function Home() {
 
                     {/* Desktop Nav */}
                     <nav className="hidden md:flex items-center gap-8">
-                        <button onClick={() => navigate('/')} className="text-xs font-bold uppercase tracking-widest text-primary border-b-2 border-primary pb-1">Início</button>
-                        <a href="#avisos" className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">Avisos</a>
+                        <button onClick={scrollToTop} className="text-xs font-bold uppercase tracking-widest text-primary border-b-2 border-primary pb-1">Início</button>
+                        <button 
+                            onClick={() => scrollToSection('avisos')} 
+                            className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors"
+                        >
+                            Avisos
+                        </button>
                         <button onClick={() => navigate('/agenda')} className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">Agenda</button>
                         <button 
                             onClick={() => navigate('/login')} 
@@ -151,25 +185,25 @@ function Home() {
                         {isMenuOpen ? <X /> : <Menu />}
                     </button>
                 </div>
-            </header>
 
-            <AnimatePresence>
-                {isMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="md:hidden bg-white border-b border-slate-200 overflow-hidden"
-                    >
-                        <div className="p-4 flex flex-col gap-4">
-                            <button onClick={() => { navigate('/'); setIsMenuOpen(false) }} className="text-left font-bold text-slate-600">Início</button>
-                            <a href="#avisos" onClick={() => setIsMenuOpen(false)} className="text-left font-bold text-slate-600">Avisos</a>
-                            <button onClick={() => { navigate('/agenda'); setIsMenuOpen(false); }} className="text-left font-bold text-slate-600">Agenda</button>
-                            <button onClick={() => navigate('/login')} className="bg-primary text-white font-bold py-3 rounded-xl">Área Administrativa</button>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                <AnimatePresence>
+                    {isMenuOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="md:hidden bg-white border-b border-slate-200 overflow-hidden"
+                        >
+                            <div className="p-4 flex flex-col gap-4">
+                                <button onClick={scrollToTop} className="text-left font-bold text-slate-600">Início</button>
+                                <button onClick={() => scrollToSection('avisos')} className="text-left font-bold text-slate-600">Avisos</button>
+                                <button onClick={() => { navigate('/agenda'); setIsMenuOpen(false); }} className="text-left font-bold text-slate-600">Agenda</button>
+                                <button onClick={() => navigate('/login')} className="bg-primary text-white font-bold py-3 rounded-xl">Área Administrativa</button>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </header>
 
             {/* Hero Section */}
             <main className="max-w-7xl mx-auto px-4 py-8 md:py-16">
@@ -255,7 +289,7 @@ function Home() {
 
                     {/* Status Sidebar (Desktop) */}
                     <motion.div
-                        className="hidden lg:block w-full max-w-sm space-y-8"
+                        className="w-full lg:max-w-sm space-y-8 mt-12 lg:mt-0"
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                     >

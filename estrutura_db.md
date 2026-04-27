@@ -61,6 +61,14 @@ Solicitação de convites para piscina.
 - `status`: TEXT ('PENDENTE', 'ENTREGUE')
 - `created_at`: TIMESTAMPTZ
 
+### 10. `pwa_subscriptions` [NOVO]
+Armazena as assinaturas de WebPush para notificações.
+- `id`: UUID (PK)
+- `user_id`: UUID (FK auth.users, opcional para visitantes)
+- `subscription`: JSONB (Dados do endpoint, auth e p256dh)
+- `user_agent`: TEXT
+- `created_at`: TIMESTAMPTZ
+
 ## Tipos Customizados
 - `user_perfil`: ENUM ('OPERADOR', 'GESTOR', 'ADM')
 

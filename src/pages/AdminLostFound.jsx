@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
-import { Package, Plus, Loader2, Save, Trash2, CheckCircle, Camera, Search, X } from 'lucide-react';
+import { Package, Plus, Loader2, Save, Trash2, CheckCircle, Camera, Search, X, Bell } from 'lucide-react';
 import { sendPushNotification } from '../services/pushService';
 
 function AdminLostFound() {
@@ -11,6 +11,7 @@ function AdminLostFound() {
     const [itemNome, setItemNome] = useState('');
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
+    const [notifying, setNotifying] = useState(null);
     const fileInputRef = useRef(null);
 
     useEffect(() => {
@@ -75,20 +76,7 @@ function AdminLostFound() {
                 registrado_por: user?.id
             }]);
 
-            // Disparar Notificação Push
-            const pushResult = await sendPushNotification({
-                title: 'Novo item nos Achados e Perdidos! 📦',
-                body: `Foi encontrado: ${itemNome}. Confira no app se é seu!`,
-                url: '/achados'
-            });
-
-            if (pushResult.success) {
-                notifyMessage = `Item registrado e enviado para ${pushResult.count} dispositivos!`;
-            } else {
-                notifyMessage = 'Item registrado, mas houve erro no envio push.';
-            }
-
-            alert(notifyMessage);
+            alert('Item registrado com sucesso!');
             setItemNome('');
             setImageFile(null);
             setImagePreview(null);
@@ -115,6 +103,27 @@ function AdminLostFound() {
 
         await supabase.from('achados_perdidos').delete().eq('id', id);
         fetchItems();
+    }
+
+    async function handleManualPush(item) {
+        setNotifying(item.id);
+        try {
+            const pushResult = await sendPushNotification({
+                title: 'Novo item nos Achados e Perdidos! 📦',
+                body: `Foi encontrado: ${item.item}. Confira no app se é seu!`,
+                url: '/achados'
+            });
+
+            if (pushResult.success) {
+                alert(`Notificação enviada com sucesso para ${pushResult.count} dispositivos!`);
+            } else {
+                alert('Erro ao enviar notificação: ' + pushResult.error);
+            }
+        } catch (err) {
+            alert('Erro inesperado: ' + err.message);
+        } finally {
+            setNotifying(null);
+        }
     }
 
     if (loading) return <div>Carregando...</div>;
@@ -204,12 +213,24 @@ function AdminLostFound() {
                                     <h3 className="font-bold text-slate-800 text-lg leading-tight">{item.item}</h3>
                                     <span className="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">{new Date(item.created_at).toLocaleDateString()}</span>
                                 </div>
-                                <button
-                                    onClick={() => toggleRetirado(item.id, item.retirado)}
-                                    className={`w-full py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${item.retirado ? 'bg-slate-100 text-slate-400' : 'bg-highlight/10 text-highlight hover:bg-highlight/20 shadow-sm shadow-highlight/10'}`}
-                                >
-                                    {item.retirado ? <><CheckCircle size={14} /> Entregue ao Morador</> : 'Marcar como Retirado'}
-                                </button>
+                                <div className="flex flex-col gap-2">
+                                    <button
+                                        onClick={() => toggleRetirado(item.id, item.retirado)}
+                                        className={`w-full py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${item.retirado ? 'bg-slate-100 text-slate-400' : 'bg-highlight/10 text-highlight hover:bg-highlight/20 shadow-sm shadow-highlight/10'}`}
+                                    >
+                                        {item.retirado ? <><CheckCircle size={14} /> Entregue ao Morador</> : 'Marcar como Retirado'}
+                                    </button>
+                                    {!item.retirado && (
+                                        <button
+                                            onClick={() => handleManualPush(item)}
+                                            disabled={notifying === item.id}
+                                            className="w-full py-2.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+                                        >
+                                            {notifying === item.id ? <Loader2 size={12} className="animate-spin" /> : <Bell size={12} />}
+                                            Notificar Moradores
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ))}

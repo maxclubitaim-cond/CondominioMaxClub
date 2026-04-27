@@ -14,6 +14,9 @@ import {
     X
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { FileText, Loader2 } from 'lucide-react';
+import { PdfService } from '../services/PdfService';
+import DateSelectorModal from '../components/DateSelectorModal';
 
 function AdminAccessHistory() {
     const [registros, setRegistros] = useState([]);
@@ -22,6 +25,8 @@ function AdminAccessHistory() {
     const [filterLocal, setFilterLocal] = useState('');
     const [filterDate, setFilterDate] = useState('');
     const [locais, setLocais] = useState([]);
+    const [isExportLoading, setIsExportLoading] = useState(false);
+    const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -57,6 +62,40 @@ function AdminAccessHistory() {
         if (locaisData) setLocais(locaisData);
 
         setLoading(false);
+    }
+
+    async function handleExportConfirm(startDate, endDate) {
+        setIsExportLoading(true);
+        try {
+            const { data, error } = await supabase
+                .from('registros_acesso')
+                .select('*, locais(nome)')
+                .gte('data_uso', startDate + 'T00:00:00')
+                .lte('data_uso', endDate + 'T23:59:59')
+                .order('data_uso', { ascending: true });
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                alert('Nenhum registro encontrado para este período.');
+                return;
+            }
+
+            const reportData = data.map(r => ({
+                unidade: r.unidade,
+                local: r.locais?.nome || 'Local',
+                data_uso: r.data_uso,
+                status: r.nome_morador
+            }));
+
+            await PdfService.generateModuleReport('Histórico de Acessos', reportData, { start: startDate, end: endDate });
+            setIsPdfModalOpen(false);
+        } catch (error) {
+            console.error('Erro ao exportar PDF:', error);
+            alert('Falha ao gerar relatório.');
+        } finally {
+            setIsExportLoading(false);
+        }
     }
 
     const filteredRegistros = registros.filter(reg => {
@@ -98,8 +137,19 @@ function AdminAccessHistory() {
                 >
                     <ArrowLeft size={16} /> Voltar ao Painel
                 </button>
-                <h1 className="text-3xl font-bold text-slate-800">Histórico de Acessos</h1>
-                <p className="text-slate-500 font-medium">Monitore quem utilizou as senhas de acesso do condomínio.</p>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 className="text-3xl font-bold text-slate-800">Histórico de Acessos</h1>
+                        <p className="text-slate-500 font-medium">Monitore quem utilizou as senhas de acesso do condomínio.</p>
+                    </div>
+                    <button
+                        onClick={() => setIsPdfModalOpen(true)}
+                        className="flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-600 font-bold px-6 py-3 rounded-xl hover:bg-slate-50 transition-all shadow-sm text-sm"
+                    >
+                        <FileText size={18} className="text-primary" />
+                        Exportar Relatório
+                    </button>
+                </div>
             </motion.div>
 
             {/* Filtros */}
@@ -239,6 +289,14 @@ function AdminAccessHistory() {
                     </table>
                 </div>
             </div>
+
+            <DateSelectorModal 
+                isOpen={isPdfModalOpen}
+                onClose={() => setIsPdfModalOpen(false)}
+                onConfirm={handleExportConfirm}
+                loading={isExportLoading}
+                title="Histórico de Acessos"
+            />
         </div>
     );
 }

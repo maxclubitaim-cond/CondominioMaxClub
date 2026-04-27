@@ -32,6 +32,8 @@ import AdminAccessHistory from './pages/AdminAccessHistory';
 import PoolPasses from './pages/PoolPasses';
 import AdminPoolPasses from './pages/AdminPoolPasses';
 
+import ScrollToTop from './components/ScrollToTop';
+
 // Mock/Lazy loading placeholders
 const ProtectedRoute = ({ children, allowedProfiles = [] }) => {
     // ...
@@ -118,6 +120,7 @@ function App() {
     return (
         <AuthProvider>
             <Router>
+                <ScrollToTop />
                 <AppContent />
             </Router>
         </AuthProvider>

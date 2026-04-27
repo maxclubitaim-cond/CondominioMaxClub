@@ -225,7 +225,7 @@ function Login() {
                     onClick={() => navigate('/')}
                     className="mt-8 text-slate-400 text-[10px] font-bold uppercase tracking-widest hover:text-primary transition-colors flex items-center gap-2 mx-auto"
                 >
-                    Voltar para Início
+                    Voltar
                 </button>
             </motion.div>
         </div>

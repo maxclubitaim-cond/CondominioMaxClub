@@ -60,7 +60,7 @@ function PoolPasses() {
                     onClick={() => navigate('/')}
                     className="mb-8 flex items-center gap-2 text-slate-400 font-bold text-xs uppercase tracking-widest hover:text-primary transition-all"
                 >
-                    <ArrowLeft size={16} /> Voltar para Início
+                    <ArrowLeft size={16} /> Voltar
                 </button>
 
                 <div className="bg-white rounded-[3rem] shadow-sm border border-slate-100 overflow-hidden relative group">
@@ -177,7 +177,7 @@ function PoolPasses() {
                                     onClick={() => navigate('/')}
                                     className="bg-primary text-white font-bold py-5 rounded-2xl shadow-xl hover:bg-blue-600 transition-all uppercase tracking-widest text-[10px]"
                                 >
-                                    Voltar para o Início
+                                    Voltar
                                 </button>
                             </div>
                         </motion.div>

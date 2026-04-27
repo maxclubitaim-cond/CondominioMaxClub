@@ -12,6 +12,7 @@ function AdminAvisos() {
 
     const [titulo, setTitulo] = useState('');
     const [descricao, setDescricao] = useState('');
+    const [notifying, setNotifying] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const [dataFim, setDataFim] = useState('');
@@ -85,21 +86,9 @@ function AdminAvisos() {
                     criado_por: user?.id
                 }]);
 
+
             if (!error) {
-                // Disparar Notificação Push
-                const pushResult = await sendPushNotification({
-                    title: 'Novo Aviso no MaxClub! 📢',
-                    body: titulo,
-                    url: '/'
-                });
-
-                if (pushResult.success) {
-                    notifyMessage = `Aviso criado e enviado para ${pushResult.count} dispositivos!`;
-                } else {
-                    notifyMessage = 'Aviso criado, mas houve erro no envio push.';
-                }
-
-                alert(notifyMessage);
+                alert('Aviso criado com sucesso!');
                 fetchAvisos();
                 setTitulo('');
                 setDescricao('');
@@ -127,6 +116,27 @@ function AdminAvisos() {
 
         await supabase.from('avisos').delete().eq('id', id);
         fetchAvisos();
+    }
+
+    async function handleManualPush(aviso) {
+        setNotifying(aviso.id);
+        try {
+            const pushResult = await sendPushNotification({
+                title: 'Aviso MaxClub! 📢',
+                body: aviso.titulo,
+                url: '/'
+            });
+
+            if (pushResult.success) {
+                alert(`Notificação enviada com sucesso para ${pushResult.count} dispositivos!`);
+            } else {
+                alert('Erro ao enviar notificação: ' + pushResult.error);
+            }
+        } catch (err) {
+            alert('Erro inesperado: ' + err.message);
+        } finally {
+            setNotifying(null);
+        }
     }
 
     if (loading) return <div>Carregando...</div>;
@@ -231,9 +241,19 @@ function AdminAvisos() {
                                 <div className="p-6">
                                     <h3 className="font-bold text-slate-800 mb-2">{aviso.titulo}</h3>
                                     <p className="text-xs text-slate-500 mb-6 line-clamp-2 leading-relaxed">{aviso.descricao}</p>
-                                    <div className="flex items-center justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest pt-4 border-t border-slate-50">
-                                        <span>{new Date(aviso.created_at).toLocaleDateString('pt-BR')}</span>
-                                        {aviso.data_fim && <span className="text-secondary bg-secondary/10 px-2 py-0.5 rounded-md">Expira: {formatDate(aviso.data_fim)}</span>}
+                                    <div className="flex items-center justify-between pt-4 border-t border-slate-50 mt-4">
+                                        <div className="flex flex-col text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                            <span>{new Date(aviso.created_at).toLocaleDateString('pt-BR')}</span>
+                                            {aviso.data_fim && <span className="text-secondary">Expira: {formatDate(aviso.data_fim)}</span>}
+                                        </div>
+                                        <button
+                                            onClick={() => handleManualPush(aviso)}
+                                            disabled={notifying === aviso.id}
+                                            className="flex items-center gap-2 px-3 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg transition-all text-[10px] font-bold uppercase tracking-widest disabled:opacity-50"
+                                        >
+                                            {notifying === aviso.id ? <Loader2 size={12} className="animate-spin" /> : <Bell size={12} />}
+                                            Disparar Push
+                                        </button>
                                     </div>
                                 </div>
                             </div>

@@ -150,7 +150,7 @@ const PublicChecklist = () => {
                         onClick={() => window.location.reload()}
                         className="w-full py-4 bg-primary text-white font-bold rounded-2xl hover:brightness-110 transition-all flex items-center justify-center gap-2"
                     >
-                        <Home size={18} /> Voltar ao Início
+                        <Home size={18} /> Voltar
                     </button>
                 </motion.div>
             </div>
@@ -160,10 +160,19 @@ const PublicChecklist = () => {
     return (
         <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl mx-auto">
-                <div className="text-center mb-10">
-                    <div className="inline-flex items-center justify-center p-3 bg-primary/10 text-primary rounded-2xl mb-4">
-                        <ClipboardCheck size={32} />
+                <div className="flex items-center justify-between mb-10">
+                    <button
+                        onClick={() => navigate('/')}
+                        className="flex items-center gap-2 text-slate-400 hover:text-primary transition-all font-bold text-xs uppercase tracking-widest"
+                    >
+                        <ChevronLeft size={16} /> Voltar
+                    </button>
+                    <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
+                        <ClipboardCheck size={24} />
                     </div>
+                    <div className="w-20"></div> {/* Spacer */}
+                </div>
+                <div className="text-center mb-10">
                     <h1 className="text-3xl font-bold text-slate-900">Checklist Salão de Festas</h1>
                     <p className="text-slate-500 mt-2 font-medium">Gestão e Melhoria Contínua - MaxClub Itaim</p>
                 </div>

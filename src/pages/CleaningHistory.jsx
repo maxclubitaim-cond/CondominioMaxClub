@@ -31,7 +31,7 @@ function CleaningHistory() {
                     onClick={() => navigate('/')}
                     className="mb-8 flex items-center gap-2 text-slate-400 font-bold text-xs uppercase tracking-widest hover:text-primary transition-all"
                 >
-                    <ArrowLeft size={16} /> Voltar para Início
+                    <ArrowLeft size={16} /> Voltar
                 </button>
 
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">

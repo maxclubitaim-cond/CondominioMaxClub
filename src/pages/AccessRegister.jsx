@@ -63,7 +63,7 @@ function AccessRegister() {
                     onClick={() => navigate('/')}
                     className="mb-8 flex items-center gap-2 text-slate-400 font-bold text-xs uppercase tracking-widest hover:text-primary transition-all"
                 >
-                    <ArrowLeft size={16} /> Voltar para Início
+                    <ArrowLeft size={16} /> Voltar
                 </button>
 
                 <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">

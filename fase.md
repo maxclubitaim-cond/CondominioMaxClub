@@ -26,8 +26,14 @@ As fases abaixo definem o cronograma de desenvolvimento e melhorias do projeto.
 - [x] Ajuste de Permissões de Acesso para OPERADOR (Vagas Liberado, Acessos Restrito).
 - [x] Alteração terminológica de 'Feedback' para 'Sugestões' em todo o sistema.
 
-## [/] Fase 4: Novas Funcionalidades e Homologação (Iniciada)
-- [ ] Implementação de Notificações PWA (WebPush).
+## [/] Fase 4: Novas Funcionalidades e Homologação (Em Progresso)
+- [x] Correção de responsividade na `Home.jsx` (Status Sidebar visível no mobile).
+- [x] Implementação de Scroll Suave e Correção de Navegação (Avisos/Mobile).
+- [x] Padronização de Rótulos de Navegação ("Voltar").
+- [x] Correção de Scroll para o Topo em navegação de páginas.
+- [x] Implementação de Notificações PWA (WebPush).
+    - [x] Foco exclusivo em comunicados para moradores (Avisos/Agenda/Achados).
+    - [x] Botões manuais de disparo no painel administrativo para controle total.
 - [ ] Geração de Relatórios de Limpeza e Acessos em PDF.
 - [ ] Testes de maturidade de código (`code-maturity-assessor`).
 - [ ] Homologação final com o usuário.
