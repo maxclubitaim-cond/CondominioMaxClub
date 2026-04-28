@@ -32,7 +32,7 @@ function AdminVolleyball() {
     async function deleteReserva(id) {
         toast((t) => (
             <div className="flex flex-col gap-3">
-                <p className="text-sm font-bold text-slate-900">Deseja excluir esta reserva?</p>
+                <p className="text-sm font-black text-slate-950 uppercase tracking-tight">Deseja excluir esta reserva?</p>
                 <div className="flex gap-2">
                     <button 
                         onClick={async () => {

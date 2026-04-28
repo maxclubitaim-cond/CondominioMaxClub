@@ -1,6 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { sendPushNotification } from '../services/pushService';
+import { 
+    Plus, 
+    X, 
+    Camera, 
+    Loader2, 
+    Save, 
+    Trash2, 
+    Package, 
+    CheckCircle, 
+    Bell, 
+    Search 
+} from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 function AdminLostFound() {
@@ -96,7 +108,7 @@ function AdminLostFound() {
     async function deleteItem(id, imageUrl) {
         toast((t) => (
             <div className="flex flex-col gap-3">
-                <p className="text-sm font-bold text-slate-900">Deseja excluir este item?</p>
+                <p className="text-sm font-black text-slate-950 uppercase tracking-tight">Deseja excluir este item?</p>
                 <div className="flex gap-2">
                     <button 
                         onClick={async () => {

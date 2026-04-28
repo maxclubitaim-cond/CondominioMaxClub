@@ -93,7 +93,7 @@ function AdminCleaning() {
     async function deleteRegistro(id) {
         toast((t) => (
             <div className="flex flex-col gap-3">
-                <p className="text-sm font-bold text-slate-900">Excluir este registro?</p>
+                <p className="text-sm font-black text-slate-950 uppercase tracking-tight">Excluir este registro?</p>
                 <div className="flex gap-2">
                     <button 
                         onClick={async () => {
@@ -183,7 +183,7 @@ function AdminCleaning() {
     async function deleteLocal(id) {
         toast((t) => (
             <div className="flex flex-col gap-3">
-                <p className="text-sm font-bold text-slate-900">Excluir este local? Isso pode afetar o histórico.</p>
+                <p className="text-sm font-black text-slate-950 uppercase tracking-tight">Excluir este local? Isso pode afetar o histórico.</p>
                 <div className="flex gap-2">
                     <button 
                         onClick={async () => {

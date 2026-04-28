@@ -115,7 +115,7 @@ function DoorPasswords() {
     async function handleDeleteLocal(id) {
         toast((t) => (
             <div className="flex flex-col gap-3">
-                <p className="text-sm font-bold text-slate-900">Tem certeza que deseja remover este local?</p>
+                <p className="text-sm font-black text-slate-950 uppercase tracking-tight">Tem certeza que deseja remover este local?</p>
                 <div className="flex gap-2">
                     <button 
                         onClick={async () => {
