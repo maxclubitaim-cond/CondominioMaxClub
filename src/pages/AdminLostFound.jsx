@@ -109,8 +109,8 @@ function AdminLostFound() {
         setNotifying(item.id);
         try {
             const pushResult = await sendPushNotification({
-                title: 'Novo item nos Achados e Perdidos! 📦',
-                body: `Foi encontrado: ${item.item}. Confira no app se é seu!`,
+                title: item.item,
+                body: 'Novo item nos Achados e Perdidos 📦',
                 url: '/achados'
             });
 

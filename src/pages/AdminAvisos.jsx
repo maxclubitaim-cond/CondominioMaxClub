@@ -122,8 +122,8 @@ function AdminAvisos() {
         setNotifying(aviso.id);
         try {
             const pushResult = await sendPushNotification({
-                title: 'Aviso MaxClub! 📢',
-                body: aviso.titulo,
+                title: aviso.titulo,
+                body: 'Aviso MaxClub Itaim 📢',
                 url: '/'
             });
 

@@ -73,8 +73,8 @@ function AdminAgenda() {
         setNotifying(evento.id);
         try {
             const pushResult = await sendPushNotification({
-                title: 'Novo Evento na Agenda! 📅',
-                body: `${evento.titulo} - ${formatDate(evento.data)} às ${evento.hora.slice(0, 5)}`,
+                title: evento.titulo,
+                body: `Agenda MaxClub: ${formatDate(evento.data)} às ${evento.hora.slice(0, 5)} 📅`,
                 url: '/agenda'
             });
 
