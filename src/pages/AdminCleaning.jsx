@@ -59,11 +59,8 @@ function AdminCleaning() {
         e.preventDefault();
         setSaving(true);
 
-        // Criar a data combinando o dia selecionado com o horário atual local
-        // Isso evita que o fuso horário UTC mude o dia ao salvar no banco
-        const now = new Date();
-        const timeStr = now.toTimeString().split(' ')[0];
-        const dataLimpeza = new Date(`${dataRegistro}T${timeStr}`);
+        // Usar apenas a data selecionada (YYYY-MM-DD)
+        const dataLimpeza = new Date(`${dataRegistro}T12:00:00`); // Meio-dia para evitar problemas de fuso
         
         const proximaLimpeza = new Date(dataLimpeza);
         proximaLimpeza.setDate(dataLimpeza.getDate() + 3);
@@ -311,7 +308,7 @@ function AdminCleaning() {
                                 <tr key={reg.id} className="text-xs md:text-sm">
                                     <td className="px-4 md:px-6 py-4 font-bold text-slate-700">{reg.locais_limpeza?.nome}</td>
                                     <td className="px-4 md:px-6 py-4 text-slate-500">
-                                        {new Date(reg.data_limpeza).toLocaleDateString('pt-BR')} <span className="hidden md:inline">{new Date(reg.data_limpeza).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
+                                        {new Date(reg.data_limpeza).toLocaleDateString('pt-BR')}
                                     </td>
                                     <td className="px-4 md:px-6 py-4 text-slate-500 font-medium hidden sm:table-cell">{reg.nome_operador}</td>
                                     <td className="px-4 md:px-6 py-4 text-right">
