@@ -74,13 +74,14 @@ function Home() {
     }, []);
 
     async function fetchInitialData() {
-        const now = new Date().toISOString();
+        const now = new Date();
+        const today = now.toISOString().split('T')[0];
 
-        // Fetch Avisos (que não expiraram)
+        // Fetch Avisos (que não expiraram ou expiram hoje)
         const { data: dataAvisos } = await supabase
             .from('avisos')
             .select('*')
-            .or(`data_fim.gt.${now},data_fim.is.null`)
+            .or(`data_fim.gte.${today},data_fim.is.null`)
             .order('created_at', { ascending: false });
 
         // Fetch Agenda (eventos futuros)

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
-const VAPID_PUBLIC_KEY = 'BJTvnnJigZoR42RhR5hCibuDjLmKDQ18WMYXVnO2en_MF_bXGRUrXgQ-fMGuVXE8l6RAsm41EuUKa470g3hinp0';
+const VAPID_PUBLIC_KEY = 'BKXZgew3hPMIGgMsvGkh5hnvqcAIsliL8BskELxDWWMJVJcG4x0hBD-uPHURsWT1CNwxGNpLBuQgbAOO3rRRAv0';
 
 export function usePushNotifications() {
     const [permission, setPermission] = useState(

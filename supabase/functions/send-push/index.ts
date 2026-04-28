@@ -1,8 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import webpush from "npm:web-push"
 
-const VAPID_PUBLIC_KEY = "BJTvnnJigZoR42RhR5hCibuDjLmKDQ18WMYXVnO2en_MF_bXGRUrXgQ-fMGuVXE8l6RAsm41EuUKa470g3hinp0"
-const VAPID_PRIVATE_KEY = "14Hh6mY8VQwDxLfI-BOTxt4-Y65c7x7TvfOHCvAq4nE" 
+const VAPID_PUBLIC_KEY = "BKXZgew3hPMIGgMsvGkh5hnvqcAIsliL8BskELxDWWMJVJcG4x0hBD-uPHURsWT1CNwxGNpLBuQgbAOO3rRRAv0"
+const VAPID_PRIVATE_KEY = "U6u_i_p8s8UB2xpcHEwkV_sRX4xpKL7ZSZLafyuyJ8E" 
 const GCM_API_KEY = "" // Opcional
 
 webpush.setVapidDetails(
