@@ -74,8 +74,7 @@ function Home() {
     }, []);
 
     async function fetchInitialData() {
-        const now = new Date();
-        const today = now.toISOString().split('T')[0];
+        const today = new Date().toLocaleDateString('en-CA'); 
 
         // Fetch Avisos (que não expiraram ou expiram hoje)
         const { data: dataAvisos } = await supabase
