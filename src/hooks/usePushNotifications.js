@@ -102,6 +102,7 @@ export function usePushNotifications() {
             }
         } catch (error) {
             console.error('Erro ao subscrever WebPush:', error);
+            alert('Erro ao ativar notificações: ' + (error.message || 'Erro desconhecido no banco de dados. Verifique o RLS.'));
         } finally {
             setLoading(false);
         }
