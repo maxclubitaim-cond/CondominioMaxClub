@@ -12,6 +12,7 @@ import {
     Clock
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 function PoolPasses() {
     const [unidade, setUnidade] = useState('');
@@ -43,8 +44,9 @@ function PoolPasses() {
         if (!error) {
             setBooked(true);
             setShowRules(false);
+            toast.success('Solicitação realizada!');
         } else {
-            alert('Erro ao solicitar: ' + error.message);
+            toast.error('Erro ao solicitar: ' + error.message);
         }
         setSubmitting(false);
     }

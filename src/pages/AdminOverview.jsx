@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import DateSelectorModal from '../components/DateSelectorModal';
 import { PdfService } from '../services/PdfService';
 import { formatDate, getMonthName, getDayOfMonth } from '../utils/dateUtils';
+import { toast } from 'react-hot-toast';
 
 function AdminOverview() {
     const [stats, setStats] = useState({
@@ -217,9 +218,10 @@ function AdminOverview() {
 
             await PdfService.generateModuleReport(modalConfig.title, reportData || [], { start, end });
             setModalConfig({ ...modalConfig, open: false });
+            toast.success('Relatório gerado!');
         } catch (error) {
             console.error('Erro ao exportar PDF:', error);
-            alert('Falha ao gerar relatório. Verifique os dados no período selecionado.');
+            toast.error('Falha ao gerar relatório. Verifique os dados no período selecionado.');
         } finally {
             setExportLoading(false);
         }

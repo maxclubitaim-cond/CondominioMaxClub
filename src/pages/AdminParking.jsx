@@ -19,6 +19,7 @@ import {
     Save,
     Building
 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 function AdminParking() {
     const [vagas, setVagas] = useState([]);
@@ -72,10 +73,18 @@ function AdminParking() {
 
         if (editingVaga) {
             const { error } = await supabase.from('vagas').update(payload).eq('id', editingVaga.id);
-            if (error) alert('Erro ao atualizar: ' + error.message);
+            if (error) {
+                toast.error('Erro ao atualizar: ' + error.message);
+            } else {
+                toast.success('Vaga atualizada!');
+            }
         } else {
             const { error } = await supabase.from('vagas').insert([payload]);
-            if (error) alert('Erro ao cadastrar: ' + error.message);
+            if (error) {
+                toast.error('Erro ao cadastrar: ' + error.message);
+            } else {
+                toast.success('Vaga cadastrada!');
+            }
         }
 
         fetchData();
@@ -102,10 +111,31 @@ function AdminParking() {
     };
 
     async function deleteVaga(id) {
-        if (!confirm('Excluir esta vaga?')) return;
-        const { error } = await supabase.from('vagas').delete().eq('id', id);
-        if (error) alert('Erro ao excluir: ' + error.message);
-        fetchData();
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <p className="text-sm font-bold text-slate-800">Excluir esta vaga?</p>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            const { error } = await supabase.from('vagas').delete().eq('id', id);
+                            if (error) {
+                                toast.error('Erro ao excluir: ' + error.message);
+                            } else {
+                                toast.success('Vaga excluída.');
+                                fetchData();
+                            }
+                        }}
+                        className="bg-secondary text-white px-3 py-1.5 rounded-lg text-xs font-bold"
+                    >
+                        Sim, excluir
+                    </button>
+                    <button onClick={() => toast.dismiss(t.id)} className="bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        ));
     }
 
     async function handleSwap(e) {
@@ -137,7 +167,7 @@ function AdminParking() {
     }
 
     async function runLottery() {
-        if (!lotteryTitle) return alert('Dê um título ao sorteio');
+        if (!lotteryTitle) return toast.error('Dê um título ao sorteio');
         setLotteryLoading(true);
 
         const unidades = vagas.map(v => v.unidade_dona);
@@ -157,12 +187,12 @@ function AdminParking() {
         }]);
 
         if (!error) {
-            alert('Sorteio realizado com sucesso!');
+            toast.success('Sorteio realizado com sucesso!');
             fetchData();
             setIsLoterriaOpen(false);
             setLotteryTitle('');
         } else {
-            alert('Erro ao realizar sorteio: ' + error.message);
+            toast.error('Erro ao realizar sorteio: ' + error.message);
         }
         setLotteryLoading(false);
     }

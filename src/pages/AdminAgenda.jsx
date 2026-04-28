@@ -65,9 +65,30 @@ function AdminAgenda() {
     }
 
     async function deleteEvento(id) {
-        if (!confirm('Excluir este evento?')) return;
-        await supabase.from('agenda').delete().eq('id', id);
-        fetchEventos();
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <p className="text-sm font-bold text-slate-800">Deseja excluir este evento?</p>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            await supabase.from('agenda').delete().eq('id', id);
+                            fetchEventos();
+                            toast.success('Evento excluído.');
+                        }}
+                        className="bg-secondary text-white px-3 py-1.5 rounded-lg text-xs font-bold"
+                    >
+                        Sim, excluir
+                    </button>
+                    <button 
+                        onClick={() => toast.dismiss(t.id)}
+                        className="bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold"
+                    >
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        ), { duration: 6000 });
     }
 
     async function handleManualPush(evento) {

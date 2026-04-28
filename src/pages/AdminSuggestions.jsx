@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import { MessageSquare, CheckCircle, Clock, Trash2, Building } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 function AdminSuggestions() {
     const [sugestoes, setSugestoes] = useState([]);
@@ -26,9 +27,27 @@ function AdminSuggestions() {
     }
 
     async function deleteSugestao(id) {
-        if (!confirm('Apagar sugestão?')) return;
-        await supabase.from('sugestoes').delete().eq('id', id);
-        fetchSugestoes();
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <p className="text-sm font-bold text-slate-800">Deseja apagar esta sugestão?</p>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            await supabase.from('sugestoes').delete().eq('id', id);
+                            fetchSugestoes();
+                            toast.success('Sugestão apagada.');
+                        }}
+                        className="bg-secondary text-white px-3 py-1.5 rounded-lg text-xs font-bold"
+                    >
+                        Sim, apagar
+                    </button>
+                    <button onClick={() => toast.dismiss(t.id)} className="bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        ), { duration: 6000 });
     }
 
     if (loading) return <div>Carregando...</div>;

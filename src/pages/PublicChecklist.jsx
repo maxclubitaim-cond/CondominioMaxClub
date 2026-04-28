@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-hot-toast';
 
 const PublicChecklist = () => {
     const [loading, setLoading] = useState(false);
@@ -71,7 +72,7 @@ const PublicChecklist = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!unidade || !dataEvento || Object.values(respostas).some(v => v === '')) {
-            alert('Por favor, preencha todos os campos e responda todas as perguntas.');
+            toast.error('Por favor, preencha todos os campos e responda todas as perguntas.');
             return;
         }
 
@@ -125,7 +126,7 @@ const PublicChecklist = () => {
             setSubmitted(true);
         } catch (error) {
             console.error('Erro ao enviar checklist:', error);
-            alert('Erro ao enviar checklist. Tente novamente.');
+            toast.error('Erro ao enviar checklist. Tente novamente.');
         } finally {
             setLoading(false);
         }

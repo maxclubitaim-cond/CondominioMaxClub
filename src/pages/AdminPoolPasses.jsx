@@ -15,6 +15,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { PdfService } from '../services/PdfService';
 import DateSelectorModal from '../components/DateSelectorModal';
+import { toast } from 'react-hot-toast';
 
 function AdminPoolPasses() {
     const [requests, setRequests] = useState([]);
@@ -53,6 +54,9 @@ function AdminPoolPasses() {
 
         if (!error) {
             setRequests(requests.map(r => r.id === id ? { ...r, status: 'ENTREGUE' } : r));
+            toast.success('Entrega confirmada!');
+        } else {
+            toast.error('Erro ao confirmar: ' + error.message);
         }
     }
 
@@ -69,7 +73,7 @@ function AdminPoolPasses() {
             if (error) throw error;
 
             if (!data || data.length === 0) {
-                alert('Nenhum registro encontrado para este período.');
+                toast.error('Nenhum registro encontrado para este período.');
                 return;
             }
 
@@ -84,9 +88,10 @@ function AdminPoolPasses() {
 
             await PdfService.generateModuleReport('Pulseiras Piscina', reportData, { start: startDate, end: endDate });
             setIsModalOpen(false);
+            toast.success('Relatório gerado!');
         } catch (error) {
             console.error('Erro ao exportar:', error);
-            alert('Falha ao gerar relatório.');
+            toast.error('Falha ao gerar relatório.');
         } finally {
             setIsExportLoading(false);
         }

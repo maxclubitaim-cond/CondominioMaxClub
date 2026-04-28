@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Users, Shield, ShieldCheck, ShieldAlert, Loader2, Save, Search, UserCircle, Mail } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 function AdminUsers() {
     const { profile } = useAuth();
@@ -43,12 +44,15 @@ function AdminUsers() {
             .eq('id', userId);
 
         if (!error) {
+            toast.success('Perfil atualizado com sucesso!');
             setUsuarios(prev => prev.map(u => u.id === userId ? { ...u, perfil: novoPerfil } : u));
-            const newPending = { ...pendingChanges };
-            delete newPending[userId];
-            setPendingChanges(newPending);
+            setPendingChanges(prev => {
+                const updated = { ...prev };
+                delete updated[userId];
+                return updated;
+            });
         } else {
-            alert('Erro ao atualizar perfil: ' + error.message);
+            toast.error('Erro ao atualizar perfil: ' + error.message);
         }
         setSaving(null);
     }
@@ -58,20 +62,37 @@ function AdminUsers() {
             ? 'Tem certeza que deseja INATIVAR este usuário? Ele não poderá mais logar.'
             : 'Deseja ATIVAR este usuário?';
 
-        if (!confirm(confirmacao)) return;
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <p className="text-sm font-bold text-slate-800">{confirmacao}</p>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            setSaving(userId);
+                            const { error } = await supabase
+                                .from('perfis')
+                                .update({ ativo: !statusAtual })
+                                .eq('id', userId);
 
-        setSaving(userId);
-        const { error } = await supabase
-            .from('perfis')
-            .update({ ativo: !statusAtual })
-            .eq('id', userId);
-
-        if (!error) {
-            setUsuarios(prev => prev.map(u => u.id === userId ? { ...u, ativo: !statusAtual } : u));
-        } else {
-            alert('Erro ao alterar status: ' + error.message);
-        }
-        setSaving(null);
+                            if (!error) {
+                                setUsuarios(prev => prev.map(u => u.id === userId ? { ...u, ativo: !statusAtual } : u));
+                                toast.success(statusAtual ? 'Usuário inativado.' : 'Usuário ativado.');
+                            } else {
+                                toast.error('Erro ao alterar status: ' + error.message);
+                            }
+                            setSaving(null);
+                        }}
+                        className="bg-primary text-white px-3 py-1.5 rounded-lg text-xs font-bold"
+                    >
+                        Confirmar
+                    </button>
+                    <button onClick={() => toast.dismiss(t.id)} className="bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        ), { duration: 6000 });
     }
 
     const filteredUsers = usuarios.filter(u =>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Key, Save, Plus, Trash2, Loader2, CheckCircle, X, Eye, EyeOff, Info } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 function DoorPasswords() {
     const [locais, setLocais] = useState([]);
@@ -74,10 +75,9 @@ function DoorPasswords() {
         const errors = results.filter(r => r.error);
 
         if (errors.length > 0) {
-            alert('Erro ao salvar algumas alterações: ' + errors[0].error.message);
+            toast.error('Erro ao salvar algumas alterações: ' + errors[0].error.message);
         } else {
-            setMessage('Senhas atualizadas com sucesso!');
-            setTimeout(() => setMessage(''), 3000);
+            toast.success('Senhas atualizadas com sucesso!');
         }
 
         setSaving(false);
@@ -105,29 +105,39 @@ function DoorPasswords() {
             setNewLocalName('');
             setNewLocalPassword('');
             setNewLocalWifi('');
-            setMessage('Novo local adicionado!');
-            setTimeout(() => setMessage(''), 3000);
+            toast.success('Novo local adicionado!');
         } else {
-            alert('Erro ao criar local: ' + error.message);
+            toast.error('Erro ao criar local: ' + error.message);
         }
         setSaving(false);
     }
 
     async function handleDeleteLocal(id) {
-        if (!confirm('Tem certeza que deseja remover este local?')) return;
-
-        const { error } = await supabase
-            .from('locais')
-            .delete()
-            .eq('id', id);
-
-        if (!error) {
-            setLocais(prev => prev.filter(l => l.id !== id));
-            setMessage('Local removido com sucesso.');
-            setTimeout(() => setMessage(''), 3000);
-        } else {
-            alert('Erro ao excluir: ' + error.message);
-        }
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <p className="text-sm font-bold text-slate-800">Tem certeza que deseja remover este local?</p>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            const { error } = await supabase.from('locais').delete().eq('id', id);
+                            if (!error) {
+                                setLocais(prev => prev.filter(l => l.id !== id));
+                                toast.success('Local removido com sucesso.');
+                            } else {
+                                toast.error('Erro ao excluir: ' + error.message);
+                            }
+                        }}
+                        className="bg-secondary text-white px-3 py-1.5 rounded-lg text-xs font-bold"
+                    >
+                        Sim, remover
+                    </button>
+                    <button onClick={() => toast.dismiss(t.id)} className="bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        ), { duration: 6000 });
     }
 
     if (loading) return <div className="p-8 text-center text-slate-500">Carregando locais...</div>;

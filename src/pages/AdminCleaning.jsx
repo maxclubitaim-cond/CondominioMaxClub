@@ -18,6 +18,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { PdfService } from '../services/PdfService';
 import DateSelectorModal from '../components/DateSelectorModal';
+import { toast } from 'react-hot-toast';
 
 function AdminCleaning() {
     const { profile } = useAuth();
@@ -74,19 +75,38 @@ function AdminCleaning() {
 
         if (!error) {
             setRegistros(prev => [data[0], ...prev]);
-            setMessage('Limpeza registrada com sucesso!');
-            setTimeout(() => setMessage(''), 3000);
+            toast.success('Limpeza registrada com sucesso!');
             setSelectedLocal('');
         } else {
-            alert('Erro ao registrar limpeza: ' + error.message);
+            toast.error('Erro ao registrar limpeza: ' + error.message);
         }
         setSaving(false);
     }
 
     async function deleteRegistro(id) {
-        if (!confirm('Excluir este registro?')) return;
-        const { error } = await supabase.from('limpeza_registros').delete().eq('id', id);
-        if (!error) setRegistros(prev => prev.filter(r => r.id !== id));
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <p className="text-sm font-bold text-slate-800">Excluir este registro?</p>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            const { error } = await supabase.from('limpeza_registros').delete().eq('id', id);
+                            if (!error) {
+                                setRegistros(prev => prev.filter(r => r.id !== id));
+                                toast.success('Registro excluído.');
+                            }
+                        }}
+                        className="bg-secondary text-white px-3 py-1.5 rounded-lg text-xs font-bold"
+                    >
+                        Sim, excluir
+                    </button>
+                    <button onClick={() => toast.dismiss(t.id)} className="bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        ));
     }
 
     async function handleExportConfirm(startDate, endDate) {
@@ -102,7 +122,7 @@ function AdminCleaning() {
             if (error) throw error;
 
             if (!data || data.length === 0) {
-                alert('Nenhum registro encontrado para este período.');
+                toast.error('Nenhum registro encontrado para este período.');
                 return;
             }
 
@@ -115,9 +135,10 @@ function AdminCleaning() {
 
             await PdfService.generateModuleReport('Controle de Limpeza', reportData, { start: startDate, end: endDate });
             setIsPdfModalOpen(false);
+            toast.success('Relatório gerado com sucesso!');
         } catch (error) {
             console.error('Erro ao exportar PDF:', error);
-            alert('Falha ao gerar relatório.');
+            toast.error('Falha ao gerar relatório.');
         } finally {
             setIsExportLoading(false);
         }
@@ -135,8 +156,9 @@ function AdminCleaning() {
         if (!error) {
             setLocaisLimpeza(prev => [...prev, data[0]].sort((a, b) => a.nome.localeCompare(b.nome)));
             setNewLocalName('');
+            toast.success('Local adicionado!');
         } else {
-            alert('Erro ao adicionar local: ' + error.message);
+            toast.error('Erro ao adicionar local: ' + error.message);
         }
     }
 
@@ -152,9 +174,29 @@ function AdminCleaning() {
     }
 
     async function deleteLocal(id) {
-        if (!confirm('Excluir este local? Isso pode afetar o histórico.')) return;
-        const { error } = await supabase.from('locais_limpeza').delete().eq('id', id);
-        if (!error) setLocaisLimpeza(prev => prev.filter(l => l.id !== id));
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <p className="text-sm font-bold text-slate-800">Excluir este local? Isso pode afetar o histórico.</p>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            const { error } = await supabase.from('locais_limpeza').delete().eq('id', id);
+                            if (!error) {
+                                setLocaisLimpeza(prev => prev.filter(l => l.id !== id));
+                                toast.success('Local excluído.');
+                            }
+                        }}
+                        className="bg-secondary text-white px-3 py-1.5 rounded-lg text-xs font-bold"
+                    >
+                        Sim, excluir
+                    </button>
+                    <button onClick={() => toast.dismiss(t.id)} className="bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        ));
     }
 
     if (loading) return <div className="p-8">Carregando...</div>;

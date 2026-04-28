@@ -94,15 +94,34 @@ function AdminLostFound() {
     }
 
     async function deleteItem(id, imageUrl) {
-        if (!confirm('Excluir este item?')) return;
-
-        if (imageUrl) {
-            const fileName = imageUrl.split('/').pop();
-            await supabase.storage.from('achados_perdidos').remove([fileName]);
-        }
-
-        await supabase.from('achados_perdidos').delete().eq('id', id);
-        fetchItems();
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <p className="text-sm font-bold text-slate-800">Deseja excluir este item?</p>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            if (imageUrl) {
+                                const fileName = imageUrl.split('/').pop();
+                                await supabase.storage.from('achados_perdidos').remove([fileName]);
+                            }
+                            await supabase.from('achados_perdidos').delete().eq('id', id);
+                            fetchItems();
+                            toast.success('Item excluído.');
+                        }}
+                        className="bg-secondary text-white px-3 py-1.5 rounded-lg text-xs font-bold"
+                    >
+                        Sim, excluir
+                    </button>
+                    <button 
+                        onClick={() => toast.dismiss(t.id)}
+                        className="bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold"
+                    >
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        ), { duration: 6000 });
     }
 
     async function handleManualPush(item) {

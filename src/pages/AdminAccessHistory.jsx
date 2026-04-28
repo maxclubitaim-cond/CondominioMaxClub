@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { FileText, Loader2 } from 'lucide-react';
 import { PdfService } from '../services/PdfService';
 import DateSelectorModal from '../components/DateSelectorModal';
+import { toast } from 'react-hot-toast';
 
 function AdminAccessHistory() {
     const [registros, setRegistros] = useState([]);
@@ -77,7 +78,7 @@ function AdminAccessHistory() {
             if (error) throw error;
 
             if (!data || data.length === 0) {
-                alert('Nenhum registro encontrado para este período.');
+                toast.error('Nenhum registro encontrado para este período.');
                 return;
             }
 
@@ -90,9 +91,10 @@ function AdminAccessHistory() {
 
             await PdfService.generateModuleReport('Histórico de Acessos', reportData, { start: startDate, end: endDate });
             setIsPdfModalOpen(false);
+            toast.success('Relatório gerado!');
         } catch (error) {
             console.error('Erro ao exportar PDF:', error);
-            alert('Falha ao gerar relatório.');
+            toast.error('Falha ao gerar relatório.');
         } finally {
             setIsExportLoading(false);
         }

@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { Trophy, CheckCircle, Clock, Trash2, User, Building, FileText } from 'lucide-react';
 import { PdfService } from '../services/PdfService';
 import DateSelectorModal from '../components/DateSelectorModal';
+import { toast } from 'react-hot-toast';
 
 function AdminVolleyball() {
     const [reservas, setReservas] = useState([]);
@@ -29,9 +30,27 @@ function AdminVolleyball() {
     }
 
     async function deleteReserva(id) {
-        if (!confirm('Excluir reserva?')) return;
-        await supabase.from('reservas_volei').delete().eq('id', id);
-        fetchReservas();
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <p className="text-sm font-bold text-slate-800">Deseja excluir esta reserva?</p>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            await supabase.from('reservas_volei').delete().eq('id', id);
+                            fetchReservas();
+                            toast.success('Reserva excluída.');
+                        }}
+                        className="bg-secondary text-white px-3 py-1.5 rounded-lg text-xs font-bold"
+                    >
+                        Sim, excluir
+                    </button>
+                    <button onClick={() => toast.dismiss(t.id)} className="bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        ), { duration: 6000 });
     }
 
     async function handleExportConfirm(startDate, endDate) {
@@ -47,7 +66,7 @@ function AdminVolleyball() {
             if (error) throw error;
 
             if (!data || data.length === 0) {
-                alert('Nenhum registro encontrado para este período.');
+                toast.error('Nenhum registro encontrado para este período.');
                 return;
             }
 
@@ -60,9 +79,10 @@ function AdminVolleyball() {
 
             await PdfService.generateModuleReport('Controle de Vôlei', reportData, { start: startDate, end: endDate });
             setIsPdfModalOpen(false);
+            toast.success('Relatório gerado!');
         } catch (error) {
             console.error('Erro ao exportar PDF:', error);
-            alert('Falha ao gerar relatório.');
+            toast.error('Falha ao gerar relatório.');
         } finally {
             setIsExportLoading(false);
         }

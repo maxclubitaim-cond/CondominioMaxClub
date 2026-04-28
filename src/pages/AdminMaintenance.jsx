@@ -17,6 +17,7 @@ import {
     User
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { toast } from 'react-hot-toast';
 
 function ImageModal({ url, onClose }) {
     if (!url) return null;
@@ -136,9 +137,9 @@ function AdminMaintenance() {
         e.preventDefault();
 
         // Validação correta dos novos campos
-        if (!areaNome) return alert('Por favor, informe a Área ou Local.');
-        if (!responsavelTecnico) return alert('Por favor, informe o Responsável Técnico.');
-        if (!descricao) return alert('Por favor, descreva o que foi feito.');
+        if (!areaNome) return toast.error('Por favor, informe a Área ou Local.');
+        if (!responsavelTecnico) return toast.error('Por favor, informe o Responsável Técnico.');
+        if (!descricao) return toast.error('Por favor, descreva o que foi feito.');
 
         setSaving(true);
         try {
@@ -168,16 +169,15 @@ function AdminMaintenance() {
 
             if (data && data.length > 0) {
                 setRegistros(prev => [data[0], ...prev]);
-                setMessage('Manutenção registrada com sucesso!');
+                toast.success('Manutenção registrada com sucesso!');
                 resetForm();
                 setTimeout(() => {
-                    setMessage('');
                     setActiveTab('historico');
                 }, 2000);
             }
         } catch (err) {
             console.error('Erro detalhado:', err);
-            alert('Erro ao salvar: ' + (err.message || 'Erro desconhecido'));
+            toast.error('Erro ao salvar: ' + (err.message || 'Erro desconhecido'));
         } finally {
             setSaving(false);
         }

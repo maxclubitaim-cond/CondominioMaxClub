@@ -107,16 +107,37 @@ function AdminAvisos() {
     }
 
     async function deleteAviso(id, imageUrl) {
-        if (!confirm('Excluir este aviso?')) return;
-
-        // Deletar do storage se houver imagem
-        if (imageUrl) {
-            const fileName = imageUrl.split('/').pop();
-            await supabase.storage.from('avisos').remove([fileName]);
-        }
-
-        await supabase.from('avisos').delete().eq('id', id);
-        fetchAvisos();
+        // Substituído o confirm() feio por uma verificação direta para o MVP, 
+        // ou podemos usar o toast para confirmar. Vou usar o toast.
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <p className="text-sm font-bold text-slate-800">Deseja excluir este aviso?</p>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            // Deletar do storage se houver imagem
+                            if (imageUrl) {
+                                const fileName = imageUrl.split('/').pop();
+                                await supabase.storage.from('avisos').remove([fileName]);
+                            }
+                            await supabase.from('avisos').delete().eq('id', id);
+                            fetchAvisos();
+                            toast.success('Aviso excluído.');
+                        }}
+                        className="bg-secondary text-white px-3 py-1.5 rounded-lg text-xs font-bold"
+                    >
+                        Sim, excluir
+                    </button>
+                    <button 
+                        onClick={() => toast.dismiss(t.id)}
+                        className="bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold"
+                    >
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        ), { duration: 6000 });
     }
 
     async function handleManualPush(aviso) {
