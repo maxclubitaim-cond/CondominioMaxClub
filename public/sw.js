@@ -1,4 +1,4 @@
-const CACHE_NAME = 'maxclub-v4-realtime-data';
+const CACHE_NAME = 'maxclub-v5-realtime-data';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -68,23 +68,26 @@ self.addEventListener('fetch', (event) => {
 
 // Listener para Notificações Push
 self.addEventListener('push', (event) => {
-  const data = event.data ? event.data.json() : { 
-    title: 'Novo Aviso - MaxClub',
-    body: 'Acesse o app para conferir as novidades.'
-  };
+  try {
+    const data = event.data ? event.data.json() : { 
+      title: 'Aviso MaxClub',
+      body: 'Nova atualização disponível no condomínio.'
+    };
 
-  const options = {
-    body: data.body,
-    icon: '/logo.png',
-    badge: '/logo.png',
-    data: {
-      url: data.url || '/'
-    }
-  };
+    const options = {
+      body: data.body,
+      // Removido ícone temporariamente para teste de compatibilidade iOS
+      data: {
+        url: data.url || '/'
+      }
+    };
 
-  event.waitUntil(
-    self.registration.showNotification(data.title, options)
-  );
+    event.waitUntil(
+      self.registration.showNotification(data.title, options)
+    );
+  } catch (err) {
+    console.error('Erro ao processar push:', err);
+  }
 });
 
 // Listener para Clique na Notificação

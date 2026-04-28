@@ -165,44 +165,7 @@ function Dashboard() {
 
                 <div className="flex-1 overflow-y-auto p-4 md:p-8">
                     {/* Push Notification Banner */}
-                    <AnimatePresence>
-                        {permission !== 'granted' && showPushBanner && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                className="mb-8 p-4 bg-slate-900 rounded-[1.5rem] shadow-xl border border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 relative overflow-hidden group"
-                            >
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 group-hover:bg-primary/10 transition-all" />
-                                <div className="flex items-center gap-4 relative z-10">
-                                    <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary shrink-0">
-                                        <BellRing size={24} />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <h4 className="text-white font-bold text-sm uppercase tracking-tight">Notificações em Tempo Real</h4>
-                                        <p className="text-slate-400 text-[10px] font-bold leading-relaxed uppercase tracking-widest max-w-sm">
-                                            Habilite os alertas push para ser notificado instantaneamente sobre novas solicitações e agendamentos.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3 relative z-10 w-full md:w-auto">
-                                    <button
-                                        onClick={() => setShowPushBanner(false)}
-                                        className="flex-1 md:flex-none px-6 py-3 text-slate-500 font-bold text-[10px] uppercase tracking-widest hover:text-white transition-all"
-                                    >
-                                        Agora não
-                                    </button>
-                                    <button
-                                        onClick={subscribeUser}
-                                        disabled={subscribing}
-                                        className="flex-[2] md:flex-none bg-primary text-white font-bold px-8 py-3 rounded-xl shadow-lg hover:bg-blue-600 transition-all uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 group-hover:scale-105"
-                                    >
-                                        {subscribing ? 'Ativando...' : 'Ativar Notificações'}
-                                    </button>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    {/* O banner de notificações de gestão foi removido para evitar confusão com o novo sistema focado apenas em moradores */}
 
                     <Outlet />
                 </div>

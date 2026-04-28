@@ -21,6 +21,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import DateSelectorModal from '../components/DateSelectorModal';
 import { PdfService } from '../services/PdfService';
+import { formatDate, getMonthName, getDayOfMonth } from '../utils/dateUtils';
 
 function AdminOverview() {
     const [stats, setStats] = useState({
@@ -398,10 +399,10 @@ function AdminOverview() {
                                         <div className="flex items-center gap-4">
                                             <div className="text-center min-w-[50px]">
                                                 <p className="text-[10px] font-bold uppercase text-slate-400">
-                                                    {new Date(evento.data).toLocaleDateString('pt-BR', { month: 'short' })}
+                                                    {getMonthName(evento.data)}
                                                 </p>
                                                 <p className="text-lg font-bold text-slate-700">
-                                                    {new Date(evento.data).getDate()}
+                                                    {getDayOfMonth(evento.data)}
                                                 </p>
                                             </div>
                                             <div className="h-8 w-[2px] bg-slate-100 group-hover:bg-primary/20 transition-colors" />
@@ -456,7 +457,7 @@ function AdminOverview() {
                                                 <td className="py-4 font-bold text-slate-800">{reserva.unidade}</td>
                                                 <td className="py-4 text-sm text-slate-600 font-medium">{reserva.nome}</td>
                                                 <td className="py-4 text-sm text-slate-500">
-                                                    {new Date(reserva.data).toLocaleDateString('pt-BR')}
+                                                    {formatDate(reserva.data)}
                                                 </td>
                                                 <td className="py-4 text-right">
                                                     <span className="w-2 h-2 rounded-full bg-amber-500 inline-block animate-pulse mr-2" />

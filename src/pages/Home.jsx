@@ -274,15 +274,23 @@ function Home() {
                             <motion.div
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="mt-8 p-6 bg-highlight/5 border border-highlight/20 rounded-3xl flex items-center gap-4 group"
+                                className="mt-8 p-6 bg-highlight/5 border border-highlight/20 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-4 group"
                             >
-                                <div className="w-12 h-12 bg-highlight/10 rounded-2xl flex items-center justify-center shadow-sm">
-                                    <CheckCircle className="text-highlight" size={24} />
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-highlight/10 rounded-2xl flex items-center justify-center shadow-sm">
+                                        <CheckCircle className="text-highlight" size={24} />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-slate-800 font-bold text-sm">Notificações Ativas</h4>
+                                        <p className="text-slate-500 text-[10px] font-medium uppercase tracking-wider">Você receberá todos os avisos em tempo real.</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 className="text-slate-800 font-bold text-sm">Notificações Ativas</h4>
-                                    <p className="text-slate-500 text-[10px] font-medium uppercase tracking-wider">Você receberá todos os avisos em tempo real.</p>
-                                </div>
+                                <button 
+                                    onClick={subscribeUser}
+                                    className="text-[9px] font-bold text-slate-400 hover:text-primary uppercase tracking-widest underline transition-colors"
+                                >
+                                    Não está recebendo? Resetar
+                                </button>
                             </motion.div>
                         )}
                     </motion.div>

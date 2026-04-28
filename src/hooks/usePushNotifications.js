@@ -69,15 +69,18 @@ export function usePushNotifications() {
             if (result === 'granted') {
                 const registration = await navigator.serviceWorker.ready;
                 
-                // Pegar ou criar a subscrição
-                let subscription = await registration.pushManager.getSubscription();
-                
-                if (!subscription) {
-                    subscription = await registration.pushManager.subscribe({
-                        userVisibleOnly: true,
-                        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-                    });
+                // Forçar cancelamento de subscrição antiga para renovar o token
+                const oldSubscription = await registration.pushManager.getSubscription();
+                if (oldSubscription) {
+                    await oldSubscription.unsubscribe();
+                    console.log('PushService: Assinatura antiga removida para renovação.');
                 }
+                
+                // Criar nova subscrição
+                const subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+                });
 
                 // Salvar no Supabase
                 const { data: { user } } = await supabase.auth.getUser();

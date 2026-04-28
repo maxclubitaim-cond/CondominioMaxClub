@@ -11,8 +11,23 @@
  */
 export function parseDate(dateStr) {
     if (!dateStr) return null;
-    const [year, month, day] = dateStr.split('-').map(Number);
-    return new Date(year, month - 1, day);
+    
+    // Se já for um objeto Date, retorna ele mesmo
+    if (dateStr instanceof Date) return dateStr;
+
+    // Se for uma string ISO completa (ex: 2024-03-21T00:00:00Z), pega apenas a parte da data
+    const cleanDate = typeof dateStr === 'string' ? dateStr.split('T')[0] : dateStr;
+    
+    // Suporta tanto YYYY-MM-DD quanto YYYY/MM/DD
+    const parts = String(cleanDate).split(/[-/]/).map(Number);
+    
+    if (parts.length < 3) return null;
+    
+    const [year, month, day] = parts;
+    const date = new Date(year, month - 1, day);
+    
+    // Verifica se a data é válida
+    return isNaN(date.getTime()) ? null : date;
 }
 
 /**
