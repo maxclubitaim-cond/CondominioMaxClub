@@ -74,6 +74,9 @@ function Home() {
     }, []);
 
     async function fetchInitialData() {
+        const now = new Date();
+        const today = now.toISOString().split('T')[0];
+
         // TESTE DIAGNÓSTICO: Buscar todos os avisos sem filtro de data
         const { data: dataAvisos, error: errAvisos } = await supabase
             .from('avisos')
@@ -87,7 +90,7 @@ function Home() {
         const { data: dataAgenda } = await supabase
             .from('agenda')
             .select('*')
-            .gte('data', now.split('T')[0])
+            .gte('data', today)
             .order('data', { ascending: true })
             .limit(5);
 
