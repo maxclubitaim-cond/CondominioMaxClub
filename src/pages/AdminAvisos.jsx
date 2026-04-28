@@ -111,7 +111,7 @@ function AdminAvisos() {
         // ou podemos usar o toast para confirmar. Vou usar o toast.
         toast((t) => (
             <div className="flex flex-col gap-3">
-                <p className="text-sm font-black text-slate-950 uppercase tracking-tight">Deseja excluir este aviso?</p>
+                <p className="text-sm font-black text-white uppercase tracking-tight">Deseja excluir este aviso?</p>
                 <div className="flex gap-2">
                     <button 
                         onClick={async () => {

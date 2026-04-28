@@ -113,7 +113,7 @@ function AdminParking() {
     async function deleteVaga(id) {
         toast((t) => (
             <div className="flex flex-col gap-3">
-                <p className="text-sm font-black text-slate-950 uppercase tracking-tight">Excluir esta vaga?</p>
+                <p className="text-sm font-black text-white uppercase tracking-tight">Excluir esta vaga?</p>
                 <div className="flex gap-2">
                     <button 
                         onClick={async () => {
