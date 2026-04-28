@@ -29,7 +29,7 @@ function AdminSuggestions() {
     async function deleteSugestao(id) {
         toast((t) => (
             <div className="flex flex-col gap-3">
-                <p className="text-sm font-bold text-slate-800">Deseja apagar esta sugestão?</p>
+                <p className="text-sm font-bold text-slate-900">Deseja apagar esta sugestão?</p>
                 <div className="flex gap-2">
                     <button 
                         onClick={async () => {
