@@ -75,10 +75,13 @@ function Home() {
 
     async function fetchInitialData() {
         // TESTE DIAGNÓSTICO: Buscar todos os avisos sem filtro de data
-        const { data: dataAvisos } = await supabase
+        const { data: dataAvisos, error: errAvisos } = await supabase
             .from('avisos')
             .select('*')
             .order('created_at', { ascending: false });
+        
+        console.log('DEBUG HOME: Avisos encontrados no banco:', dataAvisos?.length);
+        if (errAvisos) console.error('DEBUG HOME: Erro ao buscar avisos:', errAvisos);
 
         // Fetch Agenda (eventos futuros)
         const { data: dataAgenda } = await supabase
