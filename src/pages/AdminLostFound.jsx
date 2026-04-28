@@ -108,7 +108,7 @@ function AdminLostFound() {
     async function deleteItem(id, imageUrl) {
         toast((t) => (
             <div className="flex flex-col gap-3">
-                <p className="text-sm font-black text-white uppercase tracking-tight">Deseja excluir este item?</p>
+                <p className="text-sm font-bold text-white">Deseja excluir este item?</p>
                 <div className="flex gap-2">
                     <button 
                         onClick={async () => {

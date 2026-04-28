@@ -64,7 +64,7 @@ function AdminUsers() {
 
         toast((t) => (
             <div className="flex flex-col gap-3">
-                <p className="text-sm font-black text-white uppercase tracking-tight">{confirmacao}</p>
+                <p className="text-sm font-bold text-white">{confirmacao}</p>
                 <div className="flex gap-2">
                     <button 
                         onClick={async () => {
