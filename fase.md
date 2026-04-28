@@ -34,6 +34,10 @@ As fases abaixo definem o cronograma de desenvolvimento e melhorias do projeto.
 - [x] Implementação de Notificações PWA (WebPush).
     - [x] Foco exclusivo em comunicados para moradores (Avisos/Agenda/Achados).
     - [x] Botões manuais de disparo no painel administrativo para controle total.
-- [ ] Geração de Relatórios de Limpeza e Acessos em PDF.
+- [x] Profissionalização da Interface (UX/UI):
+    - [x] Remoção de 100% dos `alert()` e `confirm()` nativos.
+    - [x] Implementação de `react-hot-toast` em todos os módulos administrativos e públicos.
+    - [x] Padronização de diálogos de confirmação com Toasts personalizados.
+- [x] Geração de Relatórios de Limpeza e Acessos em PDF.
 - [ ] Testes de maturidade de código (`code-maturity-assessor`).
 - [ ] Homologação final com o usuário.

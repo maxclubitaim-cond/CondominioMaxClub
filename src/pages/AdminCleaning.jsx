@@ -13,7 +13,8 @@ import {
     X,
     Eye,
     EyeOff,
-    FileText
+    FileText,
+    Calendar
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { PdfService } from '../services/PdfService';
@@ -31,6 +32,7 @@ function AdminCleaning() {
     const [message, setMessage] = useState('');
     const [isExportLoading, setIsExportLoading] = useState(false);
     const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
+    const [dataRegistro, setDataRegistro] = useState(new Date().toISOString().split('T')[0]);
 
     // Modal de Gestão de Locais
     const [showLocaisModal, setShowLocaisModal] = useState(false);
@@ -57,8 +59,13 @@ function AdminCleaning() {
         e.preventDefault();
         setSaving(true);
 
-        const dataLimpeza = new Date();
-        const proximaLimpeza = new Date();
+        // Criar a data combinando o dia selecionado com o horário atual local
+        // Isso evita que o fuso horário UTC mude o dia ao salvar no banco
+        const now = new Date();
+        const timeStr = now.toTimeString().split(' ')[0];
+        const dataLimpeza = new Date(`${dataRegistro}T${timeStr}`);
+        
+        const proximaLimpeza = new Date(dataLimpeza);
         proximaLimpeza.setDate(dataLimpeza.getDate() + 3);
 
         const { data, error } = await supabase
@@ -230,7 +237,7 @@ function AdminCleaning() {
                 <h2 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
                     <Plus className="text-primary" /> Novo Lançamento
                 </h2>
-                <form onSubmit={handleAddRegistro} className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                <form onSubmit={handleAddRegistro} className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                     <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Local</label>
                         <select
@@ -244,6 +251,18 @@ function AdminCleaning() {
                                 <option key={l.id} value={l.id}>{l.nome}</option>
                             ))}
                         </select>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Data da Limpeza</label>
+                        <div className="relative">
+                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 w-4 h-4" />
+                            <input
+                                type="date" required
+                                value={dataRegistro}
+                                onChange={(e) => setDataRegistro(e.target.value)}
+                                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 text-sm font-bold text-slate-700"
+                            />
+                        </div>
                     </div>
                     <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Operador</label>
