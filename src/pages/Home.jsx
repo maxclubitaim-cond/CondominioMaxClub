@@ -77,10 +77,11 @@ function Home() {
         try {
             const today = new Date().toLocaleDateString('en-CA');
 
-            // TESTE DIAGNÓSTICO: Buscar todos os avisos sem filtro de data
+            // Buscar avisos que não expiraram ou expiram hoje
             const { data: dataAvisos, error: errAvisos } = await supabase
                 .from('avisos')
                 .select('*')
+                .or(`data_fim.gte.${today},data_fim.is.null`)
                 .order('created_at', { ascending: false });
             
             console.log('DEBUG HOME: Avisos encontrados no banco:', dataAvisos?.length);
@@ -372,7 +373,7 @@ function Home() {
                 <section id="avisos" className="mb-24">
                     <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-4">
                         <h2 className="text-3xl md:text-4xl font-bold text-slate-900 flex items-center gap-4 tracking-tight">
-                            <Bell className="text-primary" /> Comunicados (Teste de Atualização)
+                            <Bell className="text-primary" /> Comunicados
                         </h2>
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Atualizado em tempo real</span>
                     </div>
