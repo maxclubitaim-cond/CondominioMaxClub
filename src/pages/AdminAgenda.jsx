@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Calendar, Plus, Save, Trash2, Clock, MapPin, Info, Loader2 } from 'lucide-react';
 import { sendPushNotification } from '../services/pushService';
 import { formatDate, getMonthName, getDayOfMonth } from '../utils/dateUtils';
+import { toast } from 'react-hot-toast';
 
 function AdminAgenda() {
     const [eventos, setEventos] = useState([]);
@@ -50,7 +51,7 @@ function AdminAgenda() {
 
 
         if (!error) {
-            alert('Evento salvo com sucesso!');
+            toast.success('Evento salvo com sucesso!');
             fetchEventos();
             setTitulo('');
             setData('');
@@ -58,7 +59,7 @@ function AdminAgenda() {
             setLocal('');
             setObservacao('');
         } else {
-            alert('Erro ao salvar: ' + error.message);
+            toast.error('Erro ao salvar: ' + error.message);
         }
         setSaving(false);
     }
@@ -79,12 +80,12 @@ function AdminAgenda() {
             });
 
             if (pushResult.success) {
-                alert(`Notificação enviada com sucesso para ${pushResult.count} dispositivos!`);
+                toast.success(`Notificação enviada para ${pushResult.count} dispositivos!`);
             } else {
-                alert('Erro ao enviar notificação: ' + pushResult.error);
+                toast.error('Erro ao enviar notificação: ' + pushResult.error);
             }
         } catch (err) {
-            alert('Erro inesperado: ' + err.message);
+            toast.error('Erro inesperado: ' + err.message);
         } finally {
             setNotifying(null);
         }

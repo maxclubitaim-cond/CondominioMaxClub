@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, Plus, Loader2, Save, Trash2, Calendar, Image as ImageIcon, X, Camera, Upload } from 'lucide-react';
 import { sendPushNotification } from '../services/pushService';
 import { formatDate } from '../utils/dateUtils';
+import { toast } from 'react-hot-toast';
 
 function AdminAvisos() {
     const [avisos, setAvisos] = useState([]);
@@ -88,7 +89,7 @@ function AdminAvisos() {
 
 
             if (!error) {
-                alert('Aviso criado com sucesso!');
+                toast.success('Aviso criado com sucesso!');
                 fetchAvisos();
                 setTitulo('');
                 setDescricao('');
@@ -96,10 +97,10 @@ function AdminAvisos() {
                 setImagePreview(null);
                 setDataFim('');
             } else {
-                alert('Erro ao salvar aviso: ' + error.message);
+                toast.error('Erro ao salvar aviso: ' + error.message);
             }
         } catch (err) {
-            alert('Erro no upload: ' + err.message);
+            toast.error('Erro no upload: ' + err.message);
         } finally {
             setSaving(false);
         }
@@ -128,12 +129,12 @@ function AdminAvisos() {
             });
 
             if (pushResult.success) {
-                alert(`Notificação enviada com sucesso para ${pushResult.count} dispositivos!`);
+                toast.success(`Notificação enviada para ${pushResult.count} dispositivos!`);
             } else {
-                alert('Erro ao enviar notificação: ' + pushResult.error);
+                toast.error('Erro ao enviar notificação: ' + pushResult.error);
             }
         } catch (err) {
-            alert('Erro inesperado: ' + err.message);
+            toast.error('Erro inesperado: ' + err.message);
         } finally {
             setNotifying(null);
         }

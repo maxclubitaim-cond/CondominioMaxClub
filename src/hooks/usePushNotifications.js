@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { toast } from 'react-hot-toast';
 
 const VAPID_PUBLIC_KEY = 'BKXZgew3hPMIGgMsvGkh5hnvqcAIsliL8BskELxDWWMJVJcG4x0hBD-uPHURsWT1CNwxGNpLBuQgbAOO3rRRAv0';
 
@@ -100,12 +101,12 @@ export function usePushNotifications() {
 
                 if (error) throw error;
                 setIsSubscribed(true);
-                alert('Notificações resetadas e ativadas com sucesso! Sua nova chave foi registrada.');
+                toast.success('Notificações resetadas e ativadas com sucesso!');
                 console.log('Subscrição WebPush registrada com sucesso.');
             }
         } catch (error) {
             console.error('Erro ao subscrever WebPush:', error);
-            alert('Erro ao ativar notificações: ' + (error.message || 'Erro desconhecido no banco de dados. Verifique o RLS.'));
+            toast.error(error.message || 'Erro ao ativar notificações. Verifique as permissões.');
         } finally {
             setLoading(false);
         }

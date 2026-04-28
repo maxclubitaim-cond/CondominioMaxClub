@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
 // Pages
 import Home from './pages/Home';
@@ -121,6 +122,18 @@ function App() {
         <AuthProvider>
             <Router>
                 <ScrollToTop />
+                <Toaster position="top-right" toastOptions={{
+                    duration: 4000,
+                    style: {
+                        background: '#0f172a',
+                        color: '#fff',
+                        borderRadius: '1rem',
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        padding: '16px',
+                        boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+                    },
+                }} />
                 <AppContent />
             </Router>
         </AuthProvider>

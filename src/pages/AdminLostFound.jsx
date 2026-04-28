@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
-import { Package, Plus, Loader2, Save, Trash2, CheckCircle, Camera, Search, X, Bell } from 'lucide-react';
 import { sendPushNotification } from '../services/pushService';
+import { toast } from 'react-hot-toast';
 
 function AdminLostFound() {
     const [items, setItems] = useState([]);
@@ -76,13 +76,13 @@ function AdminLostFound() {
                 registrado_por: user?.id
             }]);
 
-            alert('Item registrado com sucesso!');
+            toast.success('Item registrado com sucesso!');
             setItemNome('');
             setImageFile(null);
             setImagePreview(null);
             fetchItems();
         } catch (err) {
-            alert('Erro ao registrar item: ' + err.message);
+            toast.error('Erro ao registrar item: ' + err.message);
         } finally {
             setSaving(false);
         }
@@ -115,12 +115,12 @@ function AdminLostFound() {
             });
 
             if (pushResult.success) {
-                alert(`Notificação enviada com sucesso para ${pushResult.count} dispositivos!`);
+                toast.success(`Notificação enviada para ${pushResult.count} dispositivos!`);
             } else {
-                alert('Erro ao enviar notificação: ' + pushResult.error);
+                toast.error('Erro ao enviar notificação: ' + pushResult.error);
             }
         } catch (err) {
-            alert('Erro inesperado: ' + err.message);
+            toast.error('Erro inesperado: ' + err.message);
         } finally {
             setNotifying(null);
         }
