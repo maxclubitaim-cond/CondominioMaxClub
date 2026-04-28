@@ -74,13 +74,10 @@ function Home() {
     }, []);
 
     async function fetchInitialData() {
-        const today = new Date().toLocaleDateString('en-CA'); 
-
-        // Fetch Avisos (que não expiraram ou expiram hoje)
+        // TESTE DIAGNÓSTICO: Buscar todos os avisos sem filtro de data
         const { data: dataAvisos } = await supabase
             .from('avisos')
             .select('*')
-            .or(`data_fim.gte.${today},data_fim.is.null`)
             .order('created_at', { ascending: false });
 
         // Fetch Agenda (eventos futuros)
