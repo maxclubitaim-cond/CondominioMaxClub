@@ -74,44 +74,48 @@ function Home() {
     }, []);
 
     async function fetchInitialData() {
-        const now = new Date();
-        const today = now.toISOString().split('T')[0];
+        try {
+            const today = new Date().toLocaleDateString('en-CA');
 
-        // TESTE DIAGNÓSTICO: Buscar todos os avisos sem filtro de data
-        const { data: dataAvisos, error: errAvisos } = await supabase
-            .from('avisos')
-            .select('*')
-            .order('created_at', { ascending: false });
-        
-        console.log('DEBUG HOME: Avisos encontrados no banco:', dataAvisos?.length);
-        if (errAvisos) console.error('DEBUG HOME: Erro ao buscar avisos:', errAvisos);
+            // TESTE DIAGNÓSTICO: Buscar todos os avisos sem filtro de data
+            const { data: dataAvisos, error: errAvisos } = await supabase
+                .from('avisos')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            console.log('DEBUG HOME: Avisos encontrados no banco:', dataAvisos?.length);
+            if (errAvisos) throw errAvisos;
+            if (dataAvisos) setAvisos(dataAvisos);
 
-        // Fetch Agenda (eventos futuros)
-        const { data: dataAgenda } = await supabase
-            .from('agenda')
-            .select('*')
-            .gte('data', today)
-            .order('data', { ascending: true })
-            .limit(5);
+            // Fetch Agenda (eventos futuros)
+            const { data: dataAgenda } = await supabase
+                .from('agenda')
+                .select('*')
+                .gte('data', today)
+                .order('data', { ascending: true })
+                .limit(5);
+            if (dataAgenda) setAgenda(dataAgenda);
 
-        // Fetch 3 últimos registros de limpeza
-        const { data: dataLimpeza } = await supabase
-            .from('limpeza_registros')
-            .select('*, locais_limpeza(nome)')
-            .order('data_limpeza', { ascending: false })
-            .limit(3);
+            // Fetch 3 últimos registros de limpeza
+            const { data: dataLimpeza } = await supabase
+                .from('limpeza_registros')
+                .select('*, locais_limpeza(nome)')
+                .order('data_limpeza', { ascending: false })
+                .limit(3);
+            if (dataLimpeza) setLimpeza(dataLimpeza);
 
-        // Fetch quantidade de achados e perdidos (não retirados)
-        const { count } = await supabase
-            .from('achados_perdidos')
-            .select('*', { count: 'exact', head: true })
-            .eq('retirado', false);
+            // Fetch quantidade de achados e perdidos (não retirados)
+            const { count } = await supabase
+                .from('achados_perdidos')
+                .select('*', { count: 'exact', head: true })
+                .eq('retirado', false);
+            if (count !== null) setLostCount(count);
 
-        if (dataAvisos) setAvisos(dataAvisos);
-        if (dataAgenda) setAgenda(dataAgenda);
-        if (dataLimpeza) setLimpeza(dataLimpeza);
-        if (count !== null) setLostCount(count);
-        setLoading(false);
+        } catch (error) {
+            console.error('DEBUG HOME: Erro crítico no fetchInitialData:', error);
+        } finally {
+            setLoading(false);
+        }
     }
 
     const linksUteis = [
@@ -368,7 +372,7 @@ function Home() {
                 <section id="avisos" className="mb-24">
                     <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-4">
                         <h2 className="text-3xl md:text-4xl font-bold text-slate-900 flex items-center gap-4 tracking-tight">
-                            <Bell className="text-primary" /> Comunicados
+                            <Bell className="text-primary" /> Comunicados (Teste de Atualização)
                         </h2>
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Atualizado em tempo real</span>
                     </div>
