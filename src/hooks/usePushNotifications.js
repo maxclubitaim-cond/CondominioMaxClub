@@ -92,7 +92,10 @@ export function usePushNotifications() {
                     .upsert({
                         user_id: user?.id || null,
                         subscription: subscription.toJSON(),
-                        user_agent: navigator.userAgent
+                        device_info: {
+                            userAgent: navigator.userAgent,
+                            platform: navigator.platform
+                        }
                     }, { onConflict: 'subscription' });
 
                 if (error) throw error;
