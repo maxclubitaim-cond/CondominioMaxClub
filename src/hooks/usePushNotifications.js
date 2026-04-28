@@ -97,6 +97,7 @@ export function usePushNotifications() {
 
                 if (error) throw error;
                 setIsSubscribed(true);
+                alert('Notificações resetadas e ativadas com sucesso! Sua nova chave foi registrada.');
                 console.log('Subscrição WebPush registrada com sucesso.');
             }
         } catch (error) {

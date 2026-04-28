@@ -287,9 +287,10 @@ function Home() {
                                 </div>
                                 <button 
                                     onClick={subscribeUser}
-                                    className="text-[9px] font-bold text-slate-400 hover:text-primary uppercase tracking-widest underline transition-colors"
+                                    disabled={pushLoading}
+                                    className={`text-[9px] font-bold uppercase tracking-widest underline transition-colors ${pushLoading ? 'text-slate-300' : 'text-slate-400 hover:text-primary'}`}
                                 >
-                                    Não está recebendo? Resetar
+                                    {pushLoading ? 'Resetando...' : 'Não está recebendo? Resetar'}
                                 </button>
                             </motion.div>
                         )}
