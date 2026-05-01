@@ -39,5 +39,6 @@ As fases abaixo definem o cronograma de desenvolvimento e melhorias do projeto.
     - [x] Implementação de `react-hot-toast` em todos os módulos administrativos e públicos.
     - [x] Padronização de diálogos de confirmação com Toasts personalizados.
 - [x] Geração de Relatórios de Limpeza e Acessos em PDF.
+- [x] Implementação do Módulo de **Empreendedores** (Divulgação de serviços).
 - [ ] Testes de maturidade de código (`code-maturity-assessor`).
 - [ ] Homologação final com o usuário.

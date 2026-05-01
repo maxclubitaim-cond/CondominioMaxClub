@@ -69,6 +69,16 @@ Armazena as assinaturas de WebPush para notificações.
 - `user_agent`: TEXT
 - `created_at`: TIMESTAMPTZ
 
+### 11. `empreendedores` [NOVO]
+Registro de serviços e produtos oferecidos por moradores.
+- `id`: UUID (PK)
+- `nome`: TEXT
+- `unidade`: TEXT
+- `tipo_servico`: TEXT
+- `descricao`: TEXT (max 500)
+- `fotos`: TEXT[] (URLs das imagens)
+- `created_at`: TIMESTAMPTZ
+
 ## Tipos Customizados
 - `user_perfil`: ENUM ('OPERADOR', 'GESTOR', 'ADM')
 

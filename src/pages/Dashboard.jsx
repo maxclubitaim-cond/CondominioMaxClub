@@ -21,11 +21,13 @@ import {
     ClipboardCheck,
     Menu,
     X as CloseIcon,
-    Ticket
+    Ticket,
+    Store,
+    Info,
+    BellRing
 } from 'lucide-react';
 import { useNavigate, Link, Outlet, useLocation } from 'react-router-dom';
 import { usePushNotifications } from '../hooks/usePushNotifications';
-import { Info, BellRing } from 'lucide-react';
 
 function Dashboard() {
     const { profile, signOut } = useAuth();
@@ -59,6 +61,7 @@ function Dashboard() {
         { icon: <Shield size={20} />, label: 'Histórico de Acessos', path: '/dashboard/acessos', access: ['GESTOR', 'ADM'] },
         { icon: <Search size={20} />, label: 'Vagas', path: '/dashboard/vagas', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <Ticket size={20} />, label: 'Pulseiras', path: '/dashboard/pulseiras', access: ['OPERADOR', 'GESTOR', 'ADM'] },
+        { icon: <Store size={20} />, label: 'Empreendedores', path: '/dashboard/empreendedores', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <Users size={20} />, label: 'Usuários', path: '/dashboard/usuarios', access: ['GESTOR', 'ADM'] },
     ];
 

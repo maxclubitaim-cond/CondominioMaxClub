@@ -177,6 +177,7 @@ function Home() {
                             Avisos
                         </button>
                         <button onClick={() => navigate('/agenda')} className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">Agenda</button>
+                        <button onClick={() => navigate('/empreendedores')} className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">Empreendedores</button>
                         <button 
                             onClick={() => navigate('/login')} 
                             className="bg-slate-50 text-slate-900 text-[10px] font-bold uppercase tracking-widest px-6 py-3 rounded-xl border border-slate-200 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300"
@@ -206,6 +207,7 @@ function Home() {
                                 <button onClick={scrollToTop} className="text-left font-bold text-slate-600">Início</button>
                                 <button onClick={() => scrollToSection('avisos')} className="text-left font-bold text-slate-600">Avisos</button>
                                 <button onClick={() => { navigate('/agenda'); setIsMenuOpen(false); }} className="text-left font-bold text-slate-600">Agenda</button>
+                                <button onClick={() => { navigate('/empreendedores'); setIsMenuOpen(false); }} className="text-left font-bold text-slate-600">Empreendedores</button>
                                 <button onClick={() => navigate('/login')} className="bg-primary text-white font-bold py-3 rounded-xl">Área Administrativa</button>
                             </div>
                         </motion.div>

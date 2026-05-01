@@ -32,6 +32,8 @@ import AdminMaintenance from './pages/AdminMaintenance';
 import AdminAccessHistory from './pages/AdminAccessHistory';
 import PoolPasses from './pages/PoolPasses';
 import AdminPoolPasses from './pages/AdminPoolPasses';
+import Entrepreneurs from './pages/Entrepreneurs';
+import AdminEntrepreneurs from './pages/AdminEntrepreneurs';
 
 import ScrollToTop from './components/ScrollToTop';
 
@@ -78,6 +80,7 @@ function AppContent() {
                 <Route path="/manual-maxclub" element={<PageWrapper><ManualMaxClub /></PageWrapper>} />
                 <Route path="/checklist-salao" element={<PageWrapper><PublicChecklist /></PageWrapper>} />
                 <Route path="/pulseiras" element={<PageWrapper><PoolPasses /></PageWrapper>} />
+                <Route path="/empreendedores" element={<PageWrapper><Entrepreneurs /></PageWrapper>} />
 
                 {/* Admin Routes */}
                 <Route
@@ -101,6 +104,7 @@ function AppContent() {
                     <Route path="checklist-salao" element={<PageWrapper><AdminChecklistHistory /></PageWrapper>} />
                     <Route path="vagas" element={<ProtectedRoute allowedProfiles={['OPERADOR', 'GESTOR', 'ADM']}><PageWrapper><AdminParking /></PageWrapper></ProtectedRoute>} />
                     <Route path="pulseiras" element={<PageWrapper><AdminPoolPasses /></PageWrapper>} />
+                    <Route path="empreendedores" element={<PageWrapper><AdminEntrepreneurs /></PageWrapper>} />
                     <Route
                         path="usuarios"
                         element={
