@@ -54,12 +54,12 @@ function Suggestions() {
                         <form onSubmit={handleSubmit} className="space-y-8">
                             <div>
                                 <label className="block text-sm font-bold text-slate-700 mb-3 px-1">Sua Unidade</label>
-                                <input
-                                    type="text" required
-                                    value={unidade} onChange={(e) => setUnidade(e.target.value)}
-                                    placeholder="Ex: 154 Bloco B"
-                                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none font-medium"
-                                />
+                                    <input
+                                        type="text" required
+                                        value={unidade} onChange={(e) => setUnidade(e.target.value)}
+                                        placeholder="Ex: 101"
+                                        className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none font-medium"
+                                    />
                             </div>
 
                             <div>

@@ -85,7 +85,7 @@ function PoolPasses() {
                                     <input
                                         type="text" required
                                         value={unidade} onChange={(e) => setUnidade(e.target.value)}
-                                        placeholder="Ex: 82 Bloco C"
+                                        placeholder="Ex: 101"
                                         className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-primary/5 focus:border-primary/20 outline-none font-bold text-slate-900 transition-all"
                                     />
                                 </div>

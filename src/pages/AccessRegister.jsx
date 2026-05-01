@@ -87,11 +87,11 @@ function AccessRegister() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-2">Seu Nome</label>
+                                <label className="block text-sm font-bold text-slate-700 mb-2">Responsável</label>
                                 <input
                                     type="text" required
                                     value={nome} onChange={(e) => setNome(e.target.value)}
-                                    placeholder="Nome Completo"
+                                    placeholder="Responsável pelo acesso"
                                     className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none"
                                 />
                             </div>
@@ -101,7 +101,7 @@ function AccessRegister() {
                                 <input
                                     type="text" required
                                     value={unidade} onChange={(e) => setUnidade(e.target.value)}
-                                    placeholder="Ex: 102 Bloco A"
+                                    placeholder="Ex: 101"
                                     className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none"
                                 />
                             </div>
