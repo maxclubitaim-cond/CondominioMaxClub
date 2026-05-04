@@ -31,13 +31,8 @@ export const PdfService = {
     doc.text(`RELATÓRIO: ${moduleName.toUpperCase()} - CONTROLE CORPORATIVO`, 20, 30);
     
     // --- PERÍODO ---
-    const formatDate = (dateStr) => {
-      const [year, month, day] = dateStr.split('-');
-      return `${day}/${month}/${year}`;
-    };
-
-    const startStr = formatDate(range.start);
-    const endStr = formatDate(range.end);
+    const startStr = safeFormatDate(range.start);
+    const endStr = safeFormatDate(range.end);
 
     doc.setTextColor("#FFFFFF");
     doc.setFontSize(8);
