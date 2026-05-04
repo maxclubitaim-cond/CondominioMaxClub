@@ -265,7 +265,7 @@ function AdminAvisos() {
                                     <p className="text-xs text-slate-500 mb-6 line-clamp-2 leading-relaxed">{aviso.descricao}</p>
                                     <div className="flex items-center justify-between pt-4 border-t border-slate-50 mt-4">
                                         <div className="flex flex-col text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                            <span>{new Date(aviso.created_at).toLocaleDateString('pt-BR')}</span>
+                                            <span>{formatDate(aviso.created_at)}</span>
                                             {aviso.data_fim && <span className="text-secondary">Expira: {formatDate(aviso.data_fim)}</span>}
                                         </div>
                                         <button

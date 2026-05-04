@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import { MessageSquare, CheckCircle, Clock, Trash2, Building } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { formatDateTime } from '../utils/dateUtils';
 
 function AdminSuggestions() {
     const [sugestoes, setSugestoes] = useState([]);
@@ -69,7 +70,7 @@ function AdminSuggestions() {
                                         <Building size={12} /> Unidade {sug.unidade}
                                     </div>
                                     <div className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
-                                        <Clock size={12} /> {new Date(sug.created_at).toLocaleString()}
+                                        <Clock size={12} /> {formatDateTime(sug.created_at)}
                                     </div>
                                 </div>
                                 <p className="text-slate-700 font-medium leading-relaxed">{sug.texto}</p>

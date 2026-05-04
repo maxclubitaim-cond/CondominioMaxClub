@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { formatDate } from '../utils/dateUtils';
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -171,7 +172,7 @@ function AdminPoolPasses() {
                                             <td className="px-8 py-6">
                                                 <div className="flex items-center gap-3 text-[10px] font-bold text-slate-600 uppercase tracking-widest">
                                                     <Clock size={14} className="text-primary" />
-                                                    {new Date(req.data_uso + 'T00:00:00').toLocaleDateString('pt-BR')}
+                                                    {formatDate(req.data_uso)}
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">

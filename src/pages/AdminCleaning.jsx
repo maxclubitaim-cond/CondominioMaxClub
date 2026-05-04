@@ -20,6 +20,7 @@ import { useAuth } from '../context/AuthContext';
 import { PdfService } from '../services/PdfService';
 import DateSelectorModal from '../components/DateSelectorModal';
 import { toast } from 'react-hot-toast';
+import { formatDateTime } from '../utils/dateUtils';
 
 function AdminCleaning() {
     const { profile } = useAuth();
@@ -311,7 +312,7 @@ function AdminCleaning() {
                                 <tr key={reg.id} className="text-xs md:text-sm">
                                     <td className="px-4 md:px-6 py-4 font-bold text-slate-700">{reg.locais_limpeza?.nome}</td>
                                     <td className="px-4 md:px-6 py-4 text-slate-500">
-                                        {new Date(reg.data_limpeza).toLocaleDateString('pt-BR')} <span className="hidden md:inline">{new Date(reg.data_limpeza).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
+                                        {formatDateTime(reg.data_limpeza)}
                                     </td>
                                     <td className="px-4 md:px-6 py-4 text-slate-500 font-medium hidden sm:table-cell">{reg.nome_operador}</td>
                                     <td className="px-4 md:px-6 py-4 text-right">

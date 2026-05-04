@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { parseDate } from '../utils/dateUtils';
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -25,8 +26,8 @@ function VolleyballBooking() {
     // Regra: Disponível um dia sim, um dia não, a partir de 09/04/2026
     function isDateAllowed(dateString) {
         if (!dateString) return false;
-        const selectedDate = new Date(dateString + 'T00:00:00');
-        const referenceDate = new Date('2026-04-09T00:00:00');
+        const selectedDate = parseDate(dateString);
+        const referenceDate = parseDate('2026-04-09');
         
         // Diferença em dias
         const diffTime = selectedDate.getTime() - referenceDate.getTime();

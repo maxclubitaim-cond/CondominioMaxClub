@@ -1,4 +1,5 @@
 import { jsPDF } from "jspdf";
+import { formatDate as safeFormatDate } from "../utils/dateUtils";
 
 /**
  * PdfService
@@ -69,7 +70,7 @@ export const PdfService = {
       }
       
       const dateStr = item.created_at || item.data_uso || item.data || new Date().toISOString();
-      const formattedDate = new Date(dateStr).toLocaleDateString('pt-BR');
+      const formattedDate = safeFormatDate(dateStr);
       
       doc.text(String(item.unidade || item.local || "N/A"), 25, yPos);
       doc.text(formattedDate, 80, yPos);

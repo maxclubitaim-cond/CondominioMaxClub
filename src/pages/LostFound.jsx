@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Package, ChevronLeft, Info, Clock, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { formatDate } from '../utils/dateUtils';
 
 function LostFound() {
     const [items, setItems] = useState([]);
@@ -108,7 +109,7 @@ function LostFound() {
                                         <div className="flex items-center justify-between pt-6 border-t border-slate-50 mt-auto">
                                             <div className="flex items-center gap-2 text-slate-400 text-xs font-bold">
                                                 <Clock size={14} />
-                                                {new Date(item.created_at).toLocaleDateString()}
+                                                {formatDate(item.created_at)}
                                             </div>
                                             <Info size={18} className="text-slate-200 group-hover:text-primary transition-colors" />
                                         </div>

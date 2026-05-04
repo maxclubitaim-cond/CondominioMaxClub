@@ -14,6 +14,7 @@ import {
     Search 
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { formatDate } from '../utils/dateUtils';
 
 function AdminLostFound() {
     const [items, setItems] = useState([]);
@@ -242,7 +243,7 @@ function AdminLostFound() {
                             <div className="p-6">
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="font-bold text-slate-800 text-lg leading-tight">{item.item}</h3>
-                                    <span className="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">{new Date(item.created_at).toLocaleDateString()}</span>
+                                    <span className="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">{formatDate(item.created_at)}</span>
                                 </div>
                                 <div className="flex flex-col gap-2">
                                     <button

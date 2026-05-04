@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { formatDate } from '../utils/dateUtils';
 import { supabase } from '../lib/supabase';
 import { Trophy, CheckCircle, Clock, Trash2, User, Building, FileText } from 'lucide-react';
 import { PdfService } from '../services/PdfService';
@@ -124,7 +125,7 @@ function AdminVolleyball() {
                                     <p className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase">Unid: {res.unidade}</p>
                                 </td>
                                 <td className="px-4 md:px-6 py-4 text-slate-500 font-medium text-xs md:text-sm">
-                                    {new Date(res.data).toLocaleDateString()}
+                                    {formatDate(res.data)}
                                 </td>
                                 <td className="px-4 md:px-6 py-4">
                                     <button

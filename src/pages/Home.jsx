@@ -27,7 +27,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { usePushNotifications } from '../hooks/usePushNotifications';
 import logo from '../assets/logo.png';
-import { formatDate } from '../utils/dateUtils';
+import { formatDate, getDayOfMonth, getMonthName } from '../utils/dateUtils';
 
 function Home() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -323,7 +323,7 @@ function Home() {
                                     <div key={idx} className="flex justify-between items-center group/item text-sm">
                                         <div className="flex flex-col">
                                             <span className="font-bold text-slate-900 uppercase text-[11px] tracking-wider">{item.locais_limpeza?.nome}</span>
-                                            <span className="text-[10px] text-slate-400 font-bold uppercase">{new Date(item.data_limpeza).toLocaleDateString()}</span>
+                                            <span className="text-[10px] text-slate-400 font-bold uppercase">{formatDate(item.data_limpeza)}</span>
                                         </div>
                                         <span className="px-3 py-1 bg-highlight/10 text-highlight text-[9px] font-bold rounded-lg uppercase border border-highlight/20">Finalizado</span>
                                     </div>
@@ -349,8 +349,8 @@ function Home() {
                                 {agenda.length > 0 ? agenda.map((evento) => (
                                     <div key={evento.id} className="flex gap-4 group/ev pointer-events-none">
                                         <div className="text-primary font-bold text-xs pt-1 flex flex-col items-center">
-                                            <span>{new Date(evento.data).getDate()}</span>
-                                            <span className="text-[8px] uppercase">{new Date(evento.data).toLocaleDateString('pt-BR', { month: 'short' })}</span>
+                                            <span>{getDayOfMonth(evento.data)}</span>
+                                            <span className="text-[8px] uppercase">{getMonthName(evento.data)}</span>
                                         </div>
                                         <div className="flex-1 border-l border-white/10 pl-4 py-1">
                                             <p className="text-[11px] font-bold leading-tight uppercase tracking-wide group-hover/ev:text-primary transition-colors">{evento.titulo}</p>
@@ -404,7 +404,7 @@ function Home() {
                                     <div className="flex items-center gap-2 mb-6">
                                         <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest flex items-center gap-2">
                                             <Calendar size={12} className="text-primary" />
-                                            {new Date(aviso.created_at).toLocaleDateString('pt-BR')}
+                                            {formatDate(aviso.created_at)}
                                         </span>
                                     </div>
                                     <h3 className="text-xl font-bold text-slate-900 mb-4 tracking-tight group-hover:text-primary transition-colors leading-tight">{aviso.titulo}</h3>

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { toast } from 'react-hot-toast';
+import { formatDate } from '../utils/dateUtils';
 
 function AdminEntrepreneurs() {
     const [services, setServices] = useState([]);
@@ -256,7 +257,7 @@ function AdminEntrepreneurs() {
                                             </span>
                                         </td>
                                         <td className="px-8 py-5 text-xs text-slate-400 font-medium">
-                                            {new Date(service.created_at).toLocaleDateString()}
+                                            {formatDate(service.created_at)}
                                         </td>
                                         <td className="px-8 py-5 text-right">
                                             <div className="flex items-center justify-end gap-2">

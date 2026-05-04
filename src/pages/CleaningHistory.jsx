@@ -70,7 +70,7 @@ function CleaningHistory() {
                                     >
                                         <td className="px-8 py-6 font-bold text-slate-800">{reg.locais_limpeza?.nome}</td>
                                         <td className="px-8 py-6 text-slate-500 font-medium">
-                                            {new Date(reg.data_limpeza).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                                            {formatDate(reg.data_limpeza)}
                                         </td>
                                         <td className="px-8 py-6 text-primary font-bold">
                                             {formatDate(reg.proxima_limpeza)}

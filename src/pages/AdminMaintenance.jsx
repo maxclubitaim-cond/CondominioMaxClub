@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
+import { formatDateTime } from '../utils/dateUtils';
 
 function ImageModal({ url, onClose }) {
     if (!url) return null;
@@ -411,7 +412,7 @@ function MaintenanceRecordCard({ record, onImageClick }) {
                         </div>
                         <span className="text-slate-300">•</span>
                         <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
-                            <Clock size={12} /> {new Date(record.data_manutencao).toLocaleString('pt-BR')}
+                            <Clock size={12} /> {formatDateTime(record.data_manutencao)}
                         </div>
                     </div>
 

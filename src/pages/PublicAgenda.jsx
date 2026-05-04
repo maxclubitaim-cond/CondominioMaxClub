@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Calendar, ChevronLeft, MapPin, Clock, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { parseDate } from '../utils/dateUtils';
+import { parseDate, getDayOfMonth } from '../utils/dateUtils';
 
 function PublicAgenda() {
     const [events, setEvents] = useState([]);
@@ -94,7 +94,7 @@ function PublicAgenda() {
                                         >
                                             <div className="flex flex-col items-center justify-center w-16 h-16 bg-slate-50 rounded-2xl group-hover:bg-primary/10 transition-colors">
                                                 <span className="text-lg font-black text-slate-800 group-hover:text-primary transition-colors">
-                                                    {event.data.split('-')[2]}
+                                                    {getDayOfMonth(event.data)}
                                                 </span>
                                                 <span className="text-[10px] font-black uppercase text-slate-400">
                                                     {parseDate(event.data).toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '')}

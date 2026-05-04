@@ -62,3 +62,40 @@ export function getMonthName(dateStr, format = 'short') {
     if (!date) return '';
     return date.toLocaleDateString('pt-BR', { month: format });
 }
+
+/**
+ * Formata o horário de um timestamp ISO ou string de hora.
+ * @param {string} dateStr 
+ * @returns {string}
+ */
+export function formatTime(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) {
+        // Se for apenas uma string de hora "HH:mm:ss"
+        return dateStr.slice(0, 5);
+    }
+    return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+
+/**
+ * Formata data e hora juntas de forma segura.
+ * @param {string} dateStr 
+ * @returns {string}
+ */
+export function formatDateTime(dateStr) {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return formatDate(dateStr);
+    return `${date.toLocaleDateString('pt-BR')} ${date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+}
+
+/**
+ * Formata uma data como "DD de MMMM".
+ * @param {string} dateStr 
+ * @returns {string}
+ */
+export function formatDateLong(dateStr) {
+    const date = parseDate(dateStr);
+    if (!date) return '';
+    return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long' }).format(date);
+}

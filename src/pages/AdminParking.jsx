@@ -20,6 +20,7 @@ import {
     Building
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { formatDate } from '../utils/dateUtils';
 
 function AdminParking() {
     const [vagas, setVagas] = useState([]);
@@ -199,7 +200,7 @@ function AdminParking() {
 
     const printAta = (sorteio) => {
         const printWindow = window.open('', '_blank');
-        const dataFormatada = new Date(sorteio.created_at).toLocaleDateString('pt-BR');
+        const dataFormatada = formatDate(sorteio.created_at);
 
         let tabelaHtml = '';
         sorteio.resultado.forEach(res => {
@@ -393,7 +394,7 @@ function AdminParking() {
                                         <FileText size={16} className="text-slate-600 group-hover:text-primary" />
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-[10px] font-bold text-slate-500 uppercase">{new Date(s.created_at).toLocaleDateString()}</span>
+                                        <span className="text-[10px] font-bold text-slate-500 uppercase">{formatDate(s.created_at)}</span>
                                         <span className="text-[10px] font-bold text-primary uppercase">{s.resultado?.length || 0} Vagas</span>
                                     </div>
                                 </div>
@@ -541,7 +542,7 @@ function AdminParking() {
                                 <div>
                                     <h2 className="text-2xl font-bold text-slate-900">{selectedSorteio.titulo}</h2>
                                     <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">
-                                        Sorteado em: {new Date(selectedSorteio.created_at).toLocaleDateString('pt-BR')}
+                                        Sorteado em: {formatDate(selectedSorteio.created_at)}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-3">

@@ -17,6 +17,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { toast } from 'react-hot-toast';
+import { formatDate } from '../utils/dateUtils';
 
 function Entrepreneurs() {
     const [services, setServices] = useState([]);
@@ -244,7 +245,7 @@ function Entrepreneurs() {
                                     </p>
 
                                     <div className="pt-6 border-t border-slate-50 flex items-center justify-between">
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Postado em {new Date(service.created_at).toLocaleDateString()}</span>
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Postado em {formatDate(service.created_at)}</span>
                                         <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
                                             <ImageIcon size={18} />
                                         </div>
@@ -507,7 +508,7 @@ function Entrepreneurs() {
 
                             <div className="p-8 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                    Anunciado em {new Date(selectedService.created_at).toLocaleDateString()}
+                                    Anunciado em {formatDate(selectedService.created_at)}
                                 </span>
                                 <button
                                     onClick={() => setSelectedService(null)}

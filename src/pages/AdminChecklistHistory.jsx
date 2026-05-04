@@ -14,15 +14,7 @@ import {
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long' }).format(date);
-};
-
-const formatFullDate = (dateString) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('pt-BR').format(date);
-};
+import { formatDate, formatDateLong } from '../utils/dateUtils';
 
 const AdminChecklistHistory = () => {
     const [checklists, setChecklists] = useState([]);
@@ -124,7 +116,7 @@ const AdminChecklistHistory = () => {
                                 filteredChecklists.map((item) => (
                                     <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
                                         <td className="px-4 md:p-6 py-4">
-                                            <p className="text-xs md:text-sm font-bold text-slate-700">{formatDate(item.data_evento)}</p>
+                                            <p className="text-xs md:text-sm font-bold text-slate-700">{formatDateLong(item.data_evento)}</p>
                                         </td>
                                         <td className="px-4 md:p-6 py-5 md:py-6">
                                             <div className="flex items-center gap-2">
@@ -169,7 +161,7 @@ const AdminChecklistHistory = () => {
                             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
                                 <div>
                                     <h3 className="text-lg font-black text-slate-800">Checklist Unidade {selectedChecklist.unidade}</h3>
-                                    <p className="text-xs text-slate-500 font-medium">Evento: {formatFullDate(selectedChecklist.data_evento)}</p>
+                                    <p className="text-xs text-slate-500 font-medium">Evento: {formatDate(selectedChecklist.data_evento)}</p>
                                 </div>
                                 <button
                                     onClick={() => setSelectedChecklist(null)}

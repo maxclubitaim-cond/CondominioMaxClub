@@ -18,6 +18,7 @@ import { FileText, Loader2 } from 'lucide-react';
 import { PdfService } from '../services/PdfService';
 import DateSelectorModal from '../components/DateSelectorModal';
 import { toast } from 'react-hot-toast';
+import { formatDate, formatTime, getDayOfMonth, getMonthName, parseDate } from '../utils/dateUtils';
 
 function AdminAccessHistory() {
     const [registros, setRegistros] = useState([]);
@@ -108,7 +109,7 @@ function AdminAccessHistory() {
         const matchesLocal = filterLocal === '' || reg.local_id === filterLocal;
 
         const matchesDate = !filterDate ||
-            (reg.data_uso && new Date(reg.data_uso).toISOString().split('T')[0] === filterDate);
+            (reg.data_uso && parseDate(reg.data_uso).toLocaleDateString('en-CA') === filterDate);
 
         return matchesSearch && matchesLocal && matchesDate;
     });
@@ -246,18 +247,18 @@ function AdminAccessHistory() {
                                             <div className="flex items-center gap-2 md:gap-3">
                                                 <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-50 rounded-lg flex flex-col items-center justify-center group-hover:bg-white transition-colors shrink-0">
                                                     <span className="text-[8px] md:text-[10px] font-black text-slate-400">
-                                                        {new Date(reg.data_uso).toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase()}
+                                                        {getMonthName(reg.data_uso).toUpperCase()}
                                                     </span>
                                                     <span className="text-xs md:text-sm font-black text-slate-700">
-                                                        {new Date(reg.data_uso).getDate()}
+                                                        {getDayOfMonth(reg.data_uso)}
                                                     </span>
                                                 </div>
                                                 <div>
                                                     <p className="text-slate-800 text-xs md:text-sm font-bold">
-                                                        {new Date(reg.data_uso).toLocaleDateString('pt-BR')}
+                                                        {formatDate(reg.data_uso)}
                                                     </p>
                                                     <p className="text-[9px] md:text-[10px] text-slate-400 font-black flex items-center gap-1 uppercase">
-                                                        <Clock size={10} /> {new Date(reg.data_uso).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                                        <Clock size={10} /> {formatTime(reg.data_uso)}
                                                     </p>
                                                 </div>
                                             </div>

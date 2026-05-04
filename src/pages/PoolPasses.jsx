@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { parseDate } from '../utils/dateUtils';
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -135,14 +136,14 @@ function PoolPasses() {
                                 <input
                                     type="date" required
                                     value={dataUso} onChange={(e) => setDataUso(e.target.value)}
-                                    min={new Date().toISOString().split('T')[0]}
+                                    min={new Date().toLocaleDateString('en-CA')}
                                     className={`w-full px-6 py-4 bg-slate-50 border rounded-2xl focus:ring-4 outline-none font-bold transition-all ${
-                                        dataUso && new Date(dataUso + 'T00:00:00').getDay() === 0
+                                        dataUso && parseDate(dataUso).getDay() === 0
                                         ? 'border-rose-500 text-rose-500 bg-rose-50 focus:ring-rose-50'
                                         : 'border-slate-100 text-slate-900 focus:ring-primary/5 focus:border-primary/20'
                                     }`}
                                 />
-                                {dataUso && new Date(dataUso + 'T00:00:00').getDay() === 0 && (
+                                {dataUso && parseDate(dataUso).getDay() === 0 && (
                                     <p className="mt-4 text-[11px] font-bold text-rose-500 px-1 flex items-center gap-2 animate-pulse">
                                         <X size={14} className="shrink-0" /> Não é permitida a reserva para domingos.
                                     </p>
@@ -151,9 +152,9 @@ function PoolPasses() {
 
                             <button
                                 type="submit"
-                                disabled={!dataUso || new Date(dataUso + 'T00:00:00').getDay() === 0}
+                                disabled={!dataUso || parseDate(dataUso).getDay() === 0}
                                 className={`w-full font-bold py-5 rounded-3xl shadow-2xl transition-all flex justify-center items-center gap-3 text-sm uppercase tracking-[0.2em] ${
-                                    !dataUso || new Date(dataUso + 'T00:00:00').getDay() === 0
+                                    !dataUso || parseDate(dataUso).getDay() === 0
                                     ? 'bg-slate-100 text-slate-300 cursor-not-allowed shadow-none'
                                     : 'bg-navy text-white hover:bg-slate-800 shadow-navy/20'
                                 }`}
