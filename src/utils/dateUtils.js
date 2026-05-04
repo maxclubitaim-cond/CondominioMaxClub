@@ -31,14 +31,19 @@ export function parseDate(dateStr) {
 }
 
 /**
- * Formata uma string "YYYY-MM-DD" para o padrão brasileiro "DD/MM/YYYY".
- * @param {string} dateStr 
+ * Formata uma data para string (DD/MM/YYYY)
+ * @param {string|Date} dateStr 
  * @returns {string}
  */
 export function formatDate(dateStr) {
     const date = parseDate(dateStr);
     if (!date) return '';
-    return date.toLocaleDateString('pt-BR');
+    
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    
+    return `${day}/${month}/${year}`;
 }
 
 /**
