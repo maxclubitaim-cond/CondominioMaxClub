@@ -7,7 +7,7 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: "#0284C7",   // Azul Original MaxClub (Sky-600)
+                primary: "#F59E0B",   // Amber-500 (Laranja Original)
                 secondary: "#1E293B", // Slate-800 (Navy/Azul Escuro)
                 highlight: "#10B981", // Emerald-500 (Esmeralda)
             },
