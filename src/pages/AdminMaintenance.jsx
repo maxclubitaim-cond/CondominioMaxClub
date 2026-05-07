@@ -81,7 +81,7 @@ function AdminMaintenance() {
         const { data: areasData } = await supabase.from('manutencao_areas').select('*').eq('ativo', true).order('nome');
         const { data: regsData } = await supabase
             .from('manutencao_registros')
-            .select('*, manutencao_areas(nome), perfis(nome)')
+            .select('*, perfis(nome)')
             .order('data_manutencao', { ascending: false });
 
         if (areasData) setAreas(areasData);

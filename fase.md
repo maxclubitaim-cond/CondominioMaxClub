@@ -26,19 +26,19 @@ As fases abaixo definem o cronograma de desenvolvimento e melhorias do projeto.
 - [x] Ajuste de Permissões de Acesso para OPERADOR (Vagas Liberado, Acessos Restrito).
 - [x] Alteração terminológica de 'Feedback' para 'Sugestões' em todo o sistema.
 
-## [/] Fase 4: Novas Funcionalidades e Homologação (Em Progresso)
+## [x] Fase 4: Novas Funcionalidades e Homologação
 - [x] Correção de responsividade na `Home.jsx` (Status Sidebar visível no mobile).
 - [x] Implementação de Scroll Suave e Correção de Navegação (Avisos/Mobile).
 - [x] Padronização de Rótulos de Navegação ("Voltar").
 - [x] Correção de Scroll para o Topo em navegação de páginas.
 - [x] Implementação de Notificações PWA (WebPush).
-    - [x] Foco exclusivo em comunicados para moradores (Avisos/Agenda/Achados).
-    - [x] Botões manuais de disparo no painel administrativo para controle total.
-- [x] Profissionalização da Interface (UX/UI):
-    - [x] Remoção de 100% dos `alert()` e `confirm()` nativos.
-    - [x] Implementação de `react-hot-toast` em todos os módulos administrativos e públicos.
-    - [x] Padronização de diálogos de confirmação com Toasts personalizados.
+- [x] Profissionalização da Interface (UX/UI).
 - [x] Geração de Relatórios de Limpeza e Acessos em PDF.
 - [x] Implementação do Módulo de **Empreendedores** (Divulgação de serviços).
+
+## [/] Fase 5: Ajustes de Manutenção e Estabilidade (Em Progresso)
+- [x] Correção do Histórico de Manutenção (Bug de Join inexistente).
+- [ ] Verificação de integridade dos registros do Zelador.
+- [ ] Ajuste final das cores no `tailwind.config.js` para garantir o azul original.
 - [ ] Testes de maturidade de código (`code-maturity-assessor`).
 - [ ] Homologação final com o usuário.

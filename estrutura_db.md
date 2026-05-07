@@ -15,7 +15,7 @@ Armazena informações dos usuários administrativos.
 Controle de acessos e senhas.
 - `id`: UUID
 - `nome`: TEXT
-- `senha_atual`: TEXT (Cuidado: Leitura pública habilitada no momento)
+- `senha_atual`: TEXT
 
 ### 3. `agenda`
 Eventos do condomínio.
@@ -53,7 +53,7 @@ Registro de conformidade após eventos.
 - `aderencia`: FLOAT
 - `respostas`: JSONB
 
-### 9. `solicitacoes_pulseiras` [NOVO]
+### 9. `solicitacoes_pulseiras`
 Solicitação de convites para piscina.
 - `unidade`: TEXT
 - `quantidade`: INTEGER (Limite de 2)
@@ -61,23 +61,41 @@ Solicitação de convites para piscina.
 - `status`: TEXT ('PENDENTE', 'ENTREGUE')
 - `created_at`: TIMESTAMPTZ
 
-### 10. `pwa_subscriptions` [NOVO]
+### 10. `pwa_subscriptions`
 Armazena as assinaturas de WebPush para notificações.
 - `id`: UUID (PK)
-- `user_id`: UUID (FK auth.users, opcional para visitantes)
-- `subscription`: JSONB (Dados do endpoint, auth e p256dh)
-- `user_agent`: TEXT
+- `user_id`: UUID (FK auth.users)
+- `subscription`: JSONB
 - `created_at`: TIMESTAMPTZ
 
-### 11. `empreendedores` [NOVO]
+### 11. `empreendedores`
 Registro de serviços e produtos oferecidos por moradores.
 - `id`: UUID (PK)
 - `nome`: TEXT
 - `unidade`: TEXT
 - `tipo_servico`: TEXT
 - `descricao`: TEXT (max 500)
-- `fotos`: TEXT[] (URLs das imagens)
+- `fotos`: TEXT[]
 - `created_at`: TIMESTAMPTZ
+
+### 12. `manutencao_registros` [NOVO]
+Histórico de manutenções preventivas e corretivas.
+- `id`: UUID (PK)
+- `area_nome`: TEXT (Nome livre ou vindo de manutencao_areas)
+- `responsavel_tecnico`: TEXT
+- `descricao`: TEXT
+- `observacoes`: TEXT
+- `fotos_antes`: JSONB (Array de URLs)
+- `fotos_depois`: JSONB (Array de URLs)
+- `realizado_por`: UUID (FK perfis)
+- `data_manutencao`: TIMESTAMPTZ
+- `created_at`: TIMESTAMPTZ
+
+### 13. `manutencao_areas` [NOVO]
+Sugestões de áreas para o formulário de manutenção.
+- `id`: UUID (PK)
+- `nome`: TEXT
+- `ativo`: BOOLEAN
 
 ## Tipos Customizados
 - `user_perfil`: ENUM ('OPERADOR', 'GESTOR', 'ADM')
