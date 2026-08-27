@@ -4,7 +4,7 @@ import { supabaseAdminAuth } from '../lib/supabaseAdmin';
 import { useAuth } from '../context/AuthContext';
 import { Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Loader2, Search, Home, Plus, KeyRound, AlertCircle, X, ShieldAlert } from 'lucide-react';
+import { Users, Loader2, Search, Home, Plus, KeyRound, AlertCircle, X, ShieldAlert, Key } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Pagination from '../components/common/Pagination';
 
