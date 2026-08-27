@@ -64,6 +64,11 @@ DECLARE
     v_item_id UUID;
     v_quantidade INTEGER;
 BEGIN
+    -- 0. Verifica permissão para escalar segurança da RPC
+    IF NOT EXISTS (SELECT 1 FROM public.perfis WHERE id = auth.uid() AND perfil IN ('GESTOR', 'ADM')) THEN
+        RAISE EXCEPTION 'Acesso negado. Apenas Gestores ou ADMs podem registrar manutenção com estoque.';
+    END IF;
+
     -- 1. Insere o registro de manutenção
     INSERT INTO public.manutencao_registros (
         area_nome, responsavel_tecnico, descricao, 
@@ -112,6 +117,11 @@ RETURNS TABLE (
     responsavel_nome TEXT
 ) AS $$
 BEGIN
+    -- 0. Verifica permissão
+    IF NOT EXISTS (SELECT 1 FROM public.perfis WHERE id = auth.uid() AND perfil IN ('GESTOR', 'ADM')) THEN
+        RAISE EXCEPTION 'Acesso negado. Apenas Gestores ou ADMs podem listar movimentações de estoque.';
+    END IF;
+
     RETURN QUERY
     SELECT 
         m.id,

@@ -108,7 +108,8 @@ function ResidentClassificados() {
             const { error } = await supabase.rpc('morador_alterar_status_classificado', {
                 p_unidade: morador.unidade,
                 p_classificado_id: id,
-                p_novo_status: novoStatus
+                p_novo_status: novoStatus,
+                p_token: morador.token
             });
 
             if (error) throw error;
@@ -139,7 +140,8 @@ function ResidentClassificados() {
 
             const { error } = await supabase.rpc('morador_excluir_classificado', {
                 p_unidade: morador.unidade,
-                p_classificado_id: id
+                p_classificado_id: id,
+                p_token: morador.token
             });
 
             if (error) throw error;

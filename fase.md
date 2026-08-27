@@ -62,3 +62,20 @@ As fases abaixo definem o cronograma de desenvolvimento e melhorias do projeto.
 - [x] **Interface Clean:** Ocultação do menu antigo da `Home.jsx` centralizando as atenções e movendo acessos para área restrita no rodapé.
 - [x] **Centralização Logo:** O logo na Home foi centralizado para se adequar ao novo header sem links.
 - [x] **Paginação de Limpeza:** Adicionado sistema de paginação para o relatório e histórico de limpezas (`/limpeza`).
+
+## [x] Fase 10: Auditoria e Mitigação de Segurança (AppSec)
+*Baseado no plano de ação: `relatorio_auditoria_projeto.md`*
+- [x] **Correção de RLS (Vazamento de Dados):** Remover políticas `USING (true)` de tabelas sensíveis como `locais` (que expõe senhas) e `perfis` (que expõe e-mails públicos).
+- [x] **Correção BOLA/IDOR (Classificados):** Refatorar `morador_alterar_status_classificado` e `morador_excluir_classificado` para validarem segurança através de `auth.uid()` em vez do parâmetro de frontend.
+- [x] **Escalada de Privilégios (Estoque):** Adicionar barreira de autorização em `registrar_manutencao_com_estoque` para validar o perfil `ADM` ou `GESTOR`.
+- [x] **Storage Seguros:** Implementar restrição de extensão e validação de tipos MIME no RLS dos Buckets (Uploads).
+
+## [x] Fase 11: Refatoração Orientada a Serviços (Data Layer)
+*Baseado no plano de ação: `relatorio_auditoria_projeto.md`*
+- [x] **Abstração de Banco de Dados:** Eliminar `Query Sprawl` centralizando `supabase.from()` dentro de novos Hooks em `src/hooks/`.
+- [x] **Redução de Dívida Técnica:** Modularizar os componentes gigantes (`AdminMaintenance.jsx`, `Home.jsx`, `AdminParking.jsx`, `AdminPoolCleaning.jsx`) extraindo modais e tabelas para `src/components/`.
+
+## [x] Fase 12: Unificação de Design System e Animações GSAP
+*Baseado no plano de ação: `relatorio_auditoria_projeto.md`*
+- [x] **Restauração de Paleta UI:** Ajustar `tailwind.config.js` removendo cores experimentais (Amber/Slate) e aplicando a paleta oficial (Azul/Esmeralda/Branco).
+- [x] **Motor de Animações:** Instalar pacotes obrigatórios `@gsap/react` e implementar transições fluidas nas modais e páginas.

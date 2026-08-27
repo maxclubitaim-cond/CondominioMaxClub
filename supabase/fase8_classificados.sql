@@ -76,10 +76,16 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE FUNCTION public.morador_alterar_status_classificado(
     p_unidade TEXT,
     p_classificado_id UUID,
-    p_novo_status TEXT
+    p_novo_status TEXT,
+    p_token UUID
 )
 RETURNS void AS $$
 BEGIN
+    -- 0. Valida a Sessão do Morador (Correção BOLA/IDOR)
+    IF NOT EXISTS (SELECT 1 FROM public.moradores_sessoes WHERE token = p_token AND UPPER(unidade) = UPPER(p_unidade)) THEN
+        RAISE EXCEPTION 'Acesso negado. Sessão inválida ou expirada.';
+    END IF;
+
     UPDATE public.classificados
     SET status = p_novo_status,
         updated_at = now()
@@ -96,10 +102,16 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Função: Excluir Classificado
 CREATE OR REPLACE FUNCTION public.morador_excluir_classificado(
     p_unidade TEXT,
-    p_classificado_id UUID
+    p_classificado_id UUID,
+    p_token UUID
 )
 RETURNS void AS $$
 BEGIN
+    -- 0. Valida a Sessão do Morador (Correção BOLA/IDOR)
+    IF NOT EXISTS (SELECT 1 FROM public.moradores_sessoes WHERE token = p_token AND UPPER(unidade) = UPPER(p_unidade)) THEN
+        RAISE EXCEPTION 'Acesso negado. Sessão inválida ou expirada.';
+    END IF;
+
     DELETE FROM public.classificados
     WHERE id = p_classificado_id 
       AND UPPER(unidade) = UPPER(p_unidade);
@@ -128,7 +140,10 @@ DROP POLICY IF EXISTS "Publico pode subir imagens de classificados" ON storage.o
 CREATE POLICY "Publico pode subir imagens de classificados" 
 ON storage.objects FOR INSERT 
 TO public 
-WITH CHECK ( bucket_id = 'classificados' );
+WITH CHECK ( 
+  bucket_id = 'classificados' AND 
+  (lower(name) LIKE '%.jpg' OR lower(name) LIKE '%.jpeg' OR lower(name) LIKE '%.png' OR lower(name) LIKE '%.webp')
+);
 
 DROP POLICY IF EXISTS "Publico pode deletar imagens de classificados" ON storage.objects;
 CREATE POLICY "Publico pode deletar imagens de classificados" 

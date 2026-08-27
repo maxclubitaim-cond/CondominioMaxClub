@@ -155,7 +155,9 @@ ALTER TABLE agenda ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Leitura pública de agenda" ON agenda FOR SELECT USING (true);
 
 ALTER TABLE locais ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Leitura pública de locais" ON locais FOR SELECT USING (true);
+CREATE POLICY "Leitura restrita de locais" ON locais FOR SELECT USING (
+  auth.role() = 'authenticated'
+);
 CREATE POLICY "Gestores e ADMs podem atualizar locais" 
   ON locais FOR UPDATE 
   USING (
@@ -192,7 +194,7 @@ CREATE POLICY "Gestores e ADMs podem deletar locais"
 -- Perfis: Leitura pública e gestão por ADM/GESTOR
 ALTER TABLE perfis ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Leitura pública de perfis" ON perfis;
-CREATE POLICY "Leitura pública de perfis" ON perfis FOR SELECT USING (true);
+CREATE POLICY "Leitura restrita de perfis" ON perfis FOR SELECT USING (auth.role() = 'authenticated');
 DROP POLICY IF EXISTS "Gestores e ADMs podem atualizar perfis" ON perfis;
 CREATE POLICY "Gestores e ADMs podem atualizar perfis" 
   ON perfis FOR UPDATE 

@@ -27,6 +27,16 @@ USING (
 );
 
 -- ==========================================
+-- 1.1 Tabela de Sessões Customizadas para Moradores
+-- Evita a vulnerabilidade BOLA/IDOR sem necessitar de Supabase Auth
+-- ==========================================
+CREATE TABLE IF NOT EXISTS public.moradores_sessoes (
+    token UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    unidade TEXT NOT NULL REFERENCES public.moradores_auth(unidade) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- ==========================================
 -- 2. FUNÇÕES RPC (SECURITY DEFINER)
 -- Essas funções ignoram o RLS para que possamos fazer a checagem da senha com segurança.
 -- ==========================================
@@ -60,10 +70,17 @@ BEGIN
 
   -- Compara a senha digitada com a Hash gravada no banco
   IF v_morador.senha_hash = crypt(p_senha, v_morador.senha_hash) THEN
-    RETURN json_build_object(
-      'unidade', v_morador.unidade,
-      'primeiro_acesso', v_morador.primeiro_acesso
-    );
+    DECLARE
+      v_session_token UUID;
+    BEGIN
+      INSERT INTO public.moradores_sessoes (unidade) VALUES (v_morador.unidade) RETURNING token INTO v_session_token;
+      
+      RETURN json_build_object(
+        'unidade', v_morador.unidade,
+        'primeiro_acesso', v_morador.primeiro_acesso,
+        'token', v_session_token
+      );
+    END;
   ELSE
     RAISE EXCEPTION 'Senha incorreta.';
   END IF;
