@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import { compressImage } from '../utils/imageCompression';
-import { Store, Plus, X, Loader2, Tag, Phone, Image as ImageIcon, Search, ArrowLeft, Upload } from 'lucide-react';
+import { Store, Plus, X, Loader2, Tag, Phone, Image as ImageIcon, Search, ArrowLeft, Upload, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
