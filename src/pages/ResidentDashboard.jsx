@@ -40,6 +40,25 @@ function ResidentDashboard() {
         }
     }
 
+    const handleConfirmarRetirada = async (id) => {
+        try {
+            const { error } = await supabase
+                .from('encomendas')
+                .update({
+                    status: 'ENTREGUE',
+                    data_entrega: new Date().toISOString()
+                })
+                .eq('id', id);
+                
+            if (error) throw error;
+            toast.success('Retirada confirmada!');
+            fetchMinhasEncomendas();
+        } catch (error) {
+            console.error('Erro ao confirmar retirada:', error);
+            toast.error('Erro ao confirmar retirada.');
+        }
+    };
+
     const handleLogout = async () => {
         logoutMorador();
         navigate('/');
@@ -213,6 +232,12 @@ function ResidentDashboard() {
                                                     {enc.codigo_rastreio}
                                                 </span>
                                             )}
+                                            <button 
+                                                onClick={() => handleConfirmarRetirada(enc.id)}
+                                                className="mt-3 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-xl hover:bg-blue-600 transition-colors flex items-center justify-center gap-1 w-fit"
+                                            >
+                                                <CheckCircle2 size={14} /> Recebido
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

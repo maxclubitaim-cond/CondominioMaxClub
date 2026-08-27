@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { Package, Search, Plus, CheckCircle, Clock, Info, PackageCheck, PackageOpen, Check } from 'lucide-react';
+import { Package, Search, Plus, CheckCircle, Clock, Info, PackageCheck, PackageOpen, Check, Trash2 } from 'lucide-react';
 import { formatDate } from '../utils/dateUtils';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -20,6 +20,7 @@ function AdminPackages() {
     const [codigoRastreio, setCodigoRastreio] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [itemToDeliver, setItemToDeliver] = useState(null);
+    const [itemToDelete, setItemToDelete] = useState(null);
 
     useEffect(() => {
         fetchEncomendas();
@@ -108,6 +109,26 @@ function AdminPackages() {
             toast.error('Erro ao atualizar status.');
         } finally {
             setItemToDeliver(null);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!itemToDelete) return;
+        
+        try {
+            const { error } = await supabase
+                .from('encomendas')
+                .delete()
+                .eq('id', itemToDelete);
+
+            if (error) throw error;
+            toast.success('Encomenda excluída com sucesso.');
+            fetchEncomendas();
+        } catch (error) {
+            console.error('Erro ao excluir encomenda:', error);
+            toast.error('Erro ao excluir encomenda.');
+        } finally {
+            setItemToDelete(null);
         }
     };
 
@@ -243,6 +264,15 @@ function AdminPackages() {
                                                     <CheckCircle size={14} /> Entregue
                                                 </span>
                                             )}
+                                            {(profile?.perfil === 'GESTOR' || profile?.perfil === 'ADM' || profile?.perfil === 'OPERADOR') && (
+                                                <button
+                                                    onClick={() => setItemToDelete(enc.id)}
+                                                    className="ml-2 p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                    title="Excluir encomenda"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}
@@ -369,6 +399,39 @@ function AdminPackages() {
                             <div className="flex flex-col gap-3">
                                 <button onClick={confirmDelivery} className="w-full bg-primary hover:bg-blue-600 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-primary/20">Confirmar</button>
                                 <button onClick={() => setItemToDeliver(null)} className="w-full bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold py-4 rounded-xl transition-all">Cancelar</button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Delete Confirmation Modal */}
+            <AnimatePresence>
+                {itemToDelete && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                        onClick={() => setItemToDelete(null)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            onClick={e => e.stopPropagation()}
+                            className="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-100 p-8"
+                        >
+                            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <Trash2 className="text-red-500 w-8 h-8" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-center text-slate-800 mb-2">Confirmar Exclusão</h3>
+                            <p className="text-slate-500 text-center font-medium mb-8">
+                                Tem certeza que deseja excluir esta encomenda permanentemente?
+                            </p>
+                            <div className="flex flex-col gap-3">
+                                <button onClick={handleDelete} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-red-500/20">Excluir</button>
+                                <button onClick={() => setItemToDelete(null)} className="w-full bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold py-4 rounded-xl transition-all">Cancelar</button>
                             </div>
                         </motion.div>
                     </motion.div>

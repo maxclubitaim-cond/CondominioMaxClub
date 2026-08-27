@@ -350,20 +350,33 @@ function AdminMaintenance() {
                                                             const qtd = document.getElementById('qtd-estoque');
                                                             if(!select.value || !qtd.value) return toast.error('Selecione um item e a quantidade');
                                                             const itemE = estoqueItens.find(e => e.id === select.value);
-                                                            if(parseInt(qtd.value) > itemE.quantidade_atual) return toast.error('Quantidade excede o saldo disponível!');
+                                                            const qtdToAdd = parseInt(qtd.value);
                                                             
-                                                            setItensUsados(prev => [...prev, {
-                                                                item_id: itemE.id,
-                                                                nome: itemE.nome,
-                                                                quantidade: parseInt(qtd.value),
-                                                                unidade_medida: itemE.unidade_medida
-                                                            }]);
+                                                            // Calculate already added quantity
+                                                            const alreadyAdded = itensUsados.find(i => i.item_id === itemE.id)?.quantidade || 0;
+                                                            
+                                                            if (alreadyAdded + qtdToAdd > itemE.quantidade_atual) {
+                                                                return toast.error('Quantidade excede o saldo disponível!');
+                                                            }
+                                                            
+                                                            setItensUsados(prev => {
+                                                                const existing = prev.find(i => i.item_id === itemE.id);
+                                                                if (existing) {
+                                                                    return prev.map(i => i.item_id === itemE.id ? { ...i, quantidade: i.quantidade + qtdToAdd } : i);
+                                                                }
+                                                                return [...prev, {
+                                                                    item_id: itemE.id,
+                                                                    nome: itemE.nome,
+                                                                    quantidade: qtdToAdd,
+                                                                    unidade_medida: itemE.unidade_medida
+                                                                }];
+                                                            });
                                                             select.value = '';
                                                             qtd.value = '';
                                                         }}
-                                                        className="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-600 transition-colors"
+                                                        className="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-600 transition-colors flex items-center gap-2 text-xs uppercase tracking-widest"
                                                     >
-                                                        <Plus size={20} />
+                                                        <Plus size={16} /> Adicionar
                                                     </button>
                                                 </div>
                                                 
