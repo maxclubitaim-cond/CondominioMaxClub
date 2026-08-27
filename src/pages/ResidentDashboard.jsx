@@ -42,13 +42,10 @@ function ResidentDashboard() {
 
     const handleConfirmarRetirada = async (id) => {
         try {
-            const { error } = await supabase
-                .from('encomendas')
-                .update({
-                    status: 'ENTREGUE',
-                    data_entrega: new Date().toISOString()
-                })
-                .eq('id', id);
+            const { error } = await supabase.rpc('confirmar_retirada_morador', {
+                p_encomenda_id: id,
+                p_unidade: morador.unidade
+            });
                 
             if (error) throw error;
             toast.success('Retirada confirmada!');
