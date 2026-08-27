@@ -21,11 +21,31 @@ function VolleyballBooking() {
     const [showRules, setShowRules] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [booked, setBooked] = useState(false);
+    const [voleiModo, setVoleiModo] = useState('todos'); // 'todos' ou 'alternado'
+    const [loadingConfig, setLoadingConfig] = useState(true);
     const navigate = useNavigate();
 
-    // Regra: Disponível um dia sim, um dia não, a partir de 09/04/2026
+    React.useEffect(() => {
+        async function fetchConfig() {
+            const { data } = await supabase
+                .from('configuracoes_sistema')
+                .select('valor')
+                .eq('chave', 'volei_modo')
+                .single();
+            if (data) {
+                setVoleiModo(data.valor);
+            }
+            setLoadingConfig(false);
+        }
+        fetchConfig();
+    }, []);
+
+    // Regra: Disponível um dia sim, um dia não, a partir de 09/04/2026 (se for 'alternado')
     function isDateAllowed(dateString) {
         if (!dateString) return false;
+        
+        if (voleiModo === 'todos') return true;
+
         const selectedDate = parseDate(dateString);
         const referenceDate = parseDate('2026-04-09');
         
@@ -79,8 +99,13 @@ function VolleyballBooking() {
                     </div>
 
                     <div className="p-10">
-
-                    {!booked ? (
+                    
+                    {loadingConfig ? (
+                        <div className="py-20 flex flex-col items-center justify-center text-slate-400 gap-4">
+                            <Loader2 className="animate-spin w-8 h-8" />
+                            <p className="text-sm font-bold uppercase tracking-widest">Carregando regras da quadra...</p>
+                        </div>
+                    ) : !booked ? (
                         <form onSubmit={handleBook} className="space-y-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div>
@@ -106,8 +131,8 @@ function VolleyballBooking() {
                             <div>
                                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 px-1 flex justify-between items-center">
                                     Data da Reserva
-                                    <span className="text-[9px] text-primary font-bold tracking-widest bg-primary/10 px-3 py-1 rounded-lg border border-primary/20">
-                                        Estatus: Dia Sim/Não
+                                    <span className={`text-[9px] font-bold tracking-widest px-3 py-1 rounded-lg border ${voleiModo === 'todos' ? 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20' : 'text-primary bg-primary/10 border-primary/20'}`}>
+                                        Status: {voleiModo === 'todos' ? 'Livre (Todos os Dias)' : 'Dia Sim/Dia Não'}
                                     </span>
                                 </label>
                                 <div className="relative group/date">

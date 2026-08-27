@@ -3,15 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Store, 
     ChevronLeft, 
-    Plus, 
     X, 
-    Camera, 
     MapPin, 
-    Tag, 
     User, 
     Image as ImageIcon,
     Loader2,
-    CheckCircle2,
     Info
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -22,21 +18,9 @@ import { formatDate } from '../utils/dateUtils';
 function Entrepreneurs() {
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedService, setSelectedService] = useState(null);
     const [activePhoto, setActivePhoto] = useState(0);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
-
-    // Form state
-    const [formData, setFormData] = useState({
-        nome: '',
-        unidade: '',
-        tipo_servico: '',
-        descricao: ''
-    });
-    const [selectedFiles, setSelectedFiles] = useState([]);
-    const [previews, setPreviews] = useState([]);
 
     useEffect(() => {
         fetchServices();
@@ -59,94 +43,6 @@ function Entrepreneurs() {
         }
     }
 
-    const handleFileChange = (e) => {
-        const files = Array.from(e.target.files);
-        if (files.length + selectedFiles.length > 4) {
-            toast.error('Você pode enviar no máximo 4 fotos.');
-            return;
-        }
-
-        const newFiles = [...selectedFiles, ...files];
-        setSelectedFiles(newFiles);
-
-        const newPreviews = files.map(file => URL.createObjectURL(file));
-        setPreviews([...previews, ...newPreviews]);
-    };
-
-    const removeFile = (index) => {
-        const newFiles = [...selectedFiles];
-        newFiles.splice(index, 1);
-        setSelectedFiles(newFiles);
-
-        const newPreviews = [...previews];
-        URL.revokeObjectURL(newPreviews[index]);
-        newPreviews.splice(index, 1);
-        setPreviews(newPreviews);
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        if (selectedFiles.length === 0) {
-            toast.error('Adicione pelo menos uma foto.');
-            return;
-        }
-
-        setIsSubmitting(true);
-        const toastId = toast.loading('Publicando seu serviço...');
-
-        try {
-            const uploadedUrls = [];
-
-            // Upload images to Supabase Storage
-            for (let i = 0; i < selectedFiles.length; i++) {
-                const file = selectedFiles[i];
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Math.random()}.${fileExt}`;
-                const filePath = `service-${Date.now()}-${i}-${fileName}`;
-
-                const { error: uploadError } = await supabase.storage
-                    .from('empreendedores')
-                    .upload(filePath, file);
-
-                if (uploadError) throw uploadError;
-
-                const { data: { publicUrl } } = supabase.storage
-                    .from('empreendedores')
-                    .getPublicUrl(filePath);
-
-                uploadedUrls.push(publicUrl);
-            }
-
-            // Save to database
-            const { error: dbError } = await supabase
-                .from('empreendedores')
-                .insert([{
-                    ...formData,
-                    fotos: uploadedUrls
-                }]);
-
-            if (dbError) throw dbError;
-
-            toast.success('Serviço publicado com sucesso!', { id: toastId });
-            setIsModalOpen(false);
-            resetForm();
-            fetchServices();
-        } catch (error) {
-            console.error('Erro ao salvar serviço:', error);
-            toast.error('Erro ao publicar serviço. Tente novamente.', { id: toastId });
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    const resetForm = () => {
-        setFormData({ nome: '', unidade: '', tipo_servico: '', descricao: '' });
-        setSelectedFiles([]);
-        previews.forEach(p => URL.revokeObjectURL(p));
-        setPreviews([]);
-    };
-
     return (
         <div className="min-h-screen bg-slate-50 font-sans">
             {/* Header */}
@@ -163,12 +59,7 @@ function Entrepreneurs() {
                         <h1 className="text-lg font-bold text-slate-900 leading-none">Empreendedores</h1>
                         <span className="text-[10px] font-bold text-primary uppercase tracking-widest mt-1">Comunidade MaxClub</span>
                     </div>
-                    <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="bg-primary text-white p-2 rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-all"
-                    >
-                        <Plus size={24} />
-                    </button>
+                    <div className="w-10"></div> {/* Placeholder para manter alinhamento */}
                 </div>
             </header>
 
@@ -183,10 +74,10 @@ function Entrepreneurs() {
                         Conheça os produtos e serviços oferecidos pelos seus vizinhos. 
                         Fortaleça o comércio local e facilite o seu dia a dia.
                     </p>
-                    <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-700 rounded-xl border border-amber-100 shadow-sm animate-pulse">
+                    <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-xl border border-blue-100 shadow-sm">
                         <Info size={16} />
                         <span className="text-[10px] font-bold uppercase tracking-wider">
-                            Em caso de alteração no seu anúncio, procurar a gestão.
+                            Morador: anuncie seus serviços através do seu portal.
                         </span>
                     </div>
                 </div>
@@ -258,170 +149,10 @@ function Entrepreneurs() {
                     <div className="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-slate-200">
                         <Store size={64} className="mx-auto text-slate-200 mb-6" />
                         <h3 className="text-xl font-bold text-slate-400 italic mb-2">Vitrine Vazia</h3>
-                        <p className="text-slate-400 text-sm font-medium mb-8">Seja o primeiro a divulgar seu serviço para o condomínio!</p>
-                        <button
-                            onClick={() => setIsModalOpen(true)}
-                            className="bg-primary text-white font-bold px-8 py-4 rounded-2xl hover:scale-105 transition-all shadow-lg shadow-primary/20 uppercase text-xs tracking-widest"
-                        >
-                            Começar agora
-                        </button>
+                        <p className="text-slate-400 text-sm font-medium mb-8">Nenhum serviço anunciado ainda.</p>
                     </div>
                 )}
             </main>
-
-            {/* Registration Modal */}
-            <AnimatePresence>
-                {isModalOpen && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => !isSubmitting && setIsModalOpen(false)}
-                            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-                        />
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]"
-                        >
-                            <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                                <div>
-                                    <h3 className="text-xl font-bold text-slate-900">Divulgar Serviço</h3>
-                                    <p className="text-xs font-medium text-slate-500">Preencha os dados abaixo para publicar na vitrine.</p>
-                                </div>
-                                <button
-                                    onClick={() => setIsModalOpen(false)}
-                                    disabled={isSubmitting}
-                                    className="p-2 hover:bg-slate-200 rounded-full transition-colors"
-                                >
-                                    <X size={20} />
-                                </button>
-                            </div>
-
-                            <form onSubmit={handleSubmit} className="p-8 overflow-y-auto space-y-8">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-2">Nome Comercial / Seu Nome</label>
-                                        <div className="relative">
-                                            <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
-                                            <input
-                                                required
-                                                type="text"
-                                                placeholder="Ex: Maria Bolos ou João Pinturas"
-                                                className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-sm"
-                                                value={formData.nome}
-                                                onChange={(e) => setFormData({...formData, nome: e.target.value})}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-2">Unidade</label>
-                                        <div className="relative">
-                                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
-                                            <input
-                                                required
-                                                type="text"
-                                                placeholder="Ex: 101"
-                                                className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-sm"
-                                                value={formData.unidade}
-                                                onChange={(e) => setFormData({...formData, unidade: e.target.value})}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-2">Tipo de Serviço / Categoria</label>
-                                    <div className="relative">
-                                        <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
-                                        <input
-                                            required
-                                            type="text"
-                                            placeholder="Ex: Gastronomia, Estética, Reformas..."
-                                            className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-sm"
-                                            value={formData.tipo_servico}
-                                            onChange={(e) => setFormData({...formData, tipo_servico: e.target.value})}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <div className="flex justify-between items-center ml-2">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Descrição do Serviço</label>
-                                        <span className={`text-[10px] font-bold ${formData.descricao.length > 500 ? 'text-rose-500' : 'text-slate-400'}`}>
-                                            {formData.descricao.length}/500
-                                        </span>
-                                    </div>
-                                    <textarea
-                                        required
-                                        maxLength={500}
-                                        rows={4}
-                                        placeholder="Conte um pouco sobre o que você oferece, horários e como entrar em contato..."
-                                        className="w-full p-6 bg-slate-50 border border-slate-200 rounded-3xl outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-sm resize-none"
-                                        value={formData.descricao}
-                                        onChange={(e) => setFormData({...formData, descricao: e.target.value})}
-                                    />
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center ml-2">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Fotos do Serviço (Até 4)</label>
-                                        <span className="text-[10px] font-bold text-slate-400">{selectedFiles.length}/4 selecionadas</span>
-                                    </div>
-                                    
-                                    <div className="grid grid-cols-4 gap-4">
-                                        {previews.map((url, idx) => (
-                                            <div key={idx} className="aspect-square rounded-2xl overflow-hidden relative group border border-slate-200">
-                                                <img src={url} className="w-full h-full object-cover" />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeFile(idx)}
-                                                    className="absolute top-1 right-1 p-1 bg-rose-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                                >
-                                                    <X size={12} />
-                                                </button>
-                                            </div>
-                                        ))}
-                                        {selectedFiles.length < 4 && (
-                                            <label className="aspect-square rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-400 hover:border-primary hover:text-primary transition-all cursor-pointer bg-slate-50">
-                                                <Camera size={24} />
-                                                <span className="text-[8px] font-bold uppercase mt-2">Adicionar</span>
-                                                <input
-                                                    type="file"
-                                                    accept="image/*"
-                                                    multiple
-                                                    className="hidden"
-                                                    onChange={handleFileChange}
-                                                />
-                                            </label>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="w-full py-5 bg-primary text-white font-bold rounded-2xl shadow-xl shadow-primary/20 hover:bg-blue-600 transition-all disabled:opacity-50 flex items-center justify-center gap-3 uppercase text-xs tracking-widest"
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <Loader2 className="animate-spin" size={18} />
-                                            Publicando...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <CheckCircle2 size={18} />
-                                            Confirmar Publicação
-                                        </>
-                                    )}
-                                </button>
-                            </form>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
 
             {/* Details Modal */}
             <AnimatePresence>
@@ -526,3 +257,4 @@ function Entrepreneurs() {
 }
 
 export default Entrepreneurs;
+

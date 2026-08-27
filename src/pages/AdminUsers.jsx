@@ -5,6 +5,7 @@ import { Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Users, Shield, ShieldCheck, ShieldAlert, Loader2, Save, Search, UserCircle, Mail } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import Pagination from '../components/common/Pagination';
 
 function AdminUsers() {
     const { profile } = useAuth();
@@ -13,6 +14,12 @@ function AdminUsers() {
     const [saving, setSaving] = useState(null); // ID do usuário sendo salvo
     const [searchTerm, setSearchTerm] = useState('');
     const [pendingChanges, setPendingChanges] = useState({}); // { userId: newProfile }
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm]);
 
     useEffect(() => {
         fetchUsuarios();
@@ -100,6 +107,9 @@ function AdminUsers() {
         (u.email && u.email.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
+    const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
+    const paginatedUsers = filteredUsers.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
     const getIcon = (perfil) => {
         switch (perfil) {
             case 'ADM': return <ShieldAlert className="text-secondary" size={20} />;
@@ -141,7 +151,7 @@ function AdminUsers() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
-                            {filteredUsers.map(user => (
+                            {paginatedUsers.map(user => (
                                 <tr key={user.id} className="text-sm hover:bg-slate-50/50 transition-colors group">
                                     <td className="px-4 md:px-8 py-4 md:py-5">
                                         <div className="flex items-center gap-3">
@@ -224,6 +234,14 @@ function AdminUsers() {
                         <Users size={48} className="mx-auto text-slate-200 mb-4" />
                         <p className="text-slate-400 font-bold italic">Nenhum usuário encontrado.</p>
                     </div>
+                )}
+                {filteredUsers.length > 0 && (
+                    <Pagination 
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                        totalItems={filteredUsers.length}
+                    />
                 )}
             </div>
 

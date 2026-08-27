@@ -6,9 +6,19 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [profile, setProfile] = useState(null);
+    const [morador, setMorador] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        // Recupera morador logado internamente
+        const savedMorador = localStorage.getItem('maxclub_morador');
+        if (savedMorador) {
+            try {
+                setMorador(JSON.parse(savedMorador));
+            } catch (e) {
+                localStorage.removeItem('maxclub_morador');
+            }
+        }
         // Get initial session
         supabase.auth.getSession().then(({ data: { session } }) => {
             setUser(session?.user ?? null);
@@ -47,10 +57,42 @@ export const AuthProvider = ({ children }) => {
     };
 
     const signIn = (email, password) => supabase.auth.signInWithPassword({ email, password });
-    const signOut = () => supabase.auth.signOut();
+    
+    const signOut = async () => {
+        await supabase.auth.signOut();
+        logoutMorador();
+    };
+
+    const loginMorador = async (unidade, senha) => {
+        const { data, error } = await supabase.rpc('login_morador', {
+            p_unidade: unidade,
+            p_senha: senha
+        });
+
+        if (error) throw error;
+
+        // data já é um objeto parseado (json_build_object retorna json direto no cliente js)
+        setMorador(data);
+        localStorage.setItem('maxclub_morador', JSON.stringify(data));
+        return data;
+    };
+
+    const logoutMorador = () => {
+        setMorador(null);
+        localStorage.removeItem('maxclub_morador');
+    };
+
+    const updateMorador = (newData) => {
+        const updated = { ...morador, ...newData };
+        setMorador(updated);
+        localStorage.setItem('maxclub_morador', JSON.stringify(updated));
+    };
 
     return (
-        <AuthContext.Provider value={{ user, profile, loading, signIn, signOut }}>
+        <AuthContext.Provider value={{ 
+            user, profile, loading, signIn, signOut, 
+            morador, loginMorador, logoutMorador, updateMorador 
+        }}>
             {children}
         </AuthContext.Provider>
     );

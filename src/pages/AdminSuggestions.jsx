@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
-import { MessageSquare, CheckCircle, Clock, Trash2, Building } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { formatDateTime } from '../utils/dateUtils';
+import { MessageSquare, Clock, Building, CheckCircle, Trash2 } from 'lucide-react';
+import Pagination from '../components/common/Pagination';
 
 function AdminSuggestions() {
-    const [sugestoes, setSugestoes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [sugestoes, setSugestoes] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     useEffect(() => {
         fetchSugestoes();
@@ -53,15 +56,20 @@ function AdminSuggestions() {
 
     if (loading) return <div>Carregando...</div>;
 
+    const totalPages = Math.ceil(sugestoes.length / ITEMS_PER_PAGE);
+    const paginatedSugestoes = sugestoes.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
     return (
         <div className="max-w-5xl mx-auto space-y-8">
             <header>
-                <h1 className="text-2xl font-bold text-slate-800">Sugestões e Melhorias</h1>
+                <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                    <MessageSquare className="text-primary" /> Sugestões e Melhorias
+                </h1>
                 <p className="text-slate-500 text-sm">Sugestões enviadas pelos moradores através do portal.</p>
             </header>
 
             <div className="grid grid-cols-1 gap-4">
-                {sugestoes.map(sug => (
+                {paginatedSugestoes.map(sug => (
                     <div key={sug.id} className={`bg-white p-6 rounded-2xl border ${sug.lido ? 'border-slate-100 opacity-60' : 'border-primary/20 shadow-md shadow-primary/5'} transition-all`}>
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div className="space-y-2 flex-1">
@@ -94,6 +102,15 @@ function AdminSuggestions() {
                         <p className="text-slate-400 font-bold italic">Nenhuma sugestão recebida ainda.</p>
                     </div>
                 )}
+            </div>
+            
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <Pagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                    totalItems={sugestoes.length}
+                />
             </div>
         </div>
     );

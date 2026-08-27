@@ -19,6 +19,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { PdfService } from '../services/PdfService';
 import DateSelectorModal from '../components/DateSelectorModal';
+import Pagination from '../components/common/Pagination';
 import { toast } from 'react-hot-toast';
 import { formatDateTime } from '../utils/dateUtils';
 
@@ -27,21 +28,26 @@ function AdminCleaning() {
     const [locaisLimpeza, setLocaisLimpeza] = useState([]);
     const [registros, setRegistros] = useState([]);
     const [selectedLocal, setSelectedLocal] = useState('');
-    const [operadorNome, setOperadorNome] = useState(profile?.nome || '');
+    const [operadorNome, setOperadorNome] = useState('');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
     const [isExportLoading, setIsExportLoading] = useState(false);
     const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
     const [dataRegistro, setDataRegistro] = useState(new Date().toISOString().split('T')[0]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     // Modal de Gestão de Locais
     const [showLocaisModal, setShowLocaisModal] = useState(false);
     const [newLocalName, setNewLocalName] = useState('');
 
     useEffect(() => {
+        if (profile?.nome) {
+            setOperadorNome(profile.nome);
+        }
         fetchData();
-    }, []);
+    }, [profile]);
 
     async function fetchData() {
         const { data: dataLocais } = await supabase.from('locais_limpeza').select('*').order('nome');
@@ -83,6 +89,7 @@ function AdminCleaning() {
 
         if (!error) {
             setRegistros(prev => [data[0], ...prev]);
+            setCurrentPage(1); // Volta pra primeira página ao adicionar
             toast.success('Limpeza registrada com sucesso!');
             setSelectedLocal('');
         } else {
@@ -193,6 +200,8 @@ function AdminCleaning() {
                             if (!error) {
                                 setLocaisLimpeza(prev => prev.filter(l => l.id !== id));
                                 toast.success('Local excluído.');
+                            } else {
+                                toast.error('Não é possível excluir um local com histórico. Desative-o clicando no ícone do olho.', { duration: 5000 });
                             }
                         }}
                         className="bg-secondary text-white px-3 py-1.5 rounded-lg text-xs font-bold"
@@ -208,6 +217,9 @@ function AdminCleaning() {
     }
 
     if (loading) return <div className="p-8">Carregando...</div>;
+
+    const totalPages = Math.ceil(registros.length / ITEMS_PER_PAGE);
+    const paginatedRegistros = registros.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
     return (
         <div className="max-w-5xl mx-auto space-y-10">
@@ -272,8 +284,8 @@ function AdminCleaning() {
                             <input
                                 type="text" required
                                 value={operadorNome}
-                                onChange={(e) => setOperadorNome(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+                                readOnly
+                                className="w-full pl-10 pr-4 py-3 bg-slate-100 border border-slate-200 rounded-xl outline-none text-slate-500 text-sm cursor-not-allowed font-bold"
                             />
                         </div>
                     </div>
@@ -308,7 +320,7 @@ function AdminCleaning() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
-                            {registros.map(reg => (
+                            {paginatedRegistros.map(reg => (
                                 <tr key={reg.id} className="text-xs md:text-sm">
                                     <td className="px-4 md:px-6 py-4 font-bold text-slate-700">{reg.locais_limpeza?.nome}</td>
                                     <td className="px-4 md:px-6 py-4 text-slate-500">
@@ -330,6 +342,12 @@ function AdminCleaning() {
                         </tbody>
                     </table>
                 </div>
+                <Pagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                    totalItems={registros.length}
+                />
             </section>
 
             {/* Modal de Gestão de Locais de Limpeza */}

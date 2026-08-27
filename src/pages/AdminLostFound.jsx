@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { formatDate } from '../utils/dateUtils';
+import { compressImage } from '../utils/imageCompression';
 
 function AdminLostFound() {
     const [items, setItems] = useState([]);
@@ -53,13 +54,14 @@ function AdminLostFound() {
     };
 
     async function uploadImage(file) {
-        const fileExt = file.name.split('.').pop();
+        const compressedFile = await compressImage(file);
+        const fileExt = compressedFile.name.split('.').pop();
         const fileName = `${Math.random()}.${fileExt}`;
         const filePath = `${fileName}`;
 
         const { error: uploadError } = await supabase.storage
             .from('achados_perdidos')
-            .upload(filePath, file);
+            .upload(filePath, compressedFile);
 
         if (uploadError) throw uploadError;
 

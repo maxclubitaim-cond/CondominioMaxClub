@@ -25,6 +25,7 @@ import LostFound from './pages/LostFound';
 import ManualMaxClub from './pages/ManualMaxClub';
 import AdminLostFound from './pages/AdminLostFound';
 import AdminParking from './pages/AdminParking';
+import AdminEstoque from './pages/AdminEstoque';
 import PublicChecklist from './pages/PublicChecklist';
 import AdminChecklistHistory from './pages/AdminChecklistHistory';
 import AdminOverview from './pages/AdminOverview';
@@ -32,17 +33,34 @@ import AdminMaintenance from './pages/AdminMaintenance';
 import AdminAccessHistory from './pages/AdminAccessHistory';
 import PoolPasses from './pages/PoolPasses';
 import AdminPoolPasses from './pages/AdminPoolPasses';
+import AdminPoolCleaning from './pages/AdminPoolCleaning';
 import Entrepreneurs from './pages/Entrepreneurs';
 import AdminEntrepreneurs from './pages/AdminEntrepreneurs';
+import AdminPackages from './pages/AdminPackages';
+import ResidentDashboard from './pages/ResidentDashboard';
+import ResidentLogin from './pages/ResidentLogin';
+import FirstAccess from './pages/FirstAccess';
+import AdminResidents from './pages/AdminResidents';
+import ResidentClassificados from './pages/ResidentClassificados';
+import PublicClassificados from './pages/PublicClassificados';
+import ResidentEntrepreneurs from './pages/ResidentEntrepreneurs';
+import ResidentParking from './pages/ResidentParking';
 
 import ScrollToTop from './components/ScrollToTop';
 
 // Mock/Lazy loading placeholders
 const ProtectedRoute = ({ children, allowedProfiles = [] }) => {
-    // ...
-    const { user, profile, loading } = useAuth();
+    const { user, profile, morador, loading } = useAuth();
 
     if (loading) return <div className="min-h-screen flex items-center justify-center">Carregando...</div>;
+    
+    // Se a rota for exclusiva para MORADOR
+    if (allowedProfiles.includes('MORADOR')) {
+        if (!morador) return <Navigate to="/morador/login" replace />;
+        return children;
+    }
+
+    // Se a rota for para gestores/operadores (Supabase Auth)
     if (!user) return <Navigate to="/login" replace />;
 
     if (allowedProfiles.length > 0 && !allowedProfiles.includes(profile?.perfil)) {
@@ -71,6 +89,7 @@ function AppContent() {
             <Routes location={location} key={location.pathname}>
                 <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
                 <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
+                <Route path="/morador/login" element={<PageWrapper><ResidentLogin /></PageWrapper>} />
                 <Route path="/acesso" element={<PageWrapper><AccessRegister /></PageWrapper>} />
                 <Route path="/sugestoes" element={<PageWrapper><Suggestions /></PageWrapper>} />
                 <Route path="/volei" element={<PageWrapper><VolleyballBooking /></PageWrapper>} />
@@ -81,6 +100,53 @@ function AppContent() {
                 <Route path="/checklist-salao" element={<PageWrapper><PublicChecklist /></PageWrapper>} />
                 <Route path="/pulseiras" element={<PageWrapper><PoolPasses /></PageWrapper>} />
                 <Route path="/empreendedores" element={<PageWrapper><Entrepreneurs /></PageWrapper>} />
+                <Route path="/classificados" element={<PageWrapper><PublicClassificados /></PageWrapper>} />
+
+                {/* Resident Routes */}
+                <Route
+                    path="/condomino"
+                    element={
+                        <ProtectedRoute allowedProfiles={['MORADOR']}>
+                            <PageWrapper><ResidentDashboard /></PageWrapper>
+                        </ProtectedRoute>
+                    }
+                />
+                
+                <Route
+                    path="/condomino/classificados"
+                    element={
+                        <ProtectedRoute allowedProfiles={['MORADOR']}>
+                            <PageWrapper><ResidentClassificados /></PageWrapper>
+                        </ProtectedRoute>
+                    }
+                />
+                
+                <Route
+                    path="/condomino/empreendedores"
+                    element={
+                        <ProtectedRoute allowedProfiles={['MORADOR']}>
+                            <PageWrapper><ResidentEntrepreneurs /></PageWrapper>
+                        </ProtectedRoute>
+                    }
+                />
+                
+                <Route
+                    path="/condomino/vagas"
+                    element={
+                        <ProtectedRoute allowedProfiles={['MORADOR']}>
+                            <PageWrapper><ResidentParking /></PageWrapper>
+                        </ProtectedRoute>
+                    }
+                />
+                
+                <Route
+                    path="/primeiro-acesso"
+                    element={
+                        <ProtectedRoute allowedProfiles={['MORADOR']}>
+                            <PageWrapper><FirstAccess /></PageWrapper>
+                        </ProtectedRoute>
+                    }
+                />
 
                 {/* Admin Routes */}
                 <Route
@@ -104,12 +170,23 @@ function AppContent() {
                     <Route path="checklist-salao" element={<PageWrapper><AdminChecklistHistory /></PageWrapper>} />
                     <Route path="vagas" element={<ProtectedRoute allowedProfiles={['OPERADOR', 'GESTOR', 'ADM']}><PageWrapper><AdminParking /></PageWrapper></ProtectedRoute>} />
                     <Route path="pulseiras" element={<PageWrapper><AdminPoolPasses /></PageWrapper>} />
+                    <Route path="piscina-tratamento" element={<PageWrapper><AdminPoolCleaning /></PageWrapper>} />
                     <Route path="empreendedores" element={<PageWrapper><AdminEntrepreneurs /></PageWrapper>} />
+                    <Route path="encomendas" element={<PageWrapper><AdminPackages /></PageWrapper>} />
+                    <Route path="estoque" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><AdminEstoque /></PageWrapper></ProtectedRoute>} />
                     <Route
                         path="usuarios"
                         element={
                             <ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}>
                                 <PageWrapper><AdminUsers /></PageWrapper>
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="moradores"
+                        element={
+                            <ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}>
+                                <PageWrapper><AdminResidents /></PageWrapper>
                             </ProtectedRoute>
                         }
                     />

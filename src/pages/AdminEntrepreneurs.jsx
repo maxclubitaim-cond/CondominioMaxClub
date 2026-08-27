@@ -17,6 +17,7 @@ import {
 import { supabase } from '../lib/supabase';
 import { toast } from 'react-hot-toast';
 import { formatDate } from '../utils/dateUtils';
+import { compressImage } from '../utils/imageCompression';
 
 function AdminEntrepreneurs() {
     const [services, setServices] = useState([]);
@@ -140,13 +141,14 @@ function AdminEntrepreneurs() {
             const uploadedUrls = [];
             for (let i = 0; i < newPhotos.length; i++) {
                 const file = newPhotos[i];
-                const fileExt = file.name.split('.').pop();
+                const compressedFile = await compressImage(file);
+                const fileExt = compressedFile.name.split('.').pop();
                 const fileName = `${Math.random()}.${fileExt}`;
                 const filePath = `${fileName}`;
 
                 const { error: uploadError } = await supabase.storage
                     .from('empreendedores')
-                    .upload(filePath, file);
+                    .upload(filePath, compressedFile);
 
                 if (uploadError) throw uploadError;
 

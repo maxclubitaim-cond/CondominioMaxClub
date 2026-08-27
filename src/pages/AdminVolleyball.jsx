@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { formatDate } from '../utils/dateUtils';
 import { supabase } from '../lib/supabase';
-import { Trophy, CheckCircle, Clock, Trash2, User, Building, FileText } from 'lucide-react';
+import { Trophy, CheckCircle, Clock, Trash2, User, Building, FileText, Settings, Loader2 } from 'lucide-react';
 import { PdfService } from '../services/PdfService';
 import DateSelectorModal from '../components/DateSelectorModal';
+import Pagination from '../components/common/Pagination';
 import { toast } from 'react-hot-toast';
 
 function AdminVolleyball() {
@@ -11,18 +12,47 @@ function AdminVolleyball() {
     const [loading, setLoading] = useState(true);
     const [isExportLoading, setIsExportLoading] = useState(false);
     const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
+    const [voleiModo, setVoleiModo] = useState('todos'); // 'todos' ou 'alternado'
+    const [savingConfig, setSavingConfig] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     useEffect(() => {
         fetchReservas();
     }, []);
 
     async function fetchReservas() {
+        const { data: configData } = await supabase
+            .from('configuracoes_sistema')
+            .select('valor')
+            .eq('chave', 'volei_modo')
+            .single();
+            
+        if (configData) {
+            setVoleiModo(configData.valor);
+        }
+
         const { data } = await supabase
             .from('reservas_volei')
             .select('*')
             .order('data', { ascending: true });
         if (data) setReservas(data);
         setLoading(false);
+    }
+
+    async function handleConfigChange(newMode) {
+        setSavingConfig(true);
+        const { error } = await supabase
+            .from('configuracoes_sistema')
+            .upsert({ chave: 'volei_modo', valor: newMode, updated_at: new Date().toISOString() });
+            
+        if (!error) {
+            setVoleiModo(newMode);
+            toast.success('Configuração de liberação atualizada!');
+        } else {
+            toast.error('Erro ao salvar configuração.');
+        }
+        setSavingConfig(false);
     }
 
     async function toggleStatus(id, currentStatus) {
@@ -91,6 +121,9 @@ function AdminVolleyball() {
 
     if (loading) return <div>Carregando...</div>;
 
+    const totalPages = Math.ceil(reservas.length / ITEMS_PER_PAGE);
+    const paginatedReservas = reservas.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
     return (
         <div className="max-w-5xl mx-auto space-y-8">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -107,6 +140,38 @@ function AdminVolleyball() {
                 </button>
             </header>
 
+            {/* Configuração da Regra */}
+            <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 shrink-0">
+                        <Settings size={20} />
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-slate-800 text-sm">Regra de Liberação da Rede</h3>
+                        <p className="text-xs text-slate-500 font-medium">Defina quando os moradores podem agendar a rede.</p>
+                    </div>
+                </div>
+                
+                <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200 w-full md:w-auto">
+                    <button
+                        onClick={() => handleConfigChange('todos')}
+                        disabled={savingConfig}
+                        className={`flex-1 md:flex-none px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${voleiModo === 'todos' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    >
+                        {savingConfig && voleiModo === 'todos' ? <Loader2 size={14} className="animate-spin" /> : null}
+                        Livre (Todos os Dias)
+                    </button>
+                    <button
+                        onClick={() => handleConfigChange('alternado')}
+                        disabled={savingConfig}
+                        className={`flex-1 md:flex-none px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${voleiModo === 'alternado' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    >
+                        {savingConfig && voleiModo === 'alternado' ? <Loader2 size={14} className="animate-spin" /> : null}
+                        Dias Alternados
+                    </button>
+                </div>
+            </div>
+
             <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
                 <table className="w-full text-left">
                     <thead>
@@ -118,7 +183,7 @@ function AdminVolleyball() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50">
-                        {reservas.map(res => (
+                        {paginatedReservas.map(res => (
                             <tr key={res.id} className="text-sm">
                                 <td className="px-4 md:px-6 py-4">
                                     <p className="font-bold text-slate-800 text-xs md:text-sm">{res.nome}</p>
@@ -144,6 +209,15 @@ function AdminVolleyball() {
                         ))}
                     </tbody>
                 </table>
+            </div>
+            
+            <div className="bg-white rounded-b-[2rem] border border-t-0 border-slate-100 shadow-sm overflow-hidden mt-[-2rem] pt-[2rem]">
+                <Pagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                    totalItems={reservas.length}
+                />
             </div>
 
             <DateSelectorModal 

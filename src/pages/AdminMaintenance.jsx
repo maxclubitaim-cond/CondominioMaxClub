@@ -19,6 +19,8 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
 import { formatDateTime } from '../utils/dateUtils';
+import Pagination from '../components/common/Pagination';
+import { compressImage } from '../utils/imageCompression';
 
 function ImageModal({ url, onClose }) {
     if (!url) return null;
@@ -54,10 +56,13 @@ function AdminMaintenance() {
     const [activeTab, setActiveTab] = useState('novo'); // 'novo' ou 'historico'
     const [areas, setAreas] = useState([]);
     const [registros, setRegistros] = useState([]);
+    const [estoqueItens, setEstoqueItens] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
     const [selectedImageUrl, setSelectedImageUrl] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     // Form states
     const [areaNome, setAreaNome] = useState('');
@@ -68,6 +73,9 @@ function AdminMaintenance() {
     const [depoisFiles, setDepoisFiles] = useState([]);
     const [antesPreviews, setAntesPreviews] = useState([]);
     const [depoisPreviews, setDepoisPreviews] = useState([]);
+
+    const [usarEstoque, setUsarEstoque] = useState(false);
+    const [itensUsados, setItensUsados] = useState([]);
 
     const fileInputAntes = useRef();
     const fileInputDepois = useRef();
@@ -83,9 +91,15 @@ function AdminMaintenance() {
             .from('manutencao_registros')
             .select('*, perfis(nome)')
             .order('data_manutencao', { ascending: false });
+        
+        const { data: estoqueData } = await supabase
+            .from('estoque_itens')
+            .select('*')
+            .order('nome');
 
         if (areasData) setAreas(areasData);
         if (regsData) setRegistros(regsData);
+        if (estoqueData) setEstoqueItens(estoqueData);
         setLoading(false);
     }
 
@@ -117,10 +131,11 @@ function AdminMaintenance() {
     async function uploadImages(files) {
         const urls = [];
         for (const file of files) {
-            const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}_${file.name}`;
+            const compressedFile = await compressImage(file);
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}_${compressedFile.name}`;
             const { data, error } = await supabase.storage
                 .from('manutencao')
-                .upload(fileName, file);
+                .upload(fileName, compressedFile);
 
             if (error) throw error;
 
@@ -141,6 +156,7 @@ function AdminMaintenance() {
         if (!areaNome) return toast.error('Por favor, informe a Área ou Local.');
         if (!responsavelTecnico) return toast.error('Por favor, informe o Responsável Técnico.');
         if (!descricao) return toast.error('Por favor, descreva o que foi feito.');
+        if (usarEstoque && itensUsados.length === 0) return toast.error('Adicione ao menos um item do estoque.');
 
         setSaving(true);
         try {
@@ -149,33 +165,30 @@ function AdminMaintenance() {
             const fotosDepoisUrls = await uploadImages(depoisFiles);
 
             console.log('Enviando dados para o Supabase...');
-            const { data, error } = await supabase
-                .from('manutencao_registros')
-                .insert([{
-                    area_nome: areaNome,
-                    responsavel_tecnico: responsavelTecnico,
-                    descricao,
-                    observacoes: observacoes || '',
-                    fotos_antes: fotosAntesUrls,
-                    fotos_depois: fotosDepoisUrls,
-                    realizado_por: profile?.id,
-                    data_manutencao: new Date().toISOString()
-                }])
-                .select('*, perfis(nome)');
+            // Agora usa a RPC que salva a manutenção e deduz o estoque
+            const itensFormatados = usarEstoque ? itensUsados.map(i => ({ item_id: i.item_id, quantidade: i.quantidade, nome: i.nome, unidade_medida: i.unidade_medida })) : [];
+            
+            const { data, error } = await supabase.rpc('registrar_manutencao_com_estoque', {
+                p_area_nome: areaNome,
+                p_responsavel_tecnico: responsavelTecnico,
+                p_descricao: descricao,
+                p_fotos_antes: fotosAntesUrls,
+                p_fotos_depois: fotosDepoisUrls,
+                p_observacoes: observacoes || '',
+                p_itens_estoque: itensFormatados
+            });
 
             if (error) {
                 console.error('Erro Supabase:', error);
                 throw error;
             }
 
-            if (data && data.length > 0) {
-                setRegistros(prev => [data[0], ...prev]);
-                toast.success('Manutenção registrada com sucesso!');
-                resetForm();
-                setTimeout(() => {
-                    setActiveTab('historico');
-                }, 2000);
-            }
+            toast.success('Manutenção registrada com sucesso!');
+            resetForm();
+            fetchData();
+            setTimeout(() => {
+                setActiveTab('historico');
+            }, 2000);
         } catch (err) {
             console.error('Erro detalhado:', err);
             toast.error('Erro ao salvar: ' + (err.message || 'Erro desconhecido'));
@@ -193,9 +206,14 @@ function AdminMaintenance() {
         setDepoisFiles([]);
         setAntesPreviews([]);
         setDepoisPreviews([]);
+        setUsarEstoque(false);
+        setItensUsados([]);
     }
 
     if (loading) return <div className="p-20 text-center text-slate-400">Carregando dados de manutenção...</div>;
+
+    const totalPages = Math.ceil(registros.length / ITEMS_PER_PAGE);
+    const paginatedRegistros = registros.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
     return (
         <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
@@ -292,6 +310,81 @@ function AdminMaintenance() {
                                             className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 font-medium resize-none"
                                         />
                                     </div>
+                                    
+                                    {/* Integração com Estoque */}
+                                    <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-700">Utilizou itens do estoque?</label>
+                                            <button 
+                                                type="button"
+                                                onClick={() => setUsarEstoque(!usarEstoque)}
+                                                className={`w-12 h-6 rounded-full transition-colors relative flex items-center ${usarEstoque ? 'bg-primary' : 'bg-slate-300'}`}
+                                            >
+                                                <span className={`w-4 h-4 bg-white rounded-full absolute transition-transform ${usarEstoque ? 'translate-x-7' : 'translate-x-1'}`} />
+                                            </button>
+                                        </div>
+
+                                        {usarEstoque && (
+                                            <div className="space-y-4">
+                                                <div className="flex gap-2">
+                                                    <select 
+                                                        id="select-estoque"
+                                                        className="flex-1 px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary/20"
+                                                    >
+                                                        <option value="">Selecione um item...</option>
+                                                        {estoqueItens.filter(ei => ei.quantidade_atual > 0).map(ei => (
+                                                            <option key={ei.id} value={ei.id}>{ei.nome} (Disp: {ei.quantidade_atual} {ei.unidade_medida})</option>
+                                                        ))}
+                                                    </select>
+                                                    <input 
+                                                        id="qtd-estoque"
+                                                        type="number" 
+                                                        min="1" 
+                                                        placeholder="Qtd" 
+                                                        className="w-20 px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary/20"
+                                                    />
+                                                    <button 
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const select = document.getElementById('select-estoque');
+                                                            const qtd = document.getElementById('qtd-estoque');
+                                                            if(!select.value || !qtd.value) return toast.error('Selecione um item e a quantidade');
+                                                            const itemE = estoqueItens.find(e => e.id === select.value);
+                                                            if(parseInt(qtd.value) > itemE.quantidade_atual) return toast.error('Quantidade excede o saldo disponível!');
+                                                            
+                                                            setItensUsados(prev => [...prev, {
+                                                                item_id: itemE.id,
+                                                                nome: itemE.nome,
+                                                                quantidade: parseInt(qtd.value),
+                                                                unidade_medida: itemE.unidade_medida
+                                                            }]);
+                                                            select.value = '';
+                                                            qtd.value = '';
+                                                        }}
+                                                        className="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-600 transition-colors"
+                                                    >
+                                                        <Plus size={20} />
+                                                    </button>
+                                                </div>
+                                                
+                                                {itensUsados.length > 0 && (
+                                                    <div className="space-y-2 mt-4">
+                                                        {itensUsados.map((iu, idx) => (
+                                                            <div key={idx} className="flex items-center justify-between bg-white p-3 rounded-lg border border-slate-100 shadow-sm text-sm">
+                                                                <span className="font-semibold text-slate-700">{iu.nome}</span>
+                                                                <div className="flex items-center gap-4">
+                                                                    <span className="font-bold text-slate-600">{iu.quantidade} {iu.unidade_medida}</span>
+                                                                    <button type="button" onClick={() => setItensUsados(prev => prev.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700">
+                                                                        <Trash2 size={16} />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="space-y-6">
@@ -374,13 +467,23 @@ function AdminMaintenance() {
                         className="space-y-6"
                     >
                         {registros.length > 0 ? (
-                            registros.map(reg => (
-                                <MaintenanceRecordCard
-                                    key={reg.id}
-                                    record={reg}
-                                    onImageClick={(url) => setSelectedImageUrl(url)}
-                                />
-                            ))
+                            <>
+                                {paginatedRegistros.map(reg => (
+                                    <MaintenanceRecordCard
+                                        key={reg.id}
+                                        record={reg}
+                                        onImageClick={(url) => setSelectedImageUrl(url)}
+                                    />
+                                ))}
+                                <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden mt-6">
+                                    <Pagination 
+                                        currentPage={currentPage}
+                                        totalPages={totalPages}
+                                        onPageChange={setCurrentPage}
+                                        totalItems={registros.length}
+                                    />
+                                </div>
+                            </>
                         ) : (
                             <div className="p-20 text-center bg-white rounded-[2.5rem] border border-slate-100">
                                 <Wrench size={48} className="text-slate-200 mx-auto mb-4" />
@@ -433,6 +536,22 @@ function MaintenanceRecordCard({ record, onImageClick }) {
                             <Clock size={14} className="text-slate-300" /> Registrado por: {record.perfis?.nome}
                         </div>
                     </div>
+
+                    {record.itens_usados && record.itens_usados.length > 0 && (
+                        <div className="mt-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                            <h4 className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 mb-2 flex items-center gap-2">
+                                <Package size={14} /> Itens de Estoque Utilizados
+                            </h4>
+                            <ul className="space-y-1">
+                                {record.itens_usados.map((item, idx) => (
+                                    <li key={idx} className="text-sm font-semibold text-emerald-800 flex justify-between border-b border-emerald-100/50 pb-1 last:border-0">
+                                        <span>{item.nome}</span>
+                                        <span>{item.quantidade} {item.unidade_medida}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex gap-4 self-center md:self-start">

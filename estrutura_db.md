@@ -5,11 +5,12 @@ Este documento detalha as tabelas, tipos e relacionamentos do sistema.
 ## Tabelas Principais
 
 ### 1. `perfis`
-Armazena informações dos usuários administrativos.
+Armazena informações dos usuários administrativos e também dos moradores.
 - `id`: UUID (FK auth.users)
 - `nome`: TEXT
-- `perfil`: ENUM ('OPERADOR', 'GESTOR', 'ADM')
+- `perfil`: ENUM ('OPERADOR', 'GESTOR', 'ADM', 'MORADOR')
 - `ativo`: BOOLEAN
+- `primeiro_acesso`: BOOLEAN (Controla o fluxo de troca de senha inicial)
 
 ### 2. `locais`
 Controle de acessos e senhas.
@@ -96,6 +97,24 @@ Sugestões de áreas para o formulário de manutenção.
 - `id`: UUID (PK)
 - `nome`: TEXT
 - `ativo`: BOOLEAN
+
+### 14. `limpeza_piscina` [NOVO]
+Registro de manutenção química da piscina.
+- `id`: UUID (PK)
+- `ph`: NUMERIC
+- `cloro`: NUMERIC
+- `alcalinidade`: NUMERIC
+- `fotos_antes`: JSONB (Array de URLs)
+- `fotos_depois`: JSONB (Array de URLs)
+- `operador_id`: UUID (FK perfis)
+- `data_registro`: TIMESTAMPTZ
+- `created_at`: TIMESTAMPTZ
+
+### 15. `configuracoes_sistema` [NOVO]
+Tabela genérica de chave-valor para configurações dinâmicas do sistema.
+- `chave`: TEXT (PK)
+- `valor`: TEXT
+- `updated_at`: TIMESTAMPTZ
 
 ## Tipos Customizados
 - `user_perfil`: ENUM ('OPERADOR', 'GESTOR', 'ADM')

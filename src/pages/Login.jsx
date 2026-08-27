@@ -29,16 +29,20 @@ function Login() {
             return;
         }
 
-        // Verificar se usuário está ativo
+        // Verificar se usuário está ativo e tem permissão de gestão
         const { data: profileData } = await supabase
             .from('perfis')
-            .select('ativo')
+            .select('ativo, perfil')
             .eq('id', user?.id)
             .single();
 
         if (profileData && profileData.ativo === false) {
             await supabase.auth.signOut();
             setError('Usuário inativo. Procure o administrador.');
+            setLoading(false);
+        } else if (profileData?.perfil === 'MORADOR') {
+            await supabase.auth.signOut();
+            setError('Moradores devem acessar pelo Portal do Morador.');
             setLoading(false);
         } else {
             navigate('/dashboard');
@@ -51,7 +55,7 @@ function Login() {
         setError('');
 
         const { error: signUpError } = await supabase.auth.signUp({
-            email,
+            email: email,
             password,
             options: {
                 data: { nome }
@@ -152,7 +156,7 @@ function Login() {
                                 )}
 
                                 <div className="group/field">
-                                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 px-1 group-focus-within/field:text-primary transition-colors">Credential Email</label>
+                                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 px-1 group-focus-within/field:text-primary transition-colors">Email Corporativo</label>
                                     <div className="relative">
                                         <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5 group-focus-within/field:text-primary transition-colors" />
                                         <input
@@ -160,7 +164,7 @@ function Login() {
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-primary/5 focus:border-primary/20 outline-none transition-all font-bold text-slate-900"
-                                            placeholder="morador@exemplo.com"
+                                            placeholder="gestao@maxclub.com.br"
                                             required
                                         />
                                     </div>

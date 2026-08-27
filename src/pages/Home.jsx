@@ -21,7 +21,8 @@ import {
     Users,
     Building,
     Ticket,
-    Trophy
+    Trophy,
+    Store
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -34,6 +35,8 @@ function Home() {
     const [avisos, setAvisos] = useState([]);
     const [agenda, setAgenda] = useState([]);
     const [limpeza, setLimpeza] = useState([]);
+    const [classificados, setClassificados] = useState([]);
+    const [empreendedores, setEmpreendedores] = useState([]);
     const [lostCount, setLostCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const [logoError, setLogoError] = useState(false);
@@ -105,6 +108,23 @@ function Home() {
                 .limit(3);
             if (dataLimpeza) setLimpeza(dataLimpeza);
 
+            // Fetch 3 últimos classificados ativos
+            const { data: dataClassificados } = await supabase
+                .from('classificados')
+                .select('*')
+                .eq('status', 'ATIVO')
+                .order('created_at', { ascending: false })
+                .limit(3);
+            if (dataClassificados) setClassificados(dataClassificados);
+
+            // Fetch 3 últimos empreendedores
+            const { data: dataEmpreendedores } = await supabase
+                .from('empreendedores')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(3);
+            if (dataEmpreendedores) setEmpreendedores(dataEmpreendedores);
+
             // Fetch quantidade de achados e perdidos (não retirados)
             const { count } = await supabase
                 .from('achados_perdidos')
@@ -140,10 +160,10 @@ function Home() {
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-primary/20">
             {/* Header / Navbar */}
             <header className="bg-white/95 backdrop-blur-xl border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+                <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-center">
                     <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
                         className="flex items-center gap-4 cursor-pointer group"
                         onClick={() => navigate('/')}
                     >
@@ -159,60 +179,14 @@ function Home() {
                                 <Shield className="text-primary w-8 h-8" />
                             )}
                         </div>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col text-center">
                             <span className="text-xl font-bold tracking-tight text-slate-900 leading-none">
                                 MaxClub<span className="text-primary">Itaim</span>
                             </span>
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Ambiente Seguro</span>
                         </div>
                     </motion.div>
-
-                    {/* Desktop Nav */}
-                    <nav className="hidden md:flex items-center gap-8">
-                        <button onClick={scrollToTop} className="text-xs font-bold uppercase tracking-widest text-primary border-b-2 border-primary pb-1">Início</button>
-                        <button 
-                            onClick={() => scrollToSection('avisos')} 
-                            className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors"
-                        >
-                            Avisos
-                        </button>
-                        <button onClick={() => navigate('/agenda')} className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">Agenda</button>
-                        <button onClick={() => navigate('/empreendedores')} className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">Empreendedores</button>
-                        <button 
-                            onClick={() => navigate('/login')} 
-                            className="bg-slate-50 text-slate-900 text-[10px] font-bold uppercase tracking-widest px-6 py-3 rounded-xl border border-slate-200 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300"
-                        >
-                            Gestor
-                        </button>
-                    </nav>
-
-                    {/* Mobile Menu Toggle */}
-                    <button
-                        className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                        onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    >
-                        {isMenuOpen ? <X /> : <Menu />}
-                    </button>
                 </div>
-
-                <AnimatePresence>
-                    {isMenuOpen && (
-                        <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="md:hidden bg-white border-b border-slate-200 overflow-hidden"
-                        >
-                            <div className="p-4 flex flex-col gap-4">
-                                <button onClick={scrollToTop} className="text-left font-bold text-slate-600">Início</button>
-                                <button onClick={() => scrollToSection('avisos')} className="text-left font-bold text-slate-600">Avisos</button>
-                                <button onClick={() => { navigate('/agenda'); setIsMenuOpen(false); }} className="text-left font-bold text-slate-600">Agenda</button>
-                                <button onClick={() => { navigate('/empreendedores'); setIsMenuOpen(false); }} className="text-left font-bold text-slate-600">Empreendedores</button>
-                                <button onClick={() => navigate('/login')} className="bg-primary text-white font-bold py-3 rounded-xl">Área Administrativa</button>
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
             </header>
 
             {/* Hero Section */}
@@ -238,17 +212,17 @@ function Home() {
                             <motion.button
                                 whileHover={{ y: -5, scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
-                                onClick={() => navigate('/acesso')}
+                                onClick={() => navigate('/morador/login')}
                                 className="bg-primary text-white font-bold px-12 py-5 rounded-3xl shadow-xl shadow-primary/20 hover:bg-blue-600 transition-all flex items-center justify-center gap-4 text-sm uppercase tracking-widest"
                             >
-                                Acessos Rápidos
+                                Portal do Morador
                                 <Key size={18} />
                             </motion.button>
                             <button
-                                onClick={() => navigate('/sugestoes')}
+                                onClick={() => navigate('/acesso')}
                                 className="bg-white border border-slate-200 text-slate-900 font-bold px-10 py-5 rounded-3xl hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
                             >
-                                <MessageSquare size={18} className="text-primary" /> Sugestões
+                                Acessos Rápidos
                             </button>
                         </div>
 
@@ -482,6 +456,118 @@ function Home() {
                     </motion.div>
                 </section>
 
+                {/* Classificados Section */}
+                <section className="mb-24">
+                    <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-4">
+                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 flex items-center gap-4 tracking-tight">
+                            <Store className="text-primary" /> Vitrine do Condomínio
+                        </h2>
+                        <button 
+                            onClick={() => navigate('/classificados')}
+                            className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2 hover:text-blue-600 transition-colors"
+                        >
+                            Ver todos <ArrowRight size={16} />
+                        </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {classificados.length > 0 ? classificados.map((item) => (
+                            <motion.div
+                                key={item.id}
+                                whileHover={{ y: -8 }}
+                                onClick={() => navigate('/classificados')}
+                                className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col group cursor-pointer"
+                            >
+                                <div className="h-48 bg-slate-50 relative overflow-hidden">
+                                    {item.imagem_url ? (
+                                        <img src={item.imagem_url} alt={item.titulo} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-slate-300">
+                                            <Store size={48} className="opacity-50" />
+                                        </div>
+                                    )}
+                                    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200/50 shadow-sm">
+                                        <span className="text-[9px] font-black text-slate-700 uppercase tracking-widest">{item.categoria}</span>
+                                    </div>
+                                </div>
+                                <div className="p-8 flex-1 flex flex-col">
+                                    <h3 className="font-bold text-slate-900 text-lg mb-2 leading-tight">{item.titulo}</h3>
+                                    <p className="font-black text-slate-900 text-xl mt-auto">
+                                        {item.preco > 0 ? `R$ ${Number(item.preco).toFixed(2)}` : <span className="text-emerald-500">Grátis</span>}
+                                    </p>
+                                </div>
+                            </motion.div>
+                        )) : (
+                            <div className="col-span-full py-16 text-center bg-white rounded-[3rem] border border-slate-100 shadow-sm">
+                                <Store className="mx-auto text-slate-200 mb-4" size={40} />
+                                <p className="text-slate-400 font-bold uppercase text-xs tracking-widest mb-4">Nenhum anúncio no momento.</p>
+                                <button 
+                                    onClick={() => navigate('/login')}
+                                    className="bg-primary/10 text-primary font-bold px-6 py-3 rounded-xl hover:bg-primary/20 transition-all text-[10px] uppercase tracking-widest"
+                                >
+                                    Anuncie o seu
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </section>
+
+                {/* Empreendedores Section */}
+                <section className="mb-24">
+                    <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-4">
+                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 flex items-center gap-4 tracking-tight">
+                            <Store className="text-primary" /> Comunidade Empreendedora
+                        </h2>
+                        <button 
+                            onClick={() => navigate('/empreendedores')}
+                            className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2 hover:text-blue-600 transition-colors"
+                        >
+                            Ver todos <ArrowRight size={16} />
+                        </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {empreendedores.length > 0 ? empreendedores.map((item) => (
+                            <motion.div
+                                key={item.id}
+                                whileHover={{ y: -8 }}
+                                onClick={() => navigate('/empreendedores')}
+                                className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col group cursor-pointer p-8"
+                            >
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="w-16 h-16 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner overflow-hidden flex items-center justify-center flex-shrink-0">
+                                        {item.foto_url ? (
+                                            <img src={item.foto_url} alt={item.titulo_servico} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                        ) : (
+                                            <Store className="text-slate-300 w-8 h-8" />
+                                        )}
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-900 text-lg leading-tight">{item.titulo_servico}</h3>
+                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                                            {item.nome_morador} • Unidade {item.unidade}
+                                        </p>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-slate-500 line-clamp-3 leading-relaxed flex-1">
+                                    {item.descricao}
+                                </p>
+                            </motion.div>
+                        )) : (
+                            <div className="col-span-full py-16 text-center bg-white rounded-[3rem] border border-slate-100 shadow-sm">
+                                <Store className="mx-auto text-slate-200 mb-4" size={40} />
+                                <p className="text-slate-400 font-bold uppercase text-xs tracking-widest mb-4">Nenhum serviço cadastrado.</p>
+                                <button 
+                                    onClick={() => navigate('/login')}
+                                    className="bg-primary/10 text-primary font-bold px-6 py-3 rounded-xl hover:bg-primary/20 transition-all text-[10px] uppercase tracking-widest"
+                                >
+                                    Divulgue o seu
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </section>
+
                 {/* Links Section */}
                 <section className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
                     <div className="space-y-8">
@@ -528,8 +614,15 @@ function Home() {
                     <p className="text-[10px] text-primary font-bold uppercase tracking-[0.4em] mb-4 opacity-80">
                         © 2026 MaxClub Itaim • Excelência em Gestão
                     </p>
-                    <div className="h-px w-20 bg-white/10 mx-auto mb-4" />
-                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest max-w-sm mx-auto leading-relaxed">
+                    <div className="h-px w-20 bg-white/10 mx-auto mb-8" />
+                    <button 
+                        onClick={() => navigate('/login')}
+                        className="inline-flex items-center gap-2 text-[9px] font-bold uppercase tracking-widest text-slate-500 hover:text-primary transition-colors border border-slate-800 px-4 py-2 rounded-lg hover:border-primary hover:bg-primary/10"
+                    >
+                        <Settings size={12} />
+                        Área Restrita
+                    </button>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest max-w-sm mx-auto leading-relaxed mt-8">
                         Sistema Inteligente para Moradores e Gestores. <br/>
                         Segurança e agilidade em um clique.
                     </p>

@@ -24,7 +24,10 @@ import {
     Ticket,
     Store,
     Info,
-    BellRing
+    BellRing,
+    Droplet,
+    Home,
+    PackageSearch
 } from 'lucide-react';
 import { useNavigate, Link, Outlet, useLocation } from 'react-router-dom';
 import { usePushNotifications } from '../hooks/usePushNotifications';
@@ -55,14 +58,18 @@ function Dashboard() {
         { icon: <Calendar size={20} />, label: 'Agenda', path: '/dashboard/agenda', access: ['GESTOR', 'ADM'] },
         { icon: <Trophy size={20} />, label: 'Vôlei', path: '/dashboard/volei', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <KeyIcon size={20} />, label: 'Senhas Portas', path: '/dashboard/senhas', access: ['GESTOR', 'ADM'] },
+        { icon: <Package size={20} />, label: 'Encomendas', path: '/dashboard/encomendas', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <MessageSquare size={20} />, label: 'Sugestões', path: '/dashboard/sugestoes', access: ['GESTOR', 'ADM'] },
         { icon: <Package size={20} />, label: 'Achados e Perdidos', path: '/dashboard/achados', access: ['OPERADOR', 'GESTOR', 'ADM'] },
+        { icon: <PackageSearch size={20} />, label: 'Estoque', path: '/dashboard/estoque', access: ['GESTOR', 'ADM'] },
         { icon: <Wrench size={20} />, label: 'Manutenção', path: '/dashboard/manutencao', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <Shield size={20} />, label: 'Histórico de Acessos', path: '/dashboard/acessos', access: ['GESTOR', 'ADM'] },
         { icon: <Search size={20} />, label: 'Vagas', path: '/dashboard/vagas', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <Ticket size={20} />, label: 'Pulseiras', path: '/dashboard/pulseiras', access: ['OPERADOR', 'GESTOR', 'ADM'] },
+        { icon: <Droplet size={20} />, label: 'Tratamento Piscina', path: '/dashboard/piscina-tratamento', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <Store size={20} />, label: 'Empreendedores', path: '/dashboard/empreendedores', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <Users size={20} />, label: 'Usuários', path: '/dashboard/usuarios', access: ['GESTOR', 'ADM'] },
+        { icon: <Home size={20} />, label: 'Moradores', path: '/dashboard/moradores', access: ['GESTOR', 'ADM'] },
     ];
 
     const allowedItems = profile?.perfil ? menuItems.filter(item => item.access.includes(profile.perfil)) : [];

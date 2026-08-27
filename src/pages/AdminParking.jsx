@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { formatDate } from '../utils/dateUtils';
+import Pagination from '../components/common/Pagination';
 
 function AdminParking() {
     const [vagas, setVagas] = useState([]);
@@ -32,6 +33,8 @@ function AdminParking() {
     const [isLoterriaOpen, setIsLoterriaOpen] = useState(false);
     const [isAddEditOpen, setIsAddEditOpen] = useState(false);
     const [isSwapOpen, setIsSwapOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     // States para Formulários
     const [editingVaga, setEditingVaga] = useState(null);
@@ -90,6 +93,7 @@ function AdminParking() {
 
         fetchData();
         closeAddEdit();
+        setCurrentPage(1);
         setFormSaving(false);
     }
 
@@ -272,6 +276,9 @@ function AdminParking() {
 
     if (loading) return <div className="p-8">Carregando...</div>;
 
+    const totalPages = Math.ceil(vagas.length / ITEMS_PER_PAGE);
+    const paginatedVagas = vagas.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
     return (
         <div className="max-w-7xl mx-auto space-y-10 pb-20">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-4 md:px-0">
@@ -328,7 +335,7 @@ function AdminParking() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
-                                    {vagas.map(v => (
+                                    {paginatedVagas.map(v => (
                                         <tr key={v.id} className="text-sm hover:bg-slate-50/50 transition-colors group">
                                             <td className="px-4 md:px-6 py-4">
                                                 <div className="flex flex-col md:flex-row md:items-center gap-2">
@@ -371,6 +378,12 @@ function AdminParking() {
                                 </tbody>
                             </table>
                         </div>
+                        <Pagination 
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                            totalItems={vagas.length}
+                        />
                     </div>
                 </section>
 

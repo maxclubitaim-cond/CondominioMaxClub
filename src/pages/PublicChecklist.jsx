@@ -14,6 +14,7 @@ import {
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+import { compressImage } from '../utils/imageCompression';
 
 const PublicChecklist = () => {
     const [loading, setLoading] = useState(false);
@@ -87,11 +88,12 @@ const PublicChecklist = () => {
                 let foto_url = null;
 
                 if (data.fotoFile) {
+                    const compressedFile = await compressImage(data.fotoFile);
                     const fileExt = data.fotoFile.name.split('.').pop();
                     const fileName = `${Date.now()}_${index}.${fileExt}`;
                     const { error: uploadError } = await supabase.storage
                         .from('salao-checklist')
-                        .upload(fileName, data.fotoFile);
+                        .upload(fileName, compressedFile);
 
                     if (uploadError) {
                         console.error(`Erro no upload da foto ${index}:`, uploadError);

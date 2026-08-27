@@ -17,6 +17,7 @@ import { useAuth } from '../context/AuthContext';
 import { PdfService } from '../services/PdfService';
 import DateSelectorModal from '../components/DateSelectorModal';
 import { toast } from 'react-hot-toast';
+import Pagination from '../components/common/Pagination';
 
 function AdminPoolPasses() {
     const [requests, setRequests] = useState([]);
@@ -25,6 +26,12 @@ function AdminPoolPasses() {
     const { profile } = useAuth();
     const [isExportLoading, setIsExportLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm]);
 
     useEffect(() => {
         fetchRequests();
@@ -103,6 +110,9 @@ function AdminPoolPasses() {
         (r.nome_visitante && r.nome_visitante.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
+    const totalPages = Math.ceil(filteredRequests.length / ITEMS_PER_PAGE);
+    const paginatedRequests = filteredRequests.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
     return (
         <div className="space-y-10">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white p-8 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group">
@@ -148,7 +158,7 @@ function AdminPoolPasses() {
                                 {loading ? (
                                     <tr><td colSpan="5" className="px-8 py-20 text-center text-slate-400 font-bold">Carregando solicitações...</td></tr>
                                 ) : filteredRequests.length > 0 ? (
-                                    filteredRequests.map((req) => (
+                                    paginatedRequests.map((req) => (
                                         <motion.tr 
                                             key={req.id}
                                             initial={{ opacity: 0, x: -10 }}
@@ -212,6 +222,12 @@ function AdminPoolPasses() {
                         </tbody>
                     </table>
                 </div>
+                <Pagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                    totalItems={filteredRequests.length}
+                />
             </div>
 
             <DateSelectorModal 

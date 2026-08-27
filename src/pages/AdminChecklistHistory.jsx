@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
+import Pagination from '../components/common/Pagination';
 
 import { formatDate, formatDateLong } from '../utils/dateUtils';
 
@@ -22,6 +23,12 @@ const AdminChecklistHistory = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedChecklist, setSelectedChecklist] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, selectedDate]);
 
     useEffect(() => {
         fetchChecklists();
@@ -54,6 +61,9 @@ const AdminChecklistHistory = () => {
         if (aderencia >= 70) return 'text-amber-500 bg-amber-50';
         return 'text-rose-500 bg-rose-50';
     };
+
+    const totalPages = Math.ceil(filteredChecklists.length / ITEMS_PER_PAGE);
+    const paginatedChecklists = filteredChecklists.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
     return (
         <div className="space-y-6">
@@ -113,7 +123,7 @@ const AdminChecklistHistory = () => {
                             ) : filteredChecklists.length === 0 ? (
                                 <tr><td colSpan="4" className="p-20 text-center text-slate-400 font-bold">Nenhum registro.</td></tr>
                             ) : (
-                                filteredChecklists.map((item) => (
+                                paginatedChecklists.map((item) => (
                                     <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
                                         <td className="px-4 md:p-6 py-4">
                                             <p className="text-xs md:text-sm font-bold text-slate-700">{formatDateLong(item.data_evento)}</p>
@@ -147,6 +157,12 @@ const AdminChecklistHistory = () => {
                         </tbody>
                     </table>
                 </div>
+                <Pagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                    totalItems={filteredChecklists.length}
+                />
             </div>
 
             <AnimatePresence>

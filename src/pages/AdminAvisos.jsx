@@ -5,6 +5,7 @@ import { Bell, Plus, Loader2, Save, Trash2, Calendar, Image as ImageIcon, X, Cam
 import { sendPushNotification } from '../services/pushService';
 import { formatDate } from '../utils/dateUtils';
 import { toast } from 'react-hot-toast';
+import { compressImage } from '../utils/imageCompression';
 
 function AdminAvisos() {
     const [avisos, setAvisos] = useState([]);
@@ -45,13 +46,14 @@ function AdminAvisos() {
     };
 
     async function uploadImage(file) {
-        const fileExt = file.name.split('.').pop();
+        const compressedFile = await compressImage(file);
+        const fileExt = compressedFile.name.split('.').pop();
         const fileName = `${Math.random()}.${fileExt}`;
         const filePath = `${fileName}`;
 
         const { error: uploadError } = await supabase.storage
             .from('avisos')
-            .upload(filePath, file);
+            .upload(filePath, compressedFile);
 
         if (uploadError) {
             throw uploadError;

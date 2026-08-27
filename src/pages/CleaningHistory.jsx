@@ -4,9 +4,13 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, ClipboardList, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '../utils/dateUtils';
+import Pagination from '../components/common/Pagination';
+
+const ITEMS_PER_PAGE = 8;
 
 function CleaningHistory() {
     const [registros, setRegistros] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -23,6 +27,12 @@ function CleaningHistory() {
         if (data) setRegistros(data);
         setLoading(false);
     }
+
+    const totalPages = Math.ceil(registros.length / ITEMS_PER_PAGE);
+    const paginatedRegistros = registros.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+    );
 
     return (
         <div className="min-h-screen bg-slate-50 p-4 md:p-8">
@@ -61,7 +71,7 @@ function CleaningHistory() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
-                                {registros.map((reg) => (
+                                {paginatedRegistros.map((reg) => (
                                     <motion.tr
                                         key={reg.id}
                                         initial={{ opacity: 0 }}
@@ -87,6 +97,17 @@ function CleaningHistory() {
                                 )}
                             </tbody>
                         </table>
+                        
+                        {registros.length > ITEMS_PER_PAGE && (
+                            <div className="bg-white border-t border-slate-100">
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalPages={totalPages}
+                                    onPageChange={setCurrentPage}
+                                    totalItems={registros.length}
+                                />
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

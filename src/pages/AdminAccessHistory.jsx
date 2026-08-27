@@ -19,6 +19,7 @@ import { PdfService } from '../services/PdfService';
 import DateSelectorModal from '../components/DateSelectorModal';
 import { toast } from 'react-hot-toast';
 import { formatDate, formatTime, getDayOfMonth, getMonthName, parseDate } from '../utils/dateUtils';
+import Pagination from '../components/common/Pagination';
 
 function AdminAccessHistory() {
     const [registros, setRegistros] = useState([]);
@@ -29,7 +30,13 @@ function AdminAccessHistory() {
     const [locais, setLocais] = useState([]);
     const [isExportLoading, setIsExportLoading] = useState(false);
     const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, filterLocal, filterDate]);
 
     useEffect(() => {
         fetchData();
@@ -113,6 +120,9 @@ function AdminAccessHistory() {
 
         return matchesSearch && matchesLocal && matchesDate;
     });
+
+    const totalPages = Math.ceil(filteredRegistros.length / ITEMS_PER_PAGE);
+    const paginatedRegistros = filteredRegistros.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -231,7 +241,7 @@ function AdminAccessHistory() {
                                     </td>
                                 </tr>
                             ) : filteredRegistros.length > 0 ? (
-                                filteredRegistros.map((reg) => (
+                                paginatedRegistros.map((reg) => (
                                     <motion.tr
                                         variants={itemVariants}
                                         key={reg.id}
@@ -291,6 +301,12 @@ function AdminAccessHistory() {
                         </tbody>
                     </table>
                 </div>
+                <Pagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                    totalItems={filteredRegistros.length}
+                />
             </div>
 
             <DateSelectorModal 
