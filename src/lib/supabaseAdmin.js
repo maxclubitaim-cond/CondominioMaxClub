@@ -9,7 +9,8 @@ export const supabaseAdminAuth = createClient(
         auth: {
             autoRefreshToken: false,
             persistSession: false,
-            detectSessionInUrl: false
+            detectSessionInUrl: false,
+            storageKey: 'supabase-admin-auth-token'
         }
     }
 );

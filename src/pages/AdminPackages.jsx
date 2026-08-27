@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { Package, Search, Plus, CheckCircle, Clock, Info, PackageCheck, PackageOpen } from 'lucide-react';
+import { Package, Search, Plus, CheckCircle, Clock, Info, PackageCheck, PackageOpen, Check } from 'lucide-react';
 import { formatDate } from '../utils/dateUtils';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
