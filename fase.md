@@ -16,13 +16,13 @@ As fases abaixo definem o cronograma de desenvolvimento e melhorias do projeto.
 - [x] Padronização de Toasts e Modais de Confirmação.
 
 ## [x] Fase 3: Restauro e Consolidação Visual
-- [x] Reversão da paleta Navy & Amber para o **Azul, Esmeralda e Branco original**.
+- [x] Reversão da paleta para o **Laranja (Cor Oficial Permanente)**.
 - [x] Restauro completo da `Home.jsx`, `Dashboard.jsx`, `PoolPasses.jsx` e `Login.jsx`.
 - [x] Padronização de Sombras Confortáveis (`shadow-sm`) e Arredondamentos `3xl`.
 - [x] Limpeza de resquícios de tipografia `font-black` e cores experimentais.
 - [x] Verificação de contraste e legibilidade em todos os módulos.
 - [x] Refinamento dos Módulos de **Pulseiras** e **Vôlei** (Design Clássico).
-- [x] Portal de Login azul original restabelecido.
+- [x] Portal de Login laranja original restabelecido.
 - [x] Ajuste de Permissões de Acesso para OPERADOR (Vagas Liberado, Acessos Restrito).
 - [x] Alteração terminológica de 'Feedback' para 'Sugestões' em todo o sistema.
 
@@ -77,5 +77,5 @@ As fases abaixo definem o cronograma de desenvolvimento e melhorias do projeto.
 
 ## [x] Fase 12: Unificação de Design System e Animações GSAP
 *Baseado no plano de ação: `relatorio_auditoria_projeto.md`*
-- [x] **Restauração de Paleta UI:** Ajustar `tailwind.config.js` removendo cores experimentais (Amber/Slate) e aplicando a paleta oficial (Azul/Esmeralda/Branco).
+- [x] **Restauração de Paleta UI:** Ajustar `tailwind.config.js` mantendo a paleta oficial (Laranja Permanente) e removendo resquícios de Azul/Amber.
 - [x] **Motor de Animações:** Instalar pacotes obrigatórios `@gsap/react` e implementar transições fluidas nas modais e páginas.

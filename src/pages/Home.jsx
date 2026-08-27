@@ -44,10 +44,10 @@ function Home() {
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-primary/20">
             {/* Header / Navbar */}
             <header className="bg-white/95 backdrop-blur-xl border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-center">
+                <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
                     <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
                         className="flex items-center gap-4 cursor-pointer group"
                         onClick={() => navigate('/')}
                     >
@@ -63,13 +63,22 @@ function Home() {
                                 <Shield className="text-primary w-8 h-8" />
                             )}
                         </div>
-                        <div className="flex flex-col text-center">
+                        <div className="flex flex-col text-left">
                             <span className="text-xl font-bold tracking-tight text-slate-900 leading-none">
                                 MaxClub<span className="text-primary">Itaim</span>
                             </span>
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Ambiente Seguro</span>
                         </div>
                     </motion.div>
+
+                    <nav className="hidden md:flex items-center gap-8">
+                        <button onClick={() => navigate('/')} className="text-[10px] font-bold uppercase tracking-widest text-primary border-b-2 border-primary pb-1 transition-all">Início</button>
+                        <button onClick={() => document.getElementById('avisos')?.scrollIntoView({ behavior: 'smooth' })} className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors">Avisos</button>
+                        <button onClick={() => navigate('/classificados')} className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors">Classificados</button>
+                        <button onClick={() => navigate('/agenda')} className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors">Agenda</button>
+                        <button onClick={() => navigate('/empreendedores')} className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors">Empreendedores</button>
+                        <button onClick={() => navigate('/login')} className="ml-4 px-6 py-2.5 bg-slate-50 text-[10px] font-bold uppercase tracking-widest text-slate-900 rounded-xl hover:bg-slate-100 border border-slate-200 transition-all shadow-sm">Gestor</button>
+                    </nav>
                 </div>
             </header>
 

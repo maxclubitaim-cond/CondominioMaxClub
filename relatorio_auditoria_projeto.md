@@ -40,7 +40,7 @@ Além das falhas de segurança imediatas, o sistema viola as regras de Arquitetu
 - **Acoplamento de Dados (Query Sprawl):** O acesso `supabase.from()` está espalhado sem controle (8 ocorrências apenas no `AdminParking.jsx`), sem abstração de `Hooks` ou `Services`.
 
 ### 2. Inconsistência do Sistema de UI (`fase.md` e `_5ui-design-system`)
-- **Paleta Defasada:** O `tailwind.config.js` usa `Amber-500` / `Slate-800` (Navy), contradizendo o restauro obrigatório para a paleta "Azul, Esmeralda e Branco original" da Fase 3.
+- **Paleta Defasada:** O `tailwind.config.js` usa `Amber-500` / `Slate-800` (Navy), contradizendo o restauro obrigatório para a paleta "Laranja (Cor Oficial Permanente)" da Fase 3.
 
 ### 3. Animações e Comportamento (`_1gsap-skills-main`)
 - O GSAP (`@gsap/react`), exigido para a experiência premium de interface, não está instalado, invalidando toda a diretriz de layout.
