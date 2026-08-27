@@ -13,17 +13,20 @@ export default function EntrepreneursShowcase({ empreendedores }) {
 
     useGSAP(() => {
         if (document.querySelectorAll('.entrepreneur-card').length > 0) {
-            gsap.from('.entrepreneur-card', {
-                y: 30,
-                opacity: 0,
-                duration: 0.5,
-                stagger: 0.1,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: container.current,
-                    start: 'top 85%',
+            gsap.fromTo('.entrepreneur-card',
+                { y: 30, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.5,
+                    stagger: 0.1,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: container.current,
+                        start: 'top 85%',
+                    }
                 }
-            });
+            );
         }
     }, { scope: container });
 

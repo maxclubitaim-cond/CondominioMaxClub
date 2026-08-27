@@ -13,17 +13,20 @@ export default function QuickActions({ lostCount }) {
 
     useGSAP(() => {
         if (document.querySelectorAll('.quick-card').length > 0) {
-            gsap.from('.quick-card', {
-                y: 30,
-                opacity: 0,
-                duration: 0.5,
-                stagger: 0.1,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: container.current,
-                    start: 'top 80%',
+            gsap.fromTo('.quick-card', 
+                { y: 30, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.5,
+                    stagger: 0.1,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: container.current,
+                        start: 'top 80%',
+                    }
                 }
-            });
+            );
         }
     }, { scope: container });
 

@@ -12,13 +12,13 @@ export default function HeroSection() {
 
     useGSAP(() => {
         const tl = gsap.timeline();
-        tl.from('.hero-badge', { y: 20, opacity: 0, duration: 0.5, ease: 'power2.out' })
-          .from('.hero-title', { y: 20, opacity: 0, duration: 0.6, ease: 'power2.out' }, '-=0.3')
-          .from('.hero-text', { y: 20, opacity: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4')
-          .from('.hero-btn', { y: 20, opacity: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' }, '-=0.4');
+        tl.fromTo('.hero-badge', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' })
+          .fromTo('.hero-title', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, '-=0.3')
+          .fromTo('.hero-text', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, '-=0.4')
+          .fromTo('.hero-btn', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'power2.out' }, '-=0.4');
           
         if (document.querySelector('.hero-card')) {
-            tl.from('.hero-card', { scale: 0.9, opacity: 0, duration: 0.5, ease: 'back.out(1.5)' }, '-=0.2');
+            tl.fromTo('.hero-card', { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.5)' }, '-=0.2');
         }
     }, { scope: container });
 
