@@ -14,7 +14,8 @@ import {
     X,
     Maximize2,
     Clock,
-    User
+    User,
+    Package
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
