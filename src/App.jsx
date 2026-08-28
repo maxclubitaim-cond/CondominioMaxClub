@@ -45,6 +45,7 @@ import ResidentClassificados from './pages/ResidentClassificados';
 import PublicClassificados from './pages/PublicClassificados';
 import ResidentEntrepreneurs from './pages/ResidentEntrepreneurs';
 import ResidentParking from './pages/ResidentParking';
+import AdminRonda from './pages/AdminRonda';
 
 import ScrollToTop from './components/ScrollToTop';
 
@@ -174,6 +175,7 @@ function AppContent() {
                     <Route path="empreendedores" element={<PageWrapper><AdminEntrepreneurs /></PageWrapper>} />
                     <Route path="encomendas" element={<PageWrapper><AdminPackages /></PageWrapper>} />
                     <Route path="estoque" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><AdminEstoque /></PageWrapper></ProtectedRoute>} />
+                    <Route path="ronda" element={<PageWrapper><AdminRonda /></PageWrapper>} />
                     <Route
                         path="usuarios"
                         element={

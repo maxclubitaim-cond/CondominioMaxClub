@@ -116,6 +116,24 @@ Tabela genérica de chave-valor para configurações dinâmicas do sistema.
 - `valor`: TEXT
 - `updated_at`: TIMESTAMPTZ
 
+### 16. `locais_ronda` [NOVO]
+Pontos de verificação da ronda predial.
+- `id`: UUID (PK)
+- `nome`: TEXT
+- `ordem`: INTEGER
+- `ativo`: BOOLEAN
+- `created_at`: TIMESTAMPTZ
+
+### 17. `ronda_registros` [NOVO]
+Registros individuais de cada ponto verificado na ronda.
+- `id`: UUID (PK)
+- `local_ronda_id`: UUID (FK locais_ronda)
+- `operador_id`: UUID (FK perfis)
+- `status_ok`: BOOLEAN
+- `relato`: TEXT
+- `foto_url`: TEXT
+- `created_at`: TIMESTAMPTZ
+
 ## Tipos Customizados
 - `user_perfil`: ENUM ('OPERADOR', 'GESTOR', 'ADM')
 

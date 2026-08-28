@@ -79,3 +79,8 @@ As fases abaixo definem o cronograma de desenvolvimento e melhorias do projeto.
 *Baseado no plano de ação: `relatorio_auditoria_projeto.md`*
 - [x] **Restauração de Paleta UI:** Ajustar `tailwind.config.js` mantendo a paleta oficial (Laranja Permanente) e removendo resquícios de Azul/Amber.
 - [x] **Motor de Animações:** Instalar pacotes obrigatórios `@gsap/react` e implementar transições fluidas nas modais e páginas.
+
+## [ ] Fase 13: Módulo de Ronda Predial
+- [ ] Criar tabelas `locais_ronda` e `ronda_registros`.
+- [ ] Criar bucket de storage para fotos da ronda.
+- [ ] Construir interface de registro de ronda para Operadores.
