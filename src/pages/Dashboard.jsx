@@ -77,7 +77,7 @@ function Dashboard() {
     const allowedItems = profile?.perfil ? menuItems.filter(item => item.access.includes(profile.perfil)) : [];
 
     return (
-        <div className="min-h-screen bg-slate-50 flex overflow-hidden">
+        <div className="min-h-screen bg-slate-50 flex overflow-hidden print:overflow-visible print:bg-white print:h-auto print:min-h-0">
             {/* Mobile Overlay */}
             <AnimatePresence>
                 {isMobileMenuOpen && (
@@ -95,7 +95,7 @@ function Dashboard() {
             <aside className={`
                 fixed inset-y-0 left-0 z-50 w-72 bg-slate-900 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0
                 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
-                flex flex-col border-r border-white/5
+                flex flex-col border-r border-white/5 print:hidden
             `}>
                 <div className="p-8 border-b border-white/5">
                     <div className="flex items-center gap-3 mb-2">
@@ -148,8 +148,8 @@ function Dashboard() {
             </aside>
 
             {/* Main Content Area */}
-            <main className="flex-1 flex flex-col h-screen overflow-hidden w-full relative">
-                <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-10 shrink-0 sticky top-0 z-30">
+            <main className="flex-1 flex flex-col h-screen overflow-hidden w-full relative print:overflow-visible print:h-auto print:block">
+                <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-10 shrink-0 sticky top-0 z-30 print:hidden">
                     <div className="flex items-center gap-5">
                         <button 
                             onClick={() => setIsMobileMenuOpen(true)}
@@ -175,7 +175,7 @@ function Dashboard() {
                     </div>
                 </header>
 
-                <div className="flex-1 overflow-y-auto p-4 md:p-8">
+                <div className="flex-1 overflow-y-auto p-4 md:p-8 print:overflow-visible print:p-0 print:block">
                     {/* Push Notification Banner */}
                     {/* O banner de notificações de gestão foi removido para evitar confusão com o novo sistema focado apenas em moradores */}
 
