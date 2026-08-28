@@ -47,6 +47,7 @@ import ResidentEntrepreneurs from './pages/ResidentEntrepreneurs';
 import ResidentParking from './pages/ResidentParking';
 import AdminRonda from './pages/AdminRonda';
 import AdminRondaQRCodes from './pages/AdminRondaQRCodes';
+import AdminLocaisRonda from './pages/AdminLocaisRonda';
 
 import ScrollToTop from './components/ScrollToTop';
 
@@ -177,6 +178,7 @@ function AppContent() {
                     <Route path="encomendas" element={<PageWrapper><AdminPackages /></PageWrapper>} />
                     <Route path="estoque" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><AdminEstoque /></PageWrapper></ProtectedRoute>} />
                     <Route path="ronda" element={<PageWrapper><AdminRonda /></PageWrapper>} />
+                    <Route path="ronda/locais" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><AdminLocaisRonda /></PageWrapper></ProtectedRoute>} />
                     <Route path="ronda/qr-codes" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><AdminRondaQRCodes /></PageWrapper></ProtectedRoute>} />
                     <Route
                         path="usuarios"

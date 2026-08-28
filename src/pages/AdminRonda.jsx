@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { ShieldAlert, CheckCircle, XCircle, ArrowLeft, Camera, Loader2, ListChecks, QrCode, RefreshCw, Printer } from 'lucide-react';
+import { ShieldAlert, CheckCircle, XCircle, ArrowLeft, Camera, Loader2, ListChecks, QrCode, RefreshCw, Printer, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import imageCompression from 'browser-image-compression';
-import { Html5QrcodeScanner, Html5QrcodeSupportedFormats } from 'html5-qrcode';
+import { Html5Qrcode } from 'html5-qrcode';
 import { get, set, update, del } from 'idb-keyval';
 
 // Key for offline records in IndexedDB
@@ -155,50 +155,67 @@ function AdminRonda() {
         setPreview(null);
     };
 
-    const startScanner = () => {
+    const startScanner = async () => {
         setScanning(true);
-        setTimeout(() => {
-            const scanner = new Html5QrcodeScanner(
-                "reader",
-                { 
-                    fps: 10, 
-                    qrbox: {width: 250, height: 250},
-                    formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE]
-                },
-                /* verbose= */ false
-            );
-            
-            scannerRef.current = scanner;
+        
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            toast.error('Câmera bloqueada ou ambiente inseguro. Acesse via HTTPS.');
+            setScanning(false);
+            return;
+        }
 
-            scanner.render(
-                (decodedText) => {
-                    try {
-                        const data = JSON.parse(decodedText);
-                        if (data && data.t === 'ronda' && data.id) {
-                            setSelectedLocal(data.id);
-                            setSelectedLocalNome(data.nome || 'Local Identificado');
-                            scanner.clear();
-                            setScanning(false);
-                            toast.success(`Local: ${data.nome}`);
-                        } else {
-                            toast.error('QR Code inválido para a Ronda.');
+        setTimeout(async () => {
+            try {
+                const html5QrCode = new Html5Qrcode("reader");
+                scannerRef.current = html5QrCode;
+                
+                await html5QrCode.start(
+                    { facingMode: "environment" }, // Força a câmera traseira
+                    {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 }
+                    },
+                    (decodedText) => {
+                        try {
+                            const data = JSON.parse(decodedText);
+                            if (data && data.t === 'ronda' && data.id) {
+                                setSelectedLocal(data.id);
+                                setSelectedLocalNome(data.nome || 'Local Identificado');
+                                
+                                html5QrCode.stop().then(() => {
+                                    scannerRef.current = null;
+                                    setScanning(false);
+                                }).catch(console.error);
+                                
+                                toast.success(`Local: ${data.nome}`);
+                            } else {
+                                toast.error('QR Code inválido para a Ronda.');
+                            }
+                        } catch (e) {
+                            toast.error('Formato de QR Code desconhecido.');
                         }
-                    } catch (e) {
-                        toast.error('Formato de QR Code desconhecido.');
+                    },
+                    (error) => {
+                        // Ignorar erros de leitura de frame vazio
                     }
-                },
-                (error) => {
-                    // Ignore background scan errors
-                }
-            );
+                );
+            } catch (err) {
+                console.error("Erro ao iniciar câmera", err);
+                toast.error("Erro ao iniciar câmera. Verifique as permissões.");
+                setScanning(false);
+            }
         }, 100);
     };
 
     const stopScanner = () => {
         if (scannerRef.current) {
-            scannerRef.current.clear().catch(console.error);
+            scannerRef.current.stop().then(() => {
+                scannerRef.current = null;
+                setScanning(false);
+            }).catch(console.error);
+        } else {
+            setScanning(false);
         }
-        setScanning(false);
     };
 
     const saveOffline = async (record) => {
@@ -384,13 +401,13 @@ function AdminRonda() {
                         <ArrowLeft size={16} /> Voltar
                     </button>
                     
-                    {/* Botão de QR Codes apenas para Gestores/ADM */}
+                    {/* Botão de Locais apenas para Gestores/ADM */}
                     {(profile?.perfil === 'GESTOR' || profile?.perfil === 'ADM') && (
                         <button
-                            onClick={() => navigate('/dashboard/ronda/qr-codes')}
+                            onClick={() => navigate('/dashboard/ronda/locais')}
                             className="flex items-center gap-2 bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-bold text-xs hover:bg-slate-300 transition-all"
                         >
-                            <Printer size={14} /> Imprimir QRs
+                            <Settings size={14} /> Gerenciar Locais
                         </button>
                     )}
                 </div>
