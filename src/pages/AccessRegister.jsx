@@ -21,11 +21,7 @@ function AccessRegister() {
 
     async function fetchLocais() {
         const { data } = await supabase
-            .from('locais')
-            .select('*')
-            .eq('tipo', 'ACESSO')
-            .eq('ativo', true)
-            .order('nome');
+            .rpc('get_locais_publicos');
         if (data) setLocais(data);
         setLoading(false);
     }
@@ -34,20 +30,19 @@ function AccessRegister() {
         e.preventDefault();
         setSubmitting(true);
 
-        const { error } = await supabase
-            .from('registros_acesso')
-            .insert([
-                {
-                    unidade,
-                    nome_morador: nome,
-                    local_id: selectedLocal
-                }
-            ]);
+        const { data, error } = await supabase
+            .rpc('registrar_acesso_obter_senha', {
+                p_unidade: unidade,
+                p_nome_morador: nome,
+                p_local_id: selectedLocal
+            });
 
-        if (!error) {
-            const local = locais.find(l => l.id === selectedLocal);
-            setPassword(local.senha_atual);
-            setWifiPassword(local.wifi_senha);
+        if (!error && data) {
+            setPassword(data.senha_atual);
+            setWifiPassword(data.wifi_senha || null); // fallback if exists in the future
+        } else {
+            console.error('Erro ao registrar acesso:', error);
+            alert('Não foi possível registrar o acesso no momento.');
         }
         setSubmitting(false);
     }
