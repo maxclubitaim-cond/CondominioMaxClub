@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Key, ArrowLeft, CheckCircle, Loader2, Info } from 'lucide-react';
+import { Shield, Key, ArrowLeft, CheckCircle, Loader2, Info, XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 function AccessRegister() {
     const [locais, setLocais] = useState([]);
     const [selectedLocal, setSelectedLocal] = useState('');
     const [unidade, setUnidade] = useState('');
     const [nome, setNome] = useState('');
+    const [dataNascimento, setDataNascimento] = useState('');
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    const [ageErrorModal, setAgeErrorModal] = useState({ isOpen: false, requiredAge: 0 });
     const [password, setPassword] = useState(null);
     const [wifiPassword, setWifiPassword] = useState(null);
     const navigate = useNavigate();
@@ -28,13 +31,36 @@ function AccessRegister() {
 
     async function handleSubmit(e) {
         e.preventDefault();
+        
+        // Frontend validation
+        const local = locais.find(l => l.id === selectedLocal);
+        const idadeMinima = local?.idade_minima || 0;
+        
+        if (idadeMinima > 0 && dataNascimento) {
+            const today = new Date();
+            // Create date object adjusting for timezone to avoid off-by-one day issues
+            const parts = dataNascimento.split('-');
+            const birthDateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+            
+            const diffTime = today.getTime() - birthDateObj.getTime();
+            const diffDays = diffTime / (1000 * 60 * 60 * 24); 
+            const decimalAge = diffDays / 365.25;
+            const roundedAge = Math.round(decimalAge);
+            
+            if (roundedAge < idadeMinima) {
+                setAgeErrorModal({ isOpen: true, requiredAge: idadeMinima });
+                return;
+            }
+        }
+
         setSubmitting(true);
 
         const { data, error } = await supabase
             .rpc('registrar_acesso_obter_senha', {
                 p_unidade: unidade,
                 p_nome_morador: nome,
-                p_local_id: selectedLocal
+                p_local_id: selectedLocal,
+                p_data_nascimento: dataNascimento
             });
 
         if (!error && data) {
@@ -42,7 +68,7 @@ function AccessRegister() {
             setWifiPassword(data.wifi_senha || null); // fallback if exists in the future
         } else {
             console.error('Erro ao registrar acesso:', error);
-            alert('Não foi possível registrar o acesso no momento.');
+            toast.error(error?.message || 'Não foi possível registrar o acesso no momento.');
         }
         setSubmitting(false);
     }
@@ -87,6 +113,15 @@ function AccessRegister() {
                                     type="text" required
                                     value={nome} onChange={(e) => setNome(e.target.value)}
                                     placeholder="Responsável pelo acesso"
+                                    className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-slate-700 mb-2">Data de Nascimento</label>
+                                <input
+                                    type="date" required
+                                    value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)}
                                     className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none"
                                 />
                             </div>
@@ -171,6 +206,42 @@ function AccessRegister() {
                     )}
                 </div>
             </motion.div>
+
+            {/* Age Error Modal */}
+            <AnimatePresence>
+                {ageErrorModal.isOpen && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setAgeErrorModal({ isOpen: false, requiredAge: 0 })}
+                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl relative z-10 overflow-hidden text-center p-8 border border-slate-100"
+                        >
+                            <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                <XCircle className="w-8 h-8 text-red-500" />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-800 mb-2">Acesso Restrito</h3>
+                            <p className="text-slate-500 text-sm mb-8 leading-relaxed">
+                                Infelizmente, este local possui uma restrição de idade. 
+                                É necessário ter no mínimo <strong className="text-slate-800">{ageErrorModal.requiredAge} anos</strong> para acessá-lo.
+                            </p>
+                            <button
+                                onClick={() => setAgeErrorModal({ isOpen: false, requiredAge: 0 })}
+                                className="w-full bg-slate-100 text-slate-700 font-bold py-4 rounded-2xl hover:bg-slate-200 transition-all active:scale-95"
+                            >
+                                Entendi
+                            </button>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

@@ -44,22 +44,22 @@ USING (
 
 -- Configuração do Storage (Bucket para imagens da piscina)
 -- Descomente e rode se o bucket 'piscina' ainda não existir
--- INSERT INTO storage.buckets (id, name, public) VALUES ('piscina', 'piscina', true);
+INSERT INTO storage.buckets (id, name, public) VALUES ('piscina', 'piscina', true);
 
 -- Políticas de Storage
 -- Permitir leitura pública das imagens
--- CREATE POLICY "Permitir visualização pública de imagens da piscina" 
--- ON storage.objects FOR SELECT 
--- USING ( bucket_id = 'piscina' );
+ CREATE POLICY "Permitir visualização pública de imagens da piscina" 
+ ON storage.objects FOR SELECT 
+ USING ( bucket_id = 'piscina' );
 
 -- Permitir upload para usuários autenticados
--- CREATE POLICY "Permitir upload para usuários autenticados na piscina" 
--- ON storage.objects FOR INSERT 
--- TO authenticated 
--- WITH CHECK ( bucket_id = 'piscina' );
+ CREATE POLICY "Permitir upload para usuários autenticados na piscina" 
+ ON storage.objects FOR INSERT 
+ TO authenticated 
+ WITH CHECK ( bucket_id = 'piscina' );
 
 -- Permitir deleção para usuários autenticados (opcional, pode restringir mais)
--- CREATE POLICY "Permitir deleção de imagens na piscina" 
--- ON storage.objects FOR DELETE 
--- TO authenticated 
--- USING ( bucket_id = 'piscina' );
+ CREATE POLICY "Permitir deleção de imagens na piscina" 
+ ON storage.objects FOR DELETE 
+ TO authenticated 
+ USING ( bucket_id = 'piscina' );

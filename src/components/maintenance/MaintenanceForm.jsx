@@ -15,6 +15,8 @@ export default function MaintenanceForm({ areas, estoqueItens, onSubmit, saving 
 
     const [usarEstoque, setUsarEstoque] = useState(false);
     const [itensUsados, setItensUsados] = useState([]);
+    const [selectedEstoqueId, setSelectedEstoqueId] = useState('');
+    const [selectedEstoqueQtd, setSelectedEstoqueQtd] = useState('');
 
     const fileInputAntes = useRef();
     const fileInputDepois = useRef();
@@ -81,6 +83,8 @@ export default function MaintenanceForm({ areas, estoqueItens, onSubmit, saving 
         setDepoisPreviews([]);
         setUsarEstoque(false);
         setItensUsados([]);
+        setSelectedEstoqueId('');
+        setSelectedEstoqueQtd('');
     };
 
     return (
@@ -161,10 +165,11 @@ export default function MaintenanceForm({ areas, estoqueItens, onSubmit, saving 
 
                             {usarEstoque && (
                                 <div className="space-y-4">
-                                    <div className="flex gap-2">
+                                    <div className="flex flex-col sm:flex-row gap-3">
                                         <select 
-                                            id="select-estoque"
-                                            className="flex-1 px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary/20"
+                                            value={selectedEstoqueId}
+                                            onChange={(e) => setSelectedEstoqueId(e.target.value)}
+                                            className="flex-1 min-w-0 px-4 py-3 sm:py-2 border border-slate-200 rounded-xl sm:rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary/20"
                                         >
                                             <option value="">Selecione um item...</option>
                                             {estoqueItens.filter(ei => ei.quantidade_atual > 0).map(ei => (
@@ -172,20 +177,23 @@ export default function MaintenanceForm({ areas, estoqueItens, onSubmit, saving 
                                             ))}
                                         </select>
                                         <input 
-                                            id="qtd-estoque"
                                             type="number" 
                                             min="1" 
+                                            value={selectedEstoqueQtd}
+                                            onChange={(e) => setSelectedEstoqueQtd(e.target.value)}
                                             placeholder="Qtd" 
-                                            className="w-20 px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary/20"
+                                            className="w-full sm:w-24 px-4 py-3 sm:py-2 border border-slate-200 rounded-xl sm:rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary/20"
                                         />
                                         <button 
                                             type="button"
-                                            onClick={() => {
-                                                const select = document.getElementById('select-estoque');
-                                                const qtd = document.getElementById('qtd-estoque');
-                                                if(!select.value || !qtd.value) return toast.error('Selecione um item e a quantidade');
-                                                const itemE = estoqueItens.find(e => e.id === select.value);
-                                                const qtdToAdd = parseInt(qtd.value);
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                if(!selectedEstoqueId || !selectedEstoqueQtd) return toast.error('Selecione um item e a quantidade');
+                                                
+                                                const itemE = estoqueItens.find(e => String(e.id) === String(selectedEstoqueId));
+                                                if(!itemE) return toast.error('Item inválido.');
+
+                                                const qtdToAdd = parseInt(selectedEstoqueQtd);
                                                 
                                                 const alreadyAdded = itensUsados.find(i => i.item_id === itemE.id)?.quantidade || 0;
                                                 
@@ -205,10 +213,10 @@ export default function MaintenanceForm({ areas, estoqueItens, onSubmit, saving 
                                                         unidade_medida: itemE.unidade_medida
                                                     }];
                                                 });
-                                                select.value = '';
-                                                qtd.value = '';
+                                                setSelectedEstoqueId('');
+                                                setSelectedEstoqueQtd('');
                                             }}
-                                            className="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-600 transition-colors flex items-center gap-2 text-xs uppercase tracking-widest"
+                                            className="bg-primary text-white px-6 sm:px-4 py-3 sm:py-2 rounded-xl sm:rounded-lg font-bold hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 text-xs uppercase tracking-widest whitespace-nowrap"
                                         >
                                             <Plus size={16} /> Adicionar
                                         </button>

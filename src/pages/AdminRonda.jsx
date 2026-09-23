@@ -49,7 +49,19 @@ function AdminRonda() {
             window.removeEventListener('online', handleOnline);
             window.removeEventListener('offline', handleOffline);
             if (scannerRef.current) {
-                scannerRef.current.clear().catch(console.error);
+                try {
+                    if (scannerRef.current.isScanning) {
+                        scannerRef.current.stop().then(() => {
+                            if (scannerRef.current) {
+                                scannerRef.current.clear();
+                            }
+                        }).catch(console.error);
+                    } else {
+                        scannerRef.current.clear();
+                    }
+                } catch (e) {
+                    console.error("Erro ao limpar scanner", e);
+                }
             }
         };
     }, []);

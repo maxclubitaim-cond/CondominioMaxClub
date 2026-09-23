@@ -13,6 +13,7 @@ function DoorPasswords() {
     const [newLocalName, setNewLocalName] = useState('');
     const [newLocalPassword, setNewLocalPassword] = useState('');
     const [newLocalWifi, setNewLocalWifi] = useState('');
+    const [newLocalIdadeMinima, setNewLocalIdadeMinima] = useState('');
 
     useEffect(() => {
         fetchLocais();
@@ -48,6 +49,10 @@ function DoorPasswords() {
         setLocais(prev => prev.map(l => l.id === id ? { ...l, senha_atual: novaSenha } : l));
     }
 
+    async function handleUpdateIdadeMinima(id, novaIdade) {
+        setLocais(prev => prev.map(l => l.id === id ? { ...l, idade_minima: novaIdade } : l));
+    }
+
     async function handleUpdateWifi(id, novoWifi) {
         setLocais(prev => prev.map(l => l.id === id ? { ...l, wifi_senha: novoWifi } : l));
     }
@@ -66,6 +71,7 @@ function DoorPasswords() {
                 .update({
                     senha_atual: local.senha_atual,
                     wifi_senha: local.wifi_senha,
+                    idade_minima: parseInt(local.idade_minima) || 0,
                     ativo: local.ativo
                 })
                 .eq('id', local.id)
@@ -94,6 +100,7 @@ function DoorPasswords() {
                     nome: newLocalName, 
                     senha_atual: newLocalPassword, 
                     wifi_senha: newLocalWifi,
+                    idade_minima: parseInt(newLocalIdadeMinima) || 0,
                     tipo: 'ACESSO' 
                 }
             ])
@@ -105,6 +112,7 @@ function DoorPasswords() {
             setNewLocalName('');
             setNewLocalPassword('');
             setNewLocalWifi('');
+            setNewLocalIdadeMinima('');
             toast.success('Novo local adicionado!');
         } else {
             toast.error('Erro ao criar local: ' + error.message);
@@ -226,7 +234,7 @@ function DoorPasswords() {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1">Senha Porta</label>
                                     <input
@@ -235,6 +243,17 @@ function DoorPasswords() {
                                         onChange={(e) => handleUpdateSenha(local.id, e.target.value)}
                                         className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none font-mono font-bold text-slate-700 transition-all text-sm tracking-widest"
                                         placeholder="----"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1">Idade Mínima</label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={local.idade_minima || ''}
+                                        onChange={(e) => handleUpdateIdadeMinima(local.id, e.target.value)}
+                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none font-medium text-slate-700 transition-all text-sm"
+                                        placeholder="Sem limite"
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -311,6 +330,17 @@ function DoorPasswords() {
                                         onChange={(e) => setNewLocalPassword(e.target.value)}
                                         placeholder="Ex: 5566#"
                                         className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none font-mono font-bold"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 mb-2">Idade Mínima</label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={newLocalIdadeMinima}
+                                        onChange={(e) => setNewLocalIdadeMinima(e.target.value)}
+                                        placeholder="0 para sem limite"
+                                        className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none font-medium"
                                     />
                                 </div>
                                 <div>

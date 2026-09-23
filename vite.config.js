@@ -10,4 +10,10 @@ export default defineConfig({
             targets: ['defaults', 'not IE 11'],
         }),
     ],
+    server: {
+        port: 5173,
+        hmr: {
+            clientPort: 5173
+        }
+    }
 })
