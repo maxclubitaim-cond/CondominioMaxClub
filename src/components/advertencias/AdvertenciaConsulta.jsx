@@ -191,7 +191,7 @@ export default function AdvertenciaConsulta({
                                     {/* Evidências */}
                                     <div>
                                         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-                                            Evidências ({adv.evidencias.length})
+                                            Evidências ({(adv.evidencias || []).length})
                                         </h4>
                                         {adv.urls.length > 0 ? (
                                             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
