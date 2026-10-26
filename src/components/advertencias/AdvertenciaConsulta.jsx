@@ -166,7 +166,7 @@ export default function AdvertenciaConsulta({
                                         {[
                                             ['Data', formatarData(adv.data_infracao)],
                                             ['Hora', adv.hora_infracao.slice(0, 5)],
-                                            ['Regimento Interno', adv.regimento],
+                                            ['Regimento Interno', adv.regimento_interno || '—'],
                                             ...(adv.reincidente ? [['Multa', formatarMulta(adv.multa), true]] : []),
                                         ].map(([rotulo, valor, destaque]) => (
                                             <div key={rotulo} className="rounded-2xl bg-slate-50 px-4 py-3">
