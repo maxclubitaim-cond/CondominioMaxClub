@@ -42,7 +42,7 @@ export default function AdminAdvertencias() {
             return true;
         } catch (err) {
             console.error('Erro detalhado:', err);
-            toast.error('Erro ao salvar. Verifique suas permissões e se o bucket "advertencias-evidencias" existe.');
+            toast.error(`Erro ao salvar: ${err?.message || 'verifique permissões e o bucket "advertencias-evidencias"'}`);
             return false;
         } finally {
             setSaving(false);
