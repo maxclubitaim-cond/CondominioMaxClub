@@ -28,7 +28,8 @@ import {
     BellRing,
     Droplet,
     Home,
-    PackageSearch
+    PackageSearch,
+    AlertTriangle
 } from 'lucide-react';
 import { useNavigate, Link, Outlet, useLocation } from 'react-router-dom';
 import { usePushNotifications } from '../hooks/usePushNotifications';
