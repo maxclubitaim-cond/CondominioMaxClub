@@ -48,6 +48,7 @@ import ResidentParking from './pages/ResidentParking';
 import AdminRonda from './pages/AdminRonda';
 import AdminRondaQRCodes from './pages/AdminRondaQRCodes';
 import AdminLocaisRonda from './pages/AdminLocaisRonda';
+import AdminAdvertencias from './pages/AdminAdvertencias';
 
 import ScrollToTop from './components/ScrollToTop';
 
