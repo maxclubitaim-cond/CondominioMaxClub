@@ -179,6 +179,7 @@ function AppContent() {
                     <Route path="empreendedores" element={<PageWrapper><AdminEntrepreneurs /></PageWrapper>} />
                     <Route path="encomendas" element={<PageWrapper><AdminPackages /></PageWrapper>} />
                     <Route path="estoque" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><AdminEstoque /></PageWrapper></ProtectedRoute>} />
+                    <Route path="advertencias" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><AdminAdvertencias /></PageWrapper></ProtectedRoute>} />
                     <Route path="ronda" element={<PageWrapper><AdminRonda /></PageWrapper>} />
                     <Route path="ronda/locais" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><AdminLocaisRonda /></PageWrapper></ProtectedRoute>} />
                     <Route path="ronda/qr-codes" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><AdminRondaQRCodes /></PageWrapper></ProtectedRoute>} />
