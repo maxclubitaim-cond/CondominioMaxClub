@@ -14,6 +14,14 @@ export const formatarData = (iso) => {
 export const formatarMulta = (v) =>
     Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
+/** Texto de "levou multa". Linhas antigas (só com valor) continuam aparecendo. */
+export const textoMulta = (a) => {
+    if (!a.reincidente) return 'Não se aplica';
+    if (a.levou_multa === true) return 'Sim';
+    if (a.levou_multa === false) return 'Não';
+    return a.multa ? formatarMulta(a.multa) : '—';
+};
+
 export function useAdvertencias() {
     /** Unidades já cadastradas (autocompletar). */
     const listarUnidades = useCallback(async () => {
@@ -54,7 +62,8 @@ export function useAdvertencias() {
             infracao: dados.infracao.trim(),
             regimento_interno: dados.regimento.trim(),
             reincidente: dados.reincidente,
-            multa: dados.reincidente ? dados.multa : null,
+            levou_multa: dados.reincidente ? dados.levouMulta : null,
+            obs: dados.reincidente && dados.obs ? dados.obs.trim() : null,
             evidencias: paths,
         });
         if (error) throw error;
@@ -113,11 +122,12 @@ export function useAdvertencias() {
             `Hora da infração:   ${hora}`,
             `Regimento Interno:  ${a.regimento_interno || '—'}`,
             `Reincidente:        ${a.reincidente ? 'Sim' : 'Não'}`,
-            `Multa:              ${a.reincidente ? formatarMulta(a.multa) : 'Não se aplica'}`,
+            `Levou multa:        ${textoMulta(a)}`,
             '',
             'INFRAÇÃO',
             '-'.repeat(50),
             a.infracao,
+            ...(a.obs ? ['', 'OBSERVAÇÃO', '-'.repeat(50), a.obs] : []),
             '',
             `EVIDÊNCIAS (${a.evidencias.length})`,
             '-'.repeat(50),
