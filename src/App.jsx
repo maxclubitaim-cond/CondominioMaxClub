@@ -197,16 +197,7 @@ function AppContent() {
                             </ProtectedRoute>
                         }
                     />
-                </Route>
-                    <Route
-                      path="advertencias"
-                      element={
-                        <ProtectedRoute allowedProfiles={['OPERADOR', 'GESTOR', 'ADM']}>
-                          <PageWrapper><Advertencias /></PageWrapper>
-                        </ProtectedRoute>
-                      }
-                    />
-                </Routes>
+
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </AnimatePresence>
