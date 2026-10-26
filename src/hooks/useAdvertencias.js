@@ -106,6 +106,7 @@ export function useAdvertencias() {
 
     /** Exporta ZIP: advertencia.txt + evidências. Nome: UNIDADE-DD-MM-AAAA-HH-MM.zip */
     const exportarZip = useCallback(async (a) => {
+        const evidencias = a.evidencias || [];
         const [ano, mes, dia] = a.data_infracao.split('-');
         const hora = a.hora_infracao.slice(0, 5);
         const nome = [
@@ -129,14 +130,14 @@ export function useAdvertencias() {
             a.infracao,
             ...(a.obs ? ['', 'OBSERVAÇÃO', '-'.repeat(50), a.obs] : []),
             '',
-            `EVIDÊNCIAS (${a.evidencias.length})`,
+            `EVIDÊNCIAS (${evidencias.length})`,
             '-'.repeat(50),
-            ...a.evidencias.map((p) => `- ${p.split('/').pop()}`),
+            ...evidencias.map((p) => `- ${p.split('/').pop()}`),
         ].join('\r\n');
 
         const zip = new JSZip();
         zip.file('advertencia.txt', '\uFEFF' + txt); // BOM: acentos corretos no Bloco de Notas
-        for (const p of a.evidencias) {
+        for (const p of evidencias) {
             const { data, error } = await supabase.storage.from(BUCKET).download(p);
             if (error) throw error;
             zip.file(p.split('/').pop(), data);
