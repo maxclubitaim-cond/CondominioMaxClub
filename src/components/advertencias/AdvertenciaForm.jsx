@@ -26,7 +26,8 @@ export default function AdvertenciaForm({ onSubmit, saving, unidades = [] }) {
     const [infracao, setInfracao] = useState('');
     const [regimento, setRegimento] = useState('');
     const [reincidente, setReincidente] = useState(false);
-    const [multaCent, setMultaCent] = useState(0);
+    const [levouMulta, setLevouMulta] = useState(null); // null = ainda não respondeu
+    const [obs, setObs] = useState('');
     const [fotos, setFotos] = useState([]); // [{ file, preview }]
     const [arrastando, setArrastando] = useState(false);
 
@@ -58,20 +59,12 @@ export default function AdvertenciaForm({ onSubmit, saving, unidades = [] }) {
             return atual.filter((_, idx) => idx !== i);
         });
 
-    const handleMulta = (e) => {
-        const digitos = e.target.value.replace(/\D/g, '');
-        setMultaCent(parseInt(digitos || '0', 10));
-    };
-    const multaTexto = multaCent
-        ? (multaCent / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-        : '';
-
     const limpar = () => {
         const a = agora();
         fotos.forEach((f) => URL.revokeObjectURL(f.preview));
         setUnidade(''); setData(a.data); setHora(a.hora);
         setInfracao(''); setRegimento('');
-        setReincidente(false); setMultaCent(0); setFotos([]);
+        setReincidente(false); setLevouMulta(null); setObs(''); setFotos([]);
     };
 
     const handleSubmit = async (e) => {
@@ -80,10 +73,10 @@ export default function AdvertenciaForm({ onSubmit, saving, unidades = [] }) {
             return toast.error('Preencha todos os campos obrigatórios.');
         }
         if (!fotos.length) return toast.error('Anexe ao menos uma evidência.');
-        if (reincidente && multaCent <= 0) return toast.error('Informe o valor da multa.');
+        if (reincidente && levouMulta === null) return toast.error('Informe se levou multa ou não.');
 
         const ok = await onSubmit(
-            { unidade, data, hora, infracao, regimento, reincidente, multa: reincidente ? multaCent / 100 : null },
+            { unidade, data, hora, infracao, regimento, reincidente, levouMulta: reincidente ? levouMulta : null, obs: reincidente ? obs.trim() : '' },
             fotos.map((f) => f.file)
         );
         if (ok) limpar();
@@ -211,16 +204,36 @@ export default function AdvertenciaForm({ onSubmit, saving, unidades = [] }) {
                             transition={{ duration: 0.25 }}
                             className="overflow-hidden"
                         >
-                            <div className="mt-5 p-5 rounded-2xl bg-red-50 border border-red-100">
-                                <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-red-500 mb-2" htmlFor="adv-multa">
-                                    <AlertTriangle size={14} /> Multa
-                                </label>
-                                <div className="flex items-center gap-2 bg-white rounded-xl border border-red-100 px-4 focus-within:border-red-400 focus-within:ring-4 focus-within:ring-red-500/10">
-                                    <span className="font-bold text-slate-400">R$</span>
-                                    <input
-                                        id="adv-multa" inputMode="numeric" placeholder="0,00" autoComplete="off"
-                                        className="w-full py-3 bg-transparent outline-none font-bold text-slate-800"
-                                        value={multaTexto} onChange={handleMulta}
+                            <div className="mt-5 p-5 rounded-2xl bg-red-50 border border-red-100 space-y-5">
+                                <div>
+                                    <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-red-500 mb-3">
+                                        <AlertTriangle size={14} /> Levou multa?
+                                    </span>
+                                    <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Levou multa?">
+                                        {[[true, 'Sim'], [false, 'Não']].map(([valor, rotulo]) => (
+                                            <button
+                                                key={rotulo} type="button" role="radio" aria-checked={levouMulta === valor}
+                                                onClick={() => setLevouMulta(valor)}
+                                                className={`py-3 rounded-xl font-bold border transition ${
+                                                    levouMulta === valor
+                                                        ? (valor ? 'bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/20' : 'bg-slate-800 border-slate-800 text-white')
+                                                        : 'bg-white border-red-100 text-slate-500 hover:bg-red-50'
+                                                }`}
+                                            >
+                                                {rotulo}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-red-500 mb-2" htmlFor="adv-obs">
+                                        OBS <span className="normal-case tracking-normal font-medium text-slate-400">(opcional)</span>
+                                    </label>
+                                    <textarea
+                                        id="adv-obs" rows={3}
+                                        className="w-full bg-white border border-red-100 rounded-xl px-4 py-3 text-slate-800 outline-none focus:border-red-400 focus:ring-4 focus:ring-red-500/10 resize-y"
+                                        placeholder="Observações, se houver…"
+                                        value={obs} onChange={(e) => setObs(e.target.value)}
                                     />
                                 </div>
                             </div>
