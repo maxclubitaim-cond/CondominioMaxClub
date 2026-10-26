@@ -70,6 +70,7 @@ function Dashboard() {
         { icon: <Ticket size={20} />, label: 'Pulseiras', path: '/dashboard/pulseiras', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <Droplet size={20} />, label: 'Tratamento Piscina', path: '/dashboard/piscina-tratamento', access: ['OPERADOR', 'GESTOR', 'ADM'] },
         { icon: <Store size={20} />, label: 'Empreendedores', path: '/dashboard/empreendedores', access: ['OPERADOR', 'GESTOR', 'ADM'] },
+        { icon: <AlertTriangle size={20} />, label: 'Advertências', path: '/dashboard/advertencias', access: ['GESTOR', 'ADM'] },
         { icon: <Users size={20} />, label: 'Usuários', path: '/dashboard/usuarios', access: ['GESTOR', 'ADM'] },
         { icon: <Home size={20} />, label: 'Moradores', path: '/dashboard/moradores', access: ['GESTOR', 'ADM'] },
     ];
