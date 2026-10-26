@@ -105,6 +105,7 @@ function AppContent() {
                 <Route path="/pulseiras" element={<PageWrapper><PoolPasses /></PageWrapper>} />
                 <Route path="/empreendedores" element={<PageWrapper><Entrepreneurs /></PageWrapper>} />
                 <Route path="/classificados" element={<PageWrapper><PublicClassificados /></PageWrapper>} />
+                <Route path="advertencias" element={<ProtectedRoute allowedProfiles={['GESTOR', 'ADM']}><PageWrapper><AdminAdvertencias /></PageWrapper></ProtectedRoute>} />
 
                 {/* Resident Routes */}
                 <Route
