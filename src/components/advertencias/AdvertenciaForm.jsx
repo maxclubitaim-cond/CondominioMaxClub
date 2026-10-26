@@ -72,7 +72,6 @@ export default function AdvertenciaForm({ onSubmit, saving, unidades = [] }) {
         if (!unidade.trim() || !data || !hora || !infracao.trim() || !regimento.trim()) {
             return toast.error('Preencha todos os campos obrigatórios.');
         }
-        if (!fotos.length) return toast.error('Anexe ao menos uma evidência.');
         if (reincidente && levouMulta === null) return toast.error('Informe se levou multa ou não.');
 
         const ok = await onSubmit(
@@ -137,7 +136,7 @@ export default function AdvertenciaForm({ onSubmit, saving, unidades = [] }) {
             {/* Evidência */}
             <section className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 space-y-4">
                 <div>
-                    <h2 className="text-lg font-bold text-slate-800">Evidência</h2>
+                    <h2 className="text-lg font-bold text-slate-800">Evidência <span className="text-sm font-medium text-slate-400">(opcional)</span></h2>
                     <p className="text-sm text-slate-500">Fotos da infração (até {MAX_FOTOS}). Elas são reduzidas automaticamente.</p>
                 </div>
 
