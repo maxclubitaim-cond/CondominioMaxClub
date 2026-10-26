@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Download, Trash2, Loader2, AlertTriangle, Inbox, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-import { formatarData, formatarMulta } from '../../hooks/useAdvertencias';
+import { formatarData, textoMulta } from '../../hooks/useAdvertencias';
 
 const inputCls =
     'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-medium outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10';
@@ -167,7 +167,7 @@ export default function AdvertenciaConsulta({
                                             ['Data', formatarData(adv.data_infracao)],
                                             ['Hora', adv.hora_infracao.slice(0, 5)],
                                             ['Regimento Interno', adv.regimento_interno || '—'],
-                                            ...(adv.reincidente ? [['Multa', formatarMulta(adv.multa), true]] : []),
+                                            ...(adv.reincidente ? [['Levou multa', textoMulta(adv), adv.levou_multa === true]] : []),
                                         ].map(([rotulo, valor, destaque]) => (
                                             <div key={rotulo} className="rounded-2xl bg-slate-50 px-4 py-3">
                                                 <dt className="text-[11px] font-bold uppercase tracking-wider text-slate-400">{rotulo}</dt>
@@ -181,6 +181,12 @@ export default function AdvertenciaConsulta({
                                         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Infração</h4>
                                         <p className="whitespace-pre-wrap text-slate-700">{adv.infracao}</p>
                                     </div>
+                                    {adv.obs && (
+                                        <div>
+                                            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Observação</h4>
+                                            <p className="whitespace-pre-wrap text-slate-700">{adv.obs}</p>
+                                        </div>
+                                    )}
 
                                     {/* Evidências */}
                                     <div>
