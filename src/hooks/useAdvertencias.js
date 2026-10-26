@@ -89,7 +89,7 @@ export function useAdvertencias() {
     /** Exclusão com justificativa (função atômica no banco). */
     const excluirAdvertencia = useCallback(async (id, justificativa) => {
         const { error } = await supabase.rpc('excluir_advertencia', {
-            p_id: id,
+            p_id: String(id),
             p_justificativa: justificativa,
         });
         if (error) throw error;
