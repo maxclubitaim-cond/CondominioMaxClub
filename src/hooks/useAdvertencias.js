@@ -152,5 +152,33 @@ export function useAdvertencias() {
         setTimeout(() => URL.revokeObjectURL(url), 5000);
     }, []);
 
-    return { listarUnidades, registrarAdvertencia, buscarAdvertencias, excluirAdvertencia, exportarZip };
+    /** Página de Histórico — todas as advertências (mais recentes primeiro), sem fotos. */
+    const listarHistorico = useCallback(async () => {
+        const { data, error } = await supabase
+            .from('advertencias')
+            .select('*')
+            .order('data_infracao', { ascending: false })
+            .order('hora_infracao', { ascending: false })
+            .limit(1000);
+        if (error) throw error;
+        return data;
+    }, []);
+
+    /** URLs assinadas (1 h) de uma lista de caminhos do bucket. */
+    const assinarEvidencias = useCallback(async (paths) => {
+        if (!paths?.length) return [];
+        const { data, error } = await supabase.storage.from(BUCKET).createSignedUrls(paths, 3600);
+        if (error) throw error;
+        return (data ?? []).map((u) => u.signedUrl).filter(Boolean);
+    }, []);
+
+    return {
+        listarUnidades,
+        registrarAdvertencia,
+        buscarAdvertencias,
+        excluirAdvertencia,
+        exportarZip,
+        listarHistorico,
+        assinarEvidencias,
+    };
 }
